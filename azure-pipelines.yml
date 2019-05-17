@@ -1,3 +1,4 @@
+name: das-pensionsregulator
 trigger:
   batch: true
   branches:
