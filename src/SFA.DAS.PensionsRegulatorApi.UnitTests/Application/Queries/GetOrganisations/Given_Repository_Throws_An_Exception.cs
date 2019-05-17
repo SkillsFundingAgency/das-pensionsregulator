@@ -15,7 +15,7 @@ namespace SFA.DAS.PensionsRegulatorApi.UnitTests.Application.Queries.GetOrganisa
 {
     [TestFixture]
     [ExcludeFromCodeCoverage]
-    public class GivenL_Repository_Throws_An_Exception
+    public class Given_Repository_Throws_An_Exception
     {
         private OrganisationRepository _mockRepository;
         private IRequestHandler<global::PensionsRegulatorApi.Application.Queries.GetOrganisations, IEnumerable<Organisation>> _sut;
