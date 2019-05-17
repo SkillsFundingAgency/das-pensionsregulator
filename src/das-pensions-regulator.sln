@@ -7,6 +7,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PensionsRegulatorApi", "Pen
 EndProject
 Project("{00D1A9C2-B5F0-4AF3-8072-F6C62B433612}") = "SFA.DAS.PensionsRegulator.Database", "SFA.DAS.PensionsRegulator.Database\SFA.DAS.PensionsRegulator.Database.sqlproj", "{6E0FF5BB-5717-421B-89DC-C3D8917954D3}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SFA.DAS.PensionsRegulatorApi.UnitTests", "SFA.DAS.PensionsRegulatorApi.UnitTests\SFA.DAS.PensionsRegulatorApi.UnitTests.csproj", "{BFA06E64-2AE6-42B3-84D7-2BFE56930470}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -23,6 +25,10 @@ Global
 		{6E0FF5BB-5717-421B-89DC-C3D8917954D3}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{6E0FF5BB-5717-421B-89DC-C3D8917954D3}.Release|Any CPU.Build.0 = Release|Any CPU
 		{6E0FF5BB-5717-421B-89DC-C3D8917954D3}.Release|Any CPU.Deploy.0 = Release|Any CPU
+		{BFA06E64-2AE6-42B3-84D7-2BFE56930470}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BFA06E64-2AE6-42B3-84D7-2BFE56930470}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BFA06E64-2AE6-42B3-84D7-2BFE56930470}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BFA06E64-2AE6-42B3-84D7-2BFE56930470}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
