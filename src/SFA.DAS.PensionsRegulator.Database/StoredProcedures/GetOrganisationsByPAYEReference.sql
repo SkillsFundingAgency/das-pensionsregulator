@@ -3,6 +3,8 @@
 AS
 SELECT 
 organisation.OranisationName as Name,
+organisation.Status as Status,
+Organisation.Employer_SK as UniqueIdentity,
 OrganisationAddress.AddressLine1 as AddressLine1,
 OrganisationAddress.AddressLine2 as AddressLine2,
 OrganisationAddress.AddressLine3 as AddressLine3,

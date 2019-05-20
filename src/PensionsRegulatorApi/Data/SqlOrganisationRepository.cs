@@ -37,6 +37,8 @@ namespace PensionsRegulatorApi.Data
                                   new Organisation
                                   {
                                       Name = reader["Name"].ToString(),
+                                      Status = reader["Status"].ToString(),
+                                      UniqueIdentity = reader.GetInt32(2),
                                       Address = 
                                           new Address
                                           {
