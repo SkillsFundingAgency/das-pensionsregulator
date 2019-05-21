@@ -1,3 +1,4 @@
+name: das-pensionsregulator
 trigger:
   batch: true
   branches:
@@ -57,7 +58,7 @@ steps:
 - task: VSBuild@1
   displayName: 'Build DACPAC'
   inputs:
-    solution: '/src/SFA.DAS.PensionsRegulator.Database/SFA.DAS.PensionsRegulator.Database.sqlproj'
+    solution: 'src/SFA.DAS.PensionsRegulator.Database/SFA.DAS.PensionsRegulator.Database.sqlproj'
     platform: '$(buildPlatform)'
     configuration: '$(buildConfiguration)'
     msbuildArgs: '/p:PackageLocation="$(build.artifactstagingdirectory)/publish"'
