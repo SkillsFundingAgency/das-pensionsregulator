@@ -2,7 +2,7 @@
 	@PAYESchemeReference nvarchar(50)
 AS
 SELECT 
-Organisation.OranisationName as Name,
+Organisation.OrganisationName as Name,
 Organisation.Status as Status,
 Organisation.TPR_Unique_Id as UniqueIdentity,
 OrganisationAddress.AddressLine1 as AddressLine1,
