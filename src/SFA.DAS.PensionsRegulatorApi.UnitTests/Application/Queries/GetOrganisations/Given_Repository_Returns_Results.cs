@@ -37,8 +37,8 @@ namespace SFA.DAS.PensionsRegulatorApi.UnitTests.Application.Queries.GetOrganisa
             _mockRepository = Substitute.For<IOrganisationRepository>();
 
             _mockRepository
-                .GetOrganisationsForPAYEReference(String.Empty)
-                .ReturnsForAnyArgs(_repositoryResults);
+                .GetOrganisationsForPAYEReference(Arg.Any<string>())
+                .Returns(_repositoryResults);
 
             _sut = new GetOrganisationsHandler(_mockRepository);
         }
