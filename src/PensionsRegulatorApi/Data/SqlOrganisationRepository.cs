@@ -5,7 +5,7 @@ using PensionsRegulatorApi.Domain;
 
 namespace PensionsRegulatorApi.Data
 {
-    public class SqlOrganisationRepository : OrganisationRepository
+    public class SqlOrganisationRepository : IOrganisationRepository
     {
         private readonly string _connectionString;
 

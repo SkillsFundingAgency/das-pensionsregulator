@@ -18,7 +18,7 @@ namespace SFA.DAS.PensionsRegulatorApi.UnitTests.Application.Queries.GetOrganisa
     [ExcludeFromCodeCoverage]
     public class Given_Repository_Returns_Results
     {
-        private OrganisationRepository _mockRepository;
+        private IOrganisationRepository _mockRepository;
         private IRequestHandler<global::PensionsRegulatorApi.Application.Queries.GetOrganisations, IEnumerable<Organisation>> _sut;
         private IEnumerable<Organisation> _repositoryResults;
 
@@ -34,7 +34,7 @@ namespace SFA.DAS.PensionsRegulatorApi.UnitTests.Application.Queries.GetOrganisa
         [SetUp]
         public void Given()
         {
-            _mockRepository = Substitute.For<OrganisationRepository>();
+            _mockRepository = Substitute.For<IOrganisationRepository>();
 
             _mockRepository
                 .GetOrganisationsForPAYEReference(String.Empty)

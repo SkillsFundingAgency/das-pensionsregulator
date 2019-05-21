@@ -17,13 +17,13 @@ namespace SFA.DAS.PensionsRegulatorApi.UnitTests.Application.Queries.GetOrganisa
     [ExcludeFromCodeCoverage]
     public class Given_Repository_Throws_An_Exception
     {
-        private OrganisationRepository _mockRepository;
+        private IOrganisationRepository _mockRepository;
         private IRequestHandler<global::PensionsRegulatorApi.Application.Queries.GetOrganisations, IEnumerable<Organisation>> _sut;
 
         [SetUp]
         public void Given()
         {
-            _mockRepository = Substitute.For<OrganisationRepository>();
+            _mockRepository = Substitute.For<IOrganisationRepository>();
 
             _mockRepository
                 .GetOrganisationsForPAYEReference(String.Empty)

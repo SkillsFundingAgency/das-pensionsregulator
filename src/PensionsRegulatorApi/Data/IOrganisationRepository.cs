@@ -3,7 +3,7 @@ using PensionsRegulatorApi.Domain;
 
 namespace PensionsRegulatorApi.Data
 {
-    public interface OrganisationRepository
+    public interface IOrganisationRepository
     {
         IEnumerable<Organisation> GetOrganisationsForPAYEReference(string payeReference);
     }

@@ -11,9 +11,9 @@ namespace PensionsRegulatorApi.Application.Queries
 
     public class GetOrganisationsHandler : RequestHandler<GetOrganisations, IEnumerable<Organisation>>
     {
-        private readonly OrganisationRepository _repository;
+        private readonly IOrganisationRepository _repository;
 
-        public GetOrganisationsHandler(OrganisationRepository repository)
+        public GetOrganisationsHandler(IOrganisationRepository repository)
         {
             _repository = repository ?? throw new ArgumentNullException(nameof(repository));
         }
