@@ -112,7 +112,7 @@
                             },
                             {
                                 "name": "APPINSIGHTS_INSTRUMENTATIONKEY",
-                                "value": "[reference('InternalApiAppInsights').outputs.InstrumentationKey.value]"
+                                "value": "[reference('internal-api-app-service').outputs.InstrumentationKey.value]"
                             }
                         ]
                     },
