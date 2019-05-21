@@ -7,6 +7,7 @@ using NSubstitute;
 using NUnit.Framework;
 using FluentAssertions;
 using MediatR;
+using NSubstitute.ExceptionExtensions;
 using PensionsRegulatorApi.Application.Queries;
 using PensionsRegulatorApi.Data;
 using PensionsRegulatorApi.Domain;
@@ -27,28 +28,25 @@ namespace SFA.DAS.PensionsRegulatorApi.UnitTests.Application.Queries.GetOrganisa
 
             _mockRepository
                 .GetOrganisationsForPAYEReference(String.Empty)
-                .ReturnsForAnyArgs(m => throw new Exception());
+                .ThrowsForAnyArgs<Exception>();
 
             _sut = new GetOrganisationsHandler(_mockRepository);
         }
 
         [Test]
-        public async Task Then_Empty_Collection_Is_Returned()
+        public void Then_Exception_Propagates_Up()
         {
-            var organisations =
-                await 
-                _sut
-                    .Handle(
-                        new global::PensionsRegulatorApi.Application.Queries.GetOrganisations("anynonemptytext"),
-                        CancellationToken.None);
-
-            organisations
-                .Should()
-                .NotBeNull();
-
-            CollectionAssert
-                .IsEmpty(
-                    organisations);
+            Assert
+                .ThrowsAsync<Exception>
+                (
+                    async () =>
+                        await
+                            _sut
+                                .Handle(
+                                    new global::PensionsRegulatorApi.Application.Queries.GetOrganisations(
+                                        "anynonemptytext"),
+                                    CancellationToken.None)
+                );
         }
     }
 }

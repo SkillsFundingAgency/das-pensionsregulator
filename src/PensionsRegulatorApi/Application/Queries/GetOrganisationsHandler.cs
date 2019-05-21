@@ -17,22 +17,13 @@ namespace PensionsRegulatorApi.Application.Queries
         {
             _repository = repository ?? throw new ArgumentNullException(nameof(repository));
         }
-        
+
         protected override IEnumerable<Organisation> Handle(GetOrganisations request)
         {
-            try
-            {
-                return
-                    _repository
-                        .GetOrganisationsForPAYEReference(
-                            request.PAYEReference);
-            }
-            catch
-            {
-                return 
-                    Enumerable
-                        .Empty<Organisation>();
-            }
+            return
+                _repository
+                    .GetOrganisationsForPAYEReference(
+                        request.PAYEReference);
         }
     }
 }
