@@ -1,7 +1,7 @@
 ﻿CREATE TABLE [dbo].[OrganisationAddress]
 (
-	[Id] INT NOT NULL PRIMARY KEY, 
-    [Employer_SK] INT NOT NULL, 
+	[Id] INT Identity(1,1) NOT NULL PRIMARY KEY, 
+    [Employer_SK] INT NOT NULL , 
     [OrganisationFullName] VARCHAR(255) NOT NULL, 
     [OrganisationFullAddress] VARCHAR(255) NOT NULL, 
     [AddressLine1] VARCHAR(35) NULL, 

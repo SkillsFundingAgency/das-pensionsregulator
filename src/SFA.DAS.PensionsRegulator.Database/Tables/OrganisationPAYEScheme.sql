@@ -1,6 +1,6 @@
 ﻿CREATE TABLE [dbo].[OrganisationPAYEScheme]
 (
-	[Id] BIGINT NOT NULL PRIMARY KEY, 
+	[Id] INT Identity(1,1) NOT NULL PRIMARY KEY, 
     [Employer_SK] INT NOT NULL, 
     [PAYESchemeRef] VARCHAR(25) NOT NULL, 
     [SchemeType] SMALLINT NOT NULL, 

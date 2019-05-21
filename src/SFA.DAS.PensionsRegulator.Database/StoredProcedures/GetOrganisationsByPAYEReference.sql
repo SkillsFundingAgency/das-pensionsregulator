@@ -4,7 +4,7 @@ AS
 SELECT 
 organisation.OranisationName as Name,
 organisation.Status as Status,
-Organisation.Id as UniqueIdentity,
+Organisation.TPR_Unique_Id as UniqueIdentity,
 OrganisationAddress.AddressLine1 as AddressLine1,
 OrganisationAddress.AddressLine2 as AddressLine2,
 OrganisationAddress.AddressLine3 as AddressLine3,
