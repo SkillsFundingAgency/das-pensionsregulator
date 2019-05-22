@@ -138,11 +138,11 @@
                                 "value": "[parameters('ActiveDirectoryAppId')]"
                             },
                             {
-                                "name": "ActiveDirectory:AppId",
+                                "name": "ActiveDirectory:Tenant",
                                 "value": "[parameters('ActiveDirectoryTenant')]"
                             },
                             {
-                                "name": "ActiveDirectory:AppId",
+                                "name": "ActiveDirectory:IdentifierUri",
                                 "value": "[parameters('ActiveDirectoryIdentifierUri')]"
                             }
                         ]
