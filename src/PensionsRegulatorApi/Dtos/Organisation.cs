@@ -2,6 +2,7 @@
 
 namespace PensionsRegulatorApi.Dtos
 {
+    [Obsolete]
     public class Organisation
     {
         public string Name { get; set; }

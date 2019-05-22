@@ -1,5 +1,8 @@
-﻿namespace PensionsRegulatorApi.Dtos
+﻿using System;
+
+namespace PensionsRegulatorApi.Dtos
 {
+    [Obsolete]
     public enum OrganisationType
     {
         Company = 1,
