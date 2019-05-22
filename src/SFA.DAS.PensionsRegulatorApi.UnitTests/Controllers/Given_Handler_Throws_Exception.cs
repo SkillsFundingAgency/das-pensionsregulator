@@ -4,6 +4,7 @@ using System.Diagnostics.CodeAnalysis;
 using System.Threading;
 using System.Threading.Tasks;
 using MediatR;
+using Microsoft.Extensions.Logging;
 using NSubstitute;
 using NSubstitute.ExceptionExtensions;
 using NUnit.Framework;
@@ -32,7 +33,7 @@ namespace SFA.DAS.PensionsRegulatorApi.UnitTests.Controllers
                 .Handle(Arg.Any<GetOrganisations>(), Arg.Any<CancellationToken>())
                 .Throws(new Exception(_exceptionMessage));
 
-            _sut = new PensionsRegulatorController(_mockHandler);
+            _sut = new PensionsRegulatorController(_mockHandler, Substitute.For<ILogger<PensionsRegulatorController>>());
         }
 
         [Test]

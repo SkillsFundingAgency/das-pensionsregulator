@@ -7,6 +7,7 @@ using AutoFixture;
 using FluentAssertions;
 using FluentAssertions.Common;
 using MediatR;
+using Microsoft.Extensions.Logging;
 using NSubstitute;
 using NUnit.Framework;
 using PensionsRegulatorApi.Application.Queries;
@@ -45,7 +46,7 @@ namespace SFA.DAS.PensionsRegulatorApi.UnitTests.Controllers
                 .Handle(Arg.Is<GetOrganisations>(x => x.PAYEReference == _expectedPayeReference), Arg.Any<CancellationToken>())
                 .Returns(_handlerResults);
 
-            _sut = new PensionsRegulatorController(_mockHandler);
+            _sut = new PensionsRegulatorController(_mockHandler, Substitute.For<ILogger<PensionsRegulatorController>>());
         }
 
         [Test]
