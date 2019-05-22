@@ -41,7 +41,7 @@ namespace PensionsRegulatorApi.Data
                                   {
                                       Name = reader["Name"].ToString(),
                                       Status = reader["Status"].ToString(),
-                                      UniqueIdentity = reader.GetInt32(2),
+                                      UniqueIdentity = reader.GetInt64(2),
                                       Address = 
                                           new Address
                                           {

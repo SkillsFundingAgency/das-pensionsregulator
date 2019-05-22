@@ -9,7 +9,7 @@ OrganisationAddress.AddressLine1 as AddressLine1,
 OrganisationAddress.AddressLine2 as AddressLine2,
 OrganisationAddress.AddressLine3 as AddressLine3,
 OrganisationAddress.AddressLine4 as AddressLine4,
-OrganisationAddress.AddressLine5 as AddresssLine5,
+OrganisationAddress.AddressLine5 as AddressLine5,
 OrganisationAddress.PostCode as PostCode
 FROM
 OrganisationPAYEScheme JOIN
