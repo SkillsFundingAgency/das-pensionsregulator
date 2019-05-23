@@ -5,14 +5,12 @@ using System.Threading;
 using System.Threading.Tasks;
 using AutoFixture;
 using FluentAssertions;
-using FluentAssertions.Common;
 using MediatR;
 using Microsoft.Extensions.Logging;
 using NSubstitute;
 using NUnit.Framework;
 using PensionsRegulatorApi.Application.Queries;
 using PensionsRegulatorApi.Controllers;
-using PensionsRegulatorApi.Data;
 using PensionsRegulatorApi.Domain;
 
 namespace SFA.DAS.PensionsRegulatorApi.UnitTests.Controllers
