@@ -50,13 +50,38 @@
         },
         "internalApiCertificateName": {
             "type": "string"
+        },
+        "SqlConnectionstring":{
+            "type": "string"
+        },
+        "AllowedHosts":{
+            "type": "string"
+        },
+        "ActiveDirectoryAppId":{
+            "type": "string"
+        },
+        "ActiveDirectoryTenant": {
+            "type": "string"
+        },
+        "ActiveDirectoryIdentifierUri":{
+            "type": "string"
+        },
+        "SharedSQLServerFQDN":{
+            "type": "string"
+        },
+        "SQLServerServiceAccountUsername": {
+            "type": "string"
+        },
+        "SQLServerServiceAccountPassword": {
+            "type": "string"
         }
     },
     "variables": {
         "deploymentUrlBase": "https://raw.githubusercontent.com/SkillsFundingAgency/das-platform-building-blocks/master/templates/",
         "resourceNamePrefix": "[toLower(concat('das-', parameters('resourceEnvironmentName')))]",
         "internalApiAppServiceName": "[concat(variables('resourceNamePrefix'), '-tprintapi-as')]",
-        "databaseName": "[concat(variables('resourceNamePrefix'), '-tpr-db')]"
+        "databaseName": "[concat(variables('resourceNamePrefix'), '-tpr-db')]",
+        "SqlConnectionstring": "[concat('Server=tcp:',parameters('SharedSQLServerFQDN'), ',1433;Initial Catalog=', variables('databaseName'),';Persist Security Info=False;User ID=', parameters('SQLServerServiceAccountUsername'), ';Password=', parameters('SQLServerServiceAccountPassword'), ';MultipleActiveResultSets=True;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;')]"
     },
     "resources": [
         {
@@ -113,6 +138,22 @@
                             {
                                 "name": "APPINSIGHTS_INSTRUMENTATIONKEY",
                                 "value": "[reference('internal-api-app-insights').outputs.InstrumentationKey.value]"
+                            },
+                            {
+                                "name": "Allowed:Hosts",
+                                "value": "[parameters('AllowedHosts')]"
+                            },
+                            {
+                                "name": "ActiveDirectory:AppId",
+                                "value": "[parameters('ActiveDirectoryAppId')]"
+                            },
+                            {
+                                "name": "ActiveDirectory:Tenant",
+                                "value": "[parameters('ActiveDirectoryTenant')]"
+                            },
+                            {
+                                "name": "ActiveDirectory:IdentifierUri",
+                                "value": "[parameters('ActiveDirectoryIdentifierUri')]"
                             }
                         ]
                     },
@@ -122,6 +163,11 @@
                                 "name": "Redis",
                                 "connectionString": "[parameters('loggingRedisConnectionString')]",
                                 "type": "Custom"
+                            },
+                            {
+                                "name": "PensionsRegulatorSql",
+                                "connectionString": "[variables('SqlConnectionstring')]",
+                                "type": "custom"
                             }
                         ]
                     },
@@ -134,7 +180,8 @@
                 }
             },
             "dependsOn": [
-                "internal-api-app-insights"
+                "internal-api-app-insights",
+                "sql-database"
             ]
         },
         {
