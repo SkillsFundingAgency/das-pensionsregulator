@@ -1,7 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
-using System.Threading;
 using System.Threading.Tasks;
 using MediatR;
 using Microsoft.Extensions.Logging;
@@ -10,15 +8,14 @@ using NSubstitute.ExceptionExtensions;
 using NUnit.Framework;
 using PensionsRegulatorApi.Application.Queries;
 using PensionsRegulatorApi.Controllers;
-using PensionsRegulatorApi.Domain;
 
 namespace SFA.DAS.PensionsRegulatorApi.UnitTests.Controllers
 {
     [TestFixture]
     [ExcludeFromCodeCoverage]
-    public class Given_Handler_Throws_Exception
+    public class Given_An_Exception_Is_Thrown
     {
-        private IRequestHandler<GetOrganisations, IEnumerable<Organisation>> _mockHandler;
+        private IMediator _mockMediator;
         private string _exceptionMessage;
         private PensionsRegulatorController _sut;
 
@@ -27,13 +24,13 @@ namespace SFA.DAS.PensionsRegulatorApi.UnitTests.Controllers
         {
             _exceptionMessage = "error calling db";
 
-            _mockHandler = Substitute.For<IRequestHandler<GetOrganisations, IEnumerable<Organisation>>>();
+            _mockMediator = Substitute.For<IMediator>();
 
-            _mockHandler
-                .Handle(Arg.Any<GetOrganisations>(), Arg.Any<CancellationToken>())
+            _mockMediator
+                .Send(Arg.Any<GetOrganisations>())
                 .Throws(new Exception(_exceptionMessage));
 
-            _sut = new PensionsRegulatorController(_mockHandler, Substitute.For<ILogger<PensionsRegulatorController>>());
+            _sut = new PensionsRegulatorController(_mockMediator, Substitute.For<ILogger<PensionsRegulatorController>>());
         }
 
         [Test]

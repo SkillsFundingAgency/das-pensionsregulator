@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
-using System.Threading;
 using System.Threading.Tasks;
 using AutoFixture;
 using FluentAssertions;
@@ -17,14 +16,14 @@ namespace SFA.DAS.PensionsRegulatorApi.UnitTests.Controllers
 {
     [TestFixture]
     [ExcludeFromCodeCoverage]
-    public class Given_Handler_Returns_Results
+    public class Given_Results_Are_Returned
     {
-        private IRequestHandler<GetOrganisations, IEnumerable<Organisation>> _mockHandler;
+        private IMediator _mockMediator;
         private IEnumerable<Organisation> _handlerResults;
         private string _expectedPayeReference;
         private PensionsRegulatorController _sut;
 
-        public Given_Handler_Returns_Results()
+        public Given_Results_Are_Returned()
         {
             _handlerResults =
                 new Fixture()
@@ -38,13 +37,13 @@ namespace SFA.DAS.PensionsRegulatorApi.UnitTests.Controllers
         {
             _expectedPayeReference = "147qey";
 
-            _mockHandler = Substitute.For<IRequestHandler<GetOrganisations, IEnumerable<Organisation>>>();
+            _mockMediator = Substitute.For<IMediator>();
 
-            _mockHandler
-                .Handle(Arg.Is<GetOrganisations>(x => x.PAYEReference == _expectedPayeReference), Arg.Any<CancellationToken>())
+            _mockMediator
+                .Send(Arg.Is<GetOrganisations>(x => x.PAYEReference == _expectedPayeReference))
                 .Returns(_handlerResults);
 
-            _sut = new PensionsRegulatorController(_mockHandler, Substitute.For<ILogger<PensionsRegulatorController>>());
+            _sut = new PensionsRegulatorController(_mockMediator, Substitute.For<ILogger<PensionsRegulatorController>>());
         }
 
         [Test]

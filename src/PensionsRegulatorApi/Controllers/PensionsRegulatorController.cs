@@ -14,12 +14,12 @@ namespace PensionsRegulatorApi.Controllers
     [ApiController]
     public class PensionsRegulatorController : ControllerBase
     {
-        private readonly IRequestHandler<GetOrganisations, IEnumerable<Organisation>> _getOrganisationsHandler;
+        private readonly IMediator _mediator;
         private readonly ILogger<PensionsRegulatorController> _logger;
 
-        public PensionsRegulatorController(IRequestHandler<GetOrganisations, IEnumerable<Organisation>> getOrganisationsHandler, ILogger<PensionsRegulatorController> logger)
+        public PensionsRegulatorController(IMediator mediator, ILogger<PensionsRegulatorController> logger)
         {
-            _getOrganisationsHandler = getOrganisationsHandler;
+            _mediator = mediator;
             _logger = logger;
         }
 
@@ -39,7 +39,7 @@ namespace PensionsRegulatorApi.Controllers
         {
             try
             {
-                return await _getOrganisationsHandler.Handle(new GetOrganisations(payeRef), CancellationToken.None);
+                return await _mediator.Send(new GetOrganisations(payeRef));
             }
             catch (Exception exception)
             {
