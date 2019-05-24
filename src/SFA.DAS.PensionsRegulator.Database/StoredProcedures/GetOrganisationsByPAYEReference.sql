@@ -12,7 +12,7 @@ OrganisationAddress.AddressLine4 as AddressLine4,
 OrganisationAddress.AddressLine5 as AddresssLine5,
 OrganisationAddress.PostCode as PostCode
 FROM
-OrganisationPAYEScheme JOIN
-Organisation on Organisation.Employer_SK = OrganisationPAYEScheme.Employer_SK LEFT OUTER JOIN
+Organisation JOIN
+OrganisationPAYEScheme on OrganisationPAYEScheme.Employer_SK = Organisation.Employer_SK LEFT OUTER JOIN
 OrganisationAddress on OrganisationAddress.Employer_SK = OrganisationPAYEScheme.Employer_SK 
 WHERE OrganisationPAYEScheme.PAYESchemeRef = @PAYESchemeReference
