@@ -59,6 +59,7 @@ namespace SFA.DAS.PensionsRegulatorApi.UnitTests.Controllers
                 .NotBeNull();
 
             organisations
+                .Value
                 .Should()
                 .BeEquivalentTo(_handlerResults);
         }
