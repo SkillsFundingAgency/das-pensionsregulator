@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
 using MediatR;
@@ -35,11 +37,12 @@ namespace PensionsRegulatorApi.Controllers
         [ProducesResponseType(401)]
         [ProducesResponseType(500)]
         [HttpGet("{payeRef}", Name = "Get")]
-        public async Task<IEnumerable<Organisation>> Get(string payeRef)
+        public async Task<ActionResult<IEnumerable<Organisation>>> Get(string payeRef)
         {
             try
             {
-                return await _mediator.Send(new GetOrganisations(payeRef));
+                var organisations = await _mediator.Send(new GetOrganisations(payeRef));
+                return organisations.Any() ? new ActionResult<IEnumerable<Organisation>>(organisations) : NotFound();
             }
             catch (Exception exception)
             {
