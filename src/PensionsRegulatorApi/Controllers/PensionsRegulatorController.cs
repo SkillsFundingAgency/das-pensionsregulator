@@ -6,6 +6,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Server.Kestrel.Core;
 using Microsoft.Extensions.Logging;
 using PensionsRegulatorApi.Application.Queries;
 using PensionsRegulatorApi.Domain;
@@ -41,7 +42,7 @@ namespace PensionsRegulatorApi.Controllers
         {
             try
             {
-                var organisations = await _mediator.Send(new GetOrganisations(payeRef));
+                var organisations = await _mediator.Send(new GetOrganisations(Uri.UnescapeDataString(payeRef)));
                 return organisations.Any() ? new ActionResult<IEnumerable<Organisation>>(organisations) : NotFound();
             }
             catch (Exception exception)
