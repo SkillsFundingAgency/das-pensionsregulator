@@ -4,7 +4,7 @@
     {
         public string Name { get; set; }
         public string Status { get; set; }
-        public int UniqueIdentity { get; set; }
+        public long UniqueIdentity { get; set; }
         public Address Address { get; set; }
     }
 }

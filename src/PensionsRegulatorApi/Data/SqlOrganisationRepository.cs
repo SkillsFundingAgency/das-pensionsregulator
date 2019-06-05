@@ -1,6 +1,8 @@
 ﻿using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
+using Microsoft.Extensions.Options;
+using PensionsRegulatorApi.Configuration;
 using PensionsRegulatorApi.Domain;
 
 namespace PensionsRegulatorApi.Data
@@ -9,9 +11,9 @@ namespace PensionsRegulatorApi.Data
     {
         private readonly string _connectionString;
 
-        public SqlOrganisationRepository(string connectionString)
+        public SqlOrganisationRepository(IOptions<ConnectionStrings> connectionStrings)
         {
-            _connectionString = connectionString;
+            _connectionString = connectionStrings.Value.PensionsRegulatorSql;
         }
 
         public IEnumerable<Organisation> GetOrganisationsForPAYEReference(string payeReference)
@@ -20,6 +22,7 @@ namespace PensionsRegulatorApi.Data
 
             using (var connection = new SqlConnection(_connectionString))
             {
+                connection.Open();
                 using (var command = new SqlCommand()
                 {
                     CommandText = @"[dbo].GetOrganisationsByPAYEReference",
@@ -38,7 +41,7 @@ namespace PensionsRegulatorApi.Data
                                   {
                                       Name = reader["Name"].ToString(),
                                       Status = reader["Status"].ToString(),
-                                      UniqueIdentity = reader.GetInt32(2),
+                                      UniqueIdentity = reader.GetInt64(2),
                                       Address = 
                                           new Address
                                           {
