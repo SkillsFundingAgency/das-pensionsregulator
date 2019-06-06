@@ -37,12 +37,12 @@ namespace PensionsRegulatorApi.Controllers
         [ProducesResponseType(200)]
         [ProducesResponseType(401)]
         [ProducesResponseType(500)]
-        [HttpGet("{payeRef}", Name = "Get")]
-        public async Task<ActionResult<IEnumerable<Organisation>>> Get(string payeRef)
+        [HttpGet(Name = "Get")]
+        public async Task<ActionResult<IEnumerable<Organisation>>> Get([FromQuery] string payeRef)
         {
             try
             {
-                var organisations = await _mediator.Send(new GetOrganisations(Uri.UnescapeDataString(payeRef)));
+                var organisations = await _mediator.Send(new GetOrganisations(payeRef));
                 return organisations.Any() ? new ActionResult<IEnumerable<Organisation>>(organisations) : NotFound();
             }
             catch (Exception exception)
