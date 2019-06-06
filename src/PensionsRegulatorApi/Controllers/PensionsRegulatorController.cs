@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Net.Http;
-using System.Threading;
 using System.Threading.Tasks;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
@@ -36,8 +34,8 @@ namespace PensionsRegulatorApi.Controllers
         [ProducesResponseType(200)]
         [ProducesResponseType(401)]
         [ProducesResponseType(500)]
-        [HttpGet("{payeRef}", Name = "Get")]
-        public async Task<ActionResult<IEnumerable<Organisation>>> Get(string payeRef)
+        [HttpGet(Name = "Get")]
+        public async Task<ActionResult<IEnumerable<Organisation>>> Get([FromQuery] string payeRef)
         {
             try
             {
