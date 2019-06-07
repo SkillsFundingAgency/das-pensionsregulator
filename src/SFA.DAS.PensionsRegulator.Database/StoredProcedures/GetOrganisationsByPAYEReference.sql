@@ -13,6 +13,6 @@ OrganisationAddress.AddressLine5 as AddresssLine5,
 OrganisationAddress.PostCode as PostCode
 FROM
 Organisation JOIN
-OrganisationPAYEScheme on OrganisationPAYEScheme.Employer_SK = Organisation.Employer_SK LEFT OUTER JOIN
+OrganisationPAYEScheme on OrganisationPAYEScheme.Employer_SK = Organisation.Employer_SK LEFT JOIN
 OrganisationAddress on OrganisationAddress.Employer_SK = OrganisationPAYEScheme.Employer_SK 
 WHERE OrganisationPAYEScheme.PAYESchemeRef = @PAYESchemeReference
