@@ -76,7 +76,7 @@ namespace SFA.DAS.PensionsRegulator.TestDataGenerator.Commands
                     .Send(
                         new CreateSingleOrganisation(
                             organisation,
-                            request.AccountOfficeReferenceNumber
+                            request.AccountOfficeReferenceNumberPrefix
                         ))
                     .Result
                     .EmployerSurrogateKey;

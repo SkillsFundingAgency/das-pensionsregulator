@@ -16,7 +16,7 @@ namespace SFA.DAS.PensionsRegulator.TestDataGenerator.Commands
 
         protected override SingleOrganisationCreated Handle(CreateSingleOrganisation request)
         {
-            if (request.AccountOfficeReferenceNumber == null)
+            if (request.AccountOfficeReferenceNumberPrefix == null)
                 return CreateSingleOrganisationWithoutAccountOfficeReferenceNumber(request);
 
             return CreateSingleOrganisationWithAccountOfficeReferenceNumber(request);
@@ -39,12 +39,21 @@ namespace SFA.DAS.PensionsRegulator.TestDataGenerator.Commands
         private SingleOrganisationCreated CreateSingleOrganisationWithAccountOfficeReferenceNumber(
             CreateSingleOrganisation request)
         {
+            var accountOfficeReferenceNumber =
+                request
+                    .AccountOfficeReferenceNumberPrefix
+                +
+                '-'
+                +
+                Guid.NewGuid().ToString("N")
+                    .Substring(0, 25);
+
             int createdKey =
                 _repository
                     .CreateSingleOrganisationWithAccountOfficeReferenceNumber(
                         name: request.Organisation.Name,
                         uniqueId: request.Organisation.UniqueIdentity,
-                        accountOfficeReferenceNumber: request.AccountOfficeReferenceNumber);
+                        accountOfficeReferenceNumber: accountOfficeReferenceNumber);
 
             return new SingleOrganisationCreated(
                 createdKey

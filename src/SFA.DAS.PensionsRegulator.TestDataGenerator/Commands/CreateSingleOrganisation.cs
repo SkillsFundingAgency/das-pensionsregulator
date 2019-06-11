@@ -6,14 +6,14 @@ namespace SFA.DAS.PensionsRegulator.TestDataGenerator.Commands
 {
     public class CreateSingleOrganisation : IRequest<SingleOrganisationCreated>
     {
-        public CreateSingleOrganisation(Organisation organisation, string accountOfficeReferenceNumber = null)
+        public CreateSingleOrganisation(Organisation organisation, string accountOfficeReferenceNumberPrefix = null)
         {
             Organisation = organisation ?? throw new ArgumentNullException(nameof(organisation));
-            AccountOfficeReferenceNumber = accountOfficeReferenceNumber;
+            AccountOfficeReferenceNumberPrefix = accountOfficeReferenceNumberPrefix;
         }
 
         public Organisation Organisation { get; }
 
-        public string AccountOfficeReferenceNumber { get; }
+        public string AccountOfficeReferenceNumberPrefix { get; }
     }
 }
