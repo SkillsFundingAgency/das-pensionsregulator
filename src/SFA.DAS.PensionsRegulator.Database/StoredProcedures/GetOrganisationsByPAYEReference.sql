@@ -1,5 +1,5 @@
 ﻿CREATE PROCEDURE [dbo].GetOrganisationsByPAYEReference
-	@PAYESchemeReference nvarchar(50)
+	@PAYESchemeReference varchar(25)
 AS
 SELECT 
 Organisation.OrganisationName as Name,
