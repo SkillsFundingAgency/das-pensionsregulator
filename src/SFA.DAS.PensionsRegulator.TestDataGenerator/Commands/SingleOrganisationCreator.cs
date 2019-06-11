@@ -16,10 +16,35 @@ namespace SFA.DAS.PensionsRegulator.TestDataGenerator.Commands
 
         protected override SingleOrganisationCreated Handle(CreateSingleOrganisation request)
         {
+            if (request.AccountOfficeReferenceNumber == null)
+                return CreateSingleOrganisationWithoutAccountOfficeReferenceNumber(request);
+
+            return CreateSingleOrganisationWithAccountOfficeReferenceNumber(request);
+        }
+
+        private SingleOrganisationCreated CreateSingleOrganisationWithoutAccountOfficeReferenceNumber(
+            CreateSingleOrganisation request)
+        {
             int createdKey =
                 _repository
-                    .CreateSingleOrganisation(name: request.Organisation.Name,
+                    .CreateSingleOrganisation(
+                        name: request.Organisation.Name,
                         uniqueId: request.Organisation.UniqueIdentity);
+
+            return new SingleOrganisationCreated(
+                createdKey
+            );
+        }
+
+        private SingleOrganisationCreated CreateSingleOrganisationWithAccountOfficeReferenceNumber(
+            CreateSingleOrganisation request)
+        {
+            int createdKey =
+                _repository
+                    .CreateSingleOrganisationWithAccountOfficeReferenceNumber(
+                        name: request.Organisation.Name,
+                        uniqueId: request.Organisation.UniqueIdentity,
+                        accountOfficeReferenceNumber: request.AccountOfficeReferenceNumber);
 
             return new SingleOrganisationCreated(
                 createdKey

@@ -37,6 +37,25 @@ namespace SFA.DAS.PensionsRegulator.TestDataGenerator.Data
             }
         }
 
+        public int CreateSingleOrganisationWithAccountOfficeReferenceNumber(string name, int uniqueId, string accountOfficeReferenceNumber)
+        {
+            using (var connection = new SqlConnection(_connectionString))
+            {
+                connection.Open();
+                using (var command = new SqlCommand()
+                {
+                    CommandText = $"INSERT [dbo].[Organisation] ([TPR_Unique_Id], [OrganisationName], [AOReference]) VALUES ({uniqueId}, '{name}', '{accountOfficeReferenceNumber}') SELECT CAST(SCOPE_IDENTITY() AS INT)",
+                    CommandType = CommandType.Text,
+                    Connection = connection,
+                })
+                {
+                    return
+                        (int)command
+                            .ExecuteScalar();
+                }
+            }
+        }
+
         public void CreateOrganisationPayeRef(
             string payeRef,
             int employerSurrogateKey)

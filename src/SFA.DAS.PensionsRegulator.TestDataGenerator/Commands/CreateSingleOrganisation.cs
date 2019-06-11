@@ -6,16 +6,14 @@ namespace SFA.DAS.PensionsRegulator.TestDataGenerator.Commands
 {
     public class CreateSingleOrganisation : IRequest<SingleOrganisationCreated>
     {
-        public CreateSingleOrganisation(Organisation organisation, string payeRef)
+        public CreateSingleOrganisation(Organisation organisation, string accountOfficeReferenceNumber = null)
         {
-            if (string.IsNullOrWhiteSpace(payeRef))
-                throw new ArgumentException("Value cannot be null or whitespace.", nameof(payeRef));
             Organisation = organisation ?? throw new ArgumentNullException(nameof(organisation));
-            PayeRef = payeRef;
+            AccountOfficeReferenceNumber = accountOfficeReferenceNumber;
         }
 
         public Organisation Organisation { get; }
 
-        public string PayeRef { get; }
+        public string AccountOfficeReferenceNumber { get; }
     }
 }

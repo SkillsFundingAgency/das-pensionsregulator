@@ -36,7 +36,7 @@ namespace SFA.DAS.PensionsRegulator.TestDataGenerator.Commands
 
             foreach (var organisation in generatedOrganisations)
             {
-                createdKey = createSingleOrganisation(request.PayeRef, organisation);
+                createdKey = createSingleOrganisation(request, organisation);
 
                 createdKeys.Add(createdKey);
 
@@ -69,14 +69,14 @@ namespace SFA.DAS.PensionsRegulator.TestDataGenerator.Commands
                         requestPayeRef));
         }
 
-        private int createSingleOrganisation(string requestPayeRef, Organisation organisation)
+        private int createSingleOrganisation(CreateRandomNumberOfOrganisations request, Organisation organisation)
         {
             return
                 _mediator
                     .Send(
                         new CreateSingleOrganisation(
                             organisation,
-                            requestPayeRef
+                            request.AccountOfficeReferenceNumber
                         ))
                     .Result
                     .EmployerSurrogateKey;
