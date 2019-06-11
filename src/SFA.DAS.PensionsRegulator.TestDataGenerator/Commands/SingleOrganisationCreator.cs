@@ -40,13 +40,15 @@ namespace SFA.DAS.PensionsRegulator.TestDataGenerator.Commands
             CreateSingleOrganisation request)
         {
             var accountOfficeReferenceNumber =
-                request
-                    .AccountOfficeReferenceNumberPrefix
-                +
-                '-'
-                +
-                Guid.NewGuid().ToString("N")
-                    .Substring(0, 25);
+                (request
+                     .AccountOfficeReferenceNumberPrefix +
+                 '-' +
+                 Guid.NewGuid()
+                     .ToString("N")
+                )
+                .Substring(
+                    0,
+                    25);
 
             int createdKey =
                 _repository
