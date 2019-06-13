@@ -26,7 +26,9 @@ namespace PensionsRegulatorApi.Controllers
         /// <summary>
         /// Gets the organisations from the pensions regulator for a given PAYE reference
         /// </summary>
-        /// <param name="payeRef">The PAYE reference from which to get matching organisations from the pensions regulator</param>
+        /// <param name="payeRef">The PAYE reference from which to get matching organisations from the pensions regulator
+        /// This needs to be a query parameter due to decoding of slash character
+        /// <see cref="https://docs.microsoft.com/en-us/aspnet/core/web-api/?view=aspnetcore-2.2"/> </param>
         /// <returns>The organisations for the given PAYE reference from the pensions regulator</returns>
         /// <response code="200">Success</response>
         /// <response code="401">The client is not authorized to access this endpoint</response>
@@ -52,7 +54,9 @@ namespace PensionsRegulatorApi.Controllers
         /// <summary>
         /// Gets the organisations from the pensions regulator for a given PAYE reference
         /// </summary>
-        /// <param name="payeRef">The PAYE reference from which to get matching organisations from the pensions regulator</param>
+        /// <param name="payeRef">The PAYE reference from which to get matching organisations from the pensions regulator.
+        /// This needs to be a query parameter due to decoding of slash character
+        /// <see cref="https://docs.microsoft.com/en-us/aspnet/core/web-api/?view=aspnetcore-2.2"/></param>
         /// <returns>The organisations for the given PAYE reference from the pensions regulator</returns>
         /// <response code="200">Success</response>
         /// <response code="401">The client is not authorized to access this endpoint</response>
@@ -62,17 +66,23 @@ namespace PensionsRegulatorApi.Controllers
         [ProducesResponseType(500)]
         [HttpGet("organisations/{aorn}")]
         public async Task<ActionResult<IEnumerable<Organisation>>> Get(
-            [FromQuery] string payeRef,
-            [FromRoute] string aorn)
+            [FromRoute] string aorn,
+            [FromQuery] string payeRef)
         {
             try
             {
-                var organisations = await _mediator.Send(new GetValidatedOrganisations(payeRef, aorn));
+                var organisations = await _mediator.Send(
+                    new GetValidatedOrganisations(
+                        payeRef,
+                        aorn));
                 return organisations.Any() ? new ActionResult<IEnumerable<Organisation>>(organisations) : NotFound();
             }
             catch (Exception exception)
             {
-                _logger.Log(LogLevel.Error, exception, exception.Message);
+                _logger.Log(
+                    LogLevel.Error,
+                    exception,
+                    exception.Message);
                 throw;
             }
         }
