@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
 using Microsoft.Extensions.Options;
@@ -18,41 +19,73 @@ namespace PensionsRegulatorApi.Data
 
         public IEnumerable<Organisation> GetOrganisationsForPAYEReference(string payeReference)
         {
+
+            return
+                RetrieveRowsAndMapToOrganisations(
+                    connection => new SqlCommand()
+                    {
+                        CommandText = @"[dbo].GetOrganisationsByPAYEReference",
+                        CommandType = CommandType.StoredProcedure,
+                        Connection = connection,
+                        Parameters =
+                        {
+                            new SqlParameter
+                            {
+                                ParameterName = "@PAYESchemeReference",
+                                Value = payeReference
+                            }
+                        }
+                    },
+                    MapDataReaderToOrganisation);
+        }
+
+        public IEnumerable<Organisation> GetOrganisationsForPAYEReferenceAndAORN(
+            string payeReference,
+            string aorn)
+        {
+            return
+                RetrieveRowsAndMapToOrganisations(
+                    connection => new SqlCommand()
+                    {
+                        CommandText = @"[dbo].[GetOrganisationsByPAYEReferenceAndAORN]",
+                        CommandType = CommandType.StoredProcedure,
+                        Connection = connection,
+                        Parameters =
+                        {
+                            new SqlParameter
+                            {
+                                ParameterName = "@PAYESchemeReference",
+                                Value = payeReference
+                            },
+                            new SqlParameter
+                            {
+                                ParameterName = "@AORN",
+                                Value = aorn
+                            }
+                        }
+                    },
+                    MapDataReaderToOrganisation);
+        }
+
+        private IEnumerable<Organisation> RetrieveRowsAndMapToOrganisations(
+            Func<SqlConnection, SqlCommand> commandToExecute,
+            Func<SqlDataReader, Organisation> mapDataToOrganisation)
+        {
             var retrievedOrganisations = new List<Organisation>(0);
 
             using (var connection = new SqlConnection(_connectionString))
             {
                 connection.Open();
-                using (var command = new SqlCommand()
-                {
-                    CommandText = @"[dbo].GetOrganisationsByPAYEReference",
-                    CommandType = CommandType.StoredProcedure,
-                    Connection = connection,
-                    Parameters = { new SqlParameter{ParameterName = "@PAYESchemeReference", Value = payeReference } }
-                })
+                using (var command = commandToExecute(connection))
                 {
                     using (var reader = command.ExecuteReader())
                     {
                         while (reader.Read())
                         {
-                          retrievedOrganisations
-                              .Add(
-                                  new Organisation
-                                  {
-                                      Name = reader["Name"].ToString(),
-                                      Status = reader["Status"].ToString(),
-                                      UniqueIdentity = reader.GetInt64(2),
-                                      Address = 
-                                          new Address
-                                          {
-                                              Line1 = reader["AddressLine1"].ToString(),
-                                              Line2 = reader["AddressLine2"].ToString(),
-                                              Line3 = reader["AddressLine3"].ToString(),
-                                              Line4 = reader["AddressLine4"].ToString(),
-                                              Line5 = reader["AddressLine5"].ToString(),
-                                              Postcode = reader["PostCode"].ToString()
-                                          }
-                                  });
+                            retrievedOrganisations
+                                .Add(
+                                    mapDataToOrganisation(
+                                        reader));
                         }
                     }
                 }
@@ -61,61 +94,25 @@ namespace PensionsRegulatorApi.Data
             return retrievedOrganisations.AsReadOnly();
         }
 
-        public IEnumerable<Organisation> GetOrganisationsForPAYEReferenceAndAORN(string payeReference, string aorn)
+        private Organisation MapDataReaderToOrganisation(SqlDataReader reader)
         {
-            var retrievedOrganisations = new List<Organisation>(0);
-
-            using (var connection = new SqlConnection(_connectionString))
-            {
-                connection.Open();
-                using (var command = new SqlCommand()
+            return
+                new Organisation
                 {
-                    CommandText = @"[dbo].[GetOrganisationsByPAYEReferenceAndAORN]",
-                    CommandType = CommandType.StoredProcedure,
-                    Connection = connection,
-                    Parameters =
-                    {
-                        new SqlParameter
+                    Name = reader["Name"].ToString(),
+                    Status = reader["Status"].ToString(),
+                    UniqueIdentity = reader.GetInt64(2),
+                    Address =
+                        new Address
                         {
-                            ParameterName = "@PAYESchemeReference",
-                            Value = payeReference
-                        },
-                        new SqlParameter
-                        {
-                            ParameterName = "@AORN",
-                            Value = aorn
+                            Line1 = reader["AddressLine1"].ToString(),
+                            Line2 = reader["AddressLine2"].ToString(),
+                            Line3 = reader["AddressLine3"].ToString(),
+                            Line4 = reader["AddressLine4"].ToString(),
+                            Line5 = reader["AddressLine5"].ToString(),
+                            Postcode = reader["PostCode"].ToString()
                         }
-                    }
-                })
-                {
-                    using (var reader = command.ExecuteReader())
-                    {
-                        while (reader.Read())
-                        {
-                            retrievedOrganisations
-                                .Add(
-                                    new Organisation
-                                    {
-                                        Name = reader["Name"].ToString(),
-                                        Status = reader["Status"].ToString(),
-                                        UniqueIdentity = reader.GetInt64(2),
-                                        Address =
-                                            new Address
-                                            {
-                                                Line1 = reader["AddressLine1"].ToString(),
-                                                Line2 = reader["AddressLine2"].ToString(),
-                                                Line3 = reader["AddressLine3"].ToString(),
-                                                Line4 = reader["AddressLine4"].ToString(),
-                                                Line5 = reader["AddressLine5"].ToString(),
-                                                Postcode = reader["PostCode"].ToString()
-                                            }
-                                    });
-                        }
-                    }
-                }
-            }
-
-            return retrievedOrganisations.AsReadOnly();
+                };
         }
     }
 }
