@@ -14,7 +14,7 @@ namespace PensionsRegulatorApi.Application.Queries
 
         public GetOrganisationsHandler(IOrganisationRepository repository)
         {
-            _repository = repository ?? throw new ArgumentNullException(nameof(repository));
+            _repository = repository;
         }
 
         protected override IEnumerable<Organisation> Handle(GetOrganisations request)

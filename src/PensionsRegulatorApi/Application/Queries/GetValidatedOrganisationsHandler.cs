@@ -12,7 +12,7 @@ namespace PensionsRegulatorApi.Application.Queries
 
         public GetValidatedOrganisationsHandler(IOrganisationRepository repository)
         {
-            _repository = repository ?? throw new ArgumentNullException(nameof(repository));
+            _repository = repository;
         }
 
         protected override IEnumerable<Organisation> Handle(GetValidatedOrganisations request)
