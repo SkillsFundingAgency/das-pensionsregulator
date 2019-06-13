@@ -9,7 +9,7 @@ using NUnit.Framework;
 using PensionsRegulatorApi.Application.Queries;
 using PensionsRegulatorApi.Controllers;
 
-namespace SFA.DAS.PensionsRegulatorApi.UnitTests.Controllers
+namespace SFA.DAS.PensionsRegulatorApi.UnitTests.Controllers.PayeAndAorn
 {
     [TestFixture]
     [ExcludeFromCodeCoverage]
@@ -27,7 +27,7 @@ namespace SFA.DAS.PensionsRegulatorApi.UnitTests.Controllers
             _mockMediator = Substitute.For<IMediator>();
 
             _mockMediator
-                .Send(Arg.Any<GetOrganisations>())
+                .Send(Arg.Any<GetValidatedOrganisations>())
                 .Throws(new Exception(_exceptionMessage));
 
             _sut = new PensionsRegulatorController(_mockMediator, Substitute.For<ILogger<PensionsRegulatorController>>());
@@ -39,7 +39,7 @@ namespace SFA.DAS.PensionsRegulatorApi.UnitTests.Controllers
             Exception actualException = null;
             try
             {
-                await _sut.Get("test");
+                await _sut.Get("paye", "aorn");
             }
             catch (Exception e)
             {

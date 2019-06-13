@@ -1,9 +1,10 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Threading.Tasks;
+using AutoFixture;
 using FluentAssertions;
 using MediatR;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using NSubstitute;
 using NUnit.Framework;
@@ -11,20 +12,24 @@ using PensionsRegulatorApi.Application.Queries;
 using PensionsRegulatorApi.Controllers;
 using PensionsRegulatorApi.Domain;
 
-namespace SFA.DAS.PensionsRegulatorApi.UnitTests.Controllers
+namespace SFA.DAS.PensionsRegulatorApi.UnitTests.Controllers.PayeOnly
 {
     [TestFixture]
     [ExcludeFromCodeCoverage]
-    public class Given_No_Results_Are_Returned
+    public class Given_Results_Are_Returned
     {
         private IMediator _mockMediator;
         private IEnumerable<Organisation> _handlerResults;
         private string _expectedPayeReference;
         private PensionsRegulatorController _sut;
 
-        public Given_No_Results_Are_Returned()
+        public Given_Results_Are_Returned()
         {
-            _handlerResults = new List<Organisation>();
+            _handlerResults =
+                new Fixture()
+                    .CreateMany<Organisation>(
+                        new Random()
+                            .Next(1, 15));
         }
 
         [SetUp]
@@ -42,7 +47,7 @@ namespace SFA.DAS.PensionsRegulatorApi.UnitTests.Controllers
         }
 
         [Test]
-        public async Task Then_NotFound_Is_Returned()
+        public async Task Then_Equivalent_Results_Are_Returned()
         {
             var organisations =
                 await
@@ -53,9 +58,10 @@ namespace SFA.DAS.PensionsRegulatorApi.UnitTests.Controllers
                 .Should()
                 .NotBeNull();
 
-            organisations.Result
+            organisations
+                .Value
                 .Should()
-                .BeAssignableTo<NotFoundResult>();
+                .BeEquivalentTo(_handlerResults);
         }
     }
 }
