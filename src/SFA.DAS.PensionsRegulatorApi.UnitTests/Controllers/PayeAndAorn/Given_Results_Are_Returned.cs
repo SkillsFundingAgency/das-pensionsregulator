@@ -59,8 +59,8 @@ namespace SFA.DAS.PensionsRegulatorApi.UnitTests.Controllers.PayeAndAorn
                 await
                     _sut
                         .Get(
-                            _expectedPayeReference,
-                            _expectedAORN);
+                            _expectedAORN,
+                            _expectedPayeReference);
 
             organisations
                 .Should()
