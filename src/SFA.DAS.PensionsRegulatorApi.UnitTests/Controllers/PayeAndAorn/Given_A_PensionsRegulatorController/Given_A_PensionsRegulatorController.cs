@@ -3,7 +3,6 @@ using System.Diagnostics.CodeAnalysis;
 using System.Threading.Tasks;
 using MediatR;
 using Microsoft.Extensions.Logging;
-using Newtonsoft.Json.Bson;
 using NSubstitute;
 using NUnit.Framework;
 using PensionsRegulatorApi.Application.Queries;
