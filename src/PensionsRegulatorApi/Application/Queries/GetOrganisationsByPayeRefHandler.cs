@@ -8,16 +8,16 @@ namespace PensionsRegulatorApi.Application.Queries
 {
     
 
-    public class GetOrganisationsHandler : RequestHandler<GetOrganisations, IEnumerable<Organisation>>
+    public class GetOrganisationsByPayeRefHandler : RequestHandler<GetOrganisationsByPayeRef, IEnumerable<Organisation>>
     {
         private readonly IOrganisationRepository _repository;
 
-        public GetOrganisationsHandler(IOrganisationRepository repository)
+        public GetOrganisationsByPayeRefHandler(IOrganisationRepository repository)
         {
             _repository = repository;
         }
 
-        protected override IEnumerable<Organisation> Handle(GetOrganisations request)
+        protected override IEnumerable<Organisation> Handle(GetOrganisationsByPayeRef request)
         {
             return
                 _repository

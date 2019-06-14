@@ -41,7 +41,7 @@ namespace PensionsRegulatorApi.Controllers
         {
             try
             {
-                var organisations = await _mediator.Send(new GetOrganisations(payeRef));
+                var organisations = await _mediator.Send(new GetOrganisationsByPayeRef(payeRef));
                 return organisations.Any() ? new ActionResult<IEnumerable<Organisation>>(organisations) : NotFound();
             }
             catch (Exception exception)
@@ -72,7 +72,7 @@ namespace PensionsRegulatorApi.Controllers
             try
             {
                 var organisations = await _mediator.Send(
-                    new GetValidatedOrganisations(
+                    new GetOrganisationsByPayeRefAndAorn(
                         payeRef,
                         aorn));
                 return organisations.Any() ? new ActionResult<IEnumerable<Organisation>>(organisations) : NotFound();

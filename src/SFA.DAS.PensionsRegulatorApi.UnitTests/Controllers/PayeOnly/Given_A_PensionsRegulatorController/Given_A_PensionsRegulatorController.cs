@@ -50,7 +50,7 @@ namespace SFA.DAS.PensionsRegulatorApi.UnitTests.Controllers.PayeOnly.Given_A_Pe
                 MockMediatr
                     .Received()
                     .Send(
-                        Arg.Is<GetOrganisations>(
+                        Arg.Is<GetOrganisationsByPayeRef>(
                             arg => arg.PAYEReference.Equals(
                                        _payeRef,
                                        StringComparison.Ordinal)));
@@ -62,7 +62,7 @@ namespace SFA.DAS.PensionsRegulatorApi.UnitTests.Controllers.PayeOnly.Given_A_Pe
                 MockMediatr
                     .DidNotReceive()
                     .Send(
-                        Arg.Any<GetValidatedOrganisations>());
+                        Arg.Any<GetOrganisationsByPayeRefAndAorn>());
             }
         }
     }

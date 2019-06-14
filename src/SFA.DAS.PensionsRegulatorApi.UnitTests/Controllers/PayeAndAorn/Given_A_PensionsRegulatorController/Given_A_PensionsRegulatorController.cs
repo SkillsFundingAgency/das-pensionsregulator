@@ -53,7 +53,7 @@ namespace SFA.DAS.PensionsRegulatorApi.UnitTests.Controllers.PayeAndAorn.Given_A
                 MockMediatr
                     .Received()
                     .Send(
-                        Arg.Is<GetValidatedOrganisations>(
+                        Arg.Is<GetOrganisationsByPayeRefAndAorn>(
                             arg => arg.PAYEReference.Equals(
                                        _payeRef,
                                        StringComparison.Ordinal)
@@ -66,7 +66,7 @@ namespace SFA.DAS.PensionsRegulatorApi.UnitTests.Controllers.PayeAndAorn.Given_A
             public void Then_Date_Is_Not_Retrieved_Using_Paye_Only()
             {
                 MockMediatr.DidNotReceive()
-                    .Send(Arg.Any<GetOrganisations>());
+                    .Send(Arg.Any<GetOrganisationsByPayeRef>());
             }
         }
     }

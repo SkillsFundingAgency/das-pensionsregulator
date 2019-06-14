@@ -6,9 +6,9 @@ using PensionsRegulatorApi.Domain;
 
 namespace PensionsRegulatorApi.Application.Queries
 {
-    public class GetValidatedOrganisations : IRequest<IEnumerable<Organisation>>
+    public class GetOrganisationsByPayeRefAndAorn : IRequest<IEnumerable<Organisation>>
     {
-        public GetValidatedOrganisations(string payeReference, string accountOfficeReferenceNumber)
+        public GetOrganisationsByPayeRefAndAorn(string payeReference, string accountOfficeReferenceNumber)
         {
             if (string.IsNullOrWhiteSpace(payeReference))
                 throw new ArgumentException(

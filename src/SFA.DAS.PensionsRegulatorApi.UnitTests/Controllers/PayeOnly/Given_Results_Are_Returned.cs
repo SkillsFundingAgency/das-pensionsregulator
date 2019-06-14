@@ -40,7 +40,7 @@ namespace SFA.DAS.PensionsRegulatorApi.UnitTests.Controllers.PayeOnly
             _mockMediator = Substitute.For<IMediator>();
 
             _mockMediator
-                .Send(Arg.Is<GetOrganisations>(x => x.PAYEReference == _expectedPayeReference))
+                .Send(Arg.Is<GetOrganisationsByPayeRef>(x => x.PAYEReference == _expectedPayeReference))
                 .Returns(_handlerResults);
 
             _sut = new PensionsRegulatorController(_mockMediator, Substitute.For<ILogger<PensionsRegulatorController>>());
