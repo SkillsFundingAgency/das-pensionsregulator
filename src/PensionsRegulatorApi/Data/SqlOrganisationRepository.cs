@@ -35,8 +35,7 @@ namespace PensionsRegulatorApi.Data
                                 Value = payeReference
                             }
                         }
-                    },
-                    MapDataReaderToOrganisation);
+                    });
         }
 
         public IEnumerable<Organisation> GetOrganisationsForPAYEReferenceAndAORN(
@@ -63,13 +62,11 @@ namespace PensionsRegulatorApi.Data
                                 Value = aorn
                             }
                         }
-                    },
-                    MapDataReaderToOrganisation);
+                    });
         }
 
         private IEnumerable<Organisation> RetrieveRowsAndMapToOrganisations(
-            Func<SqlConnection, SqlCommand> commandToExecute,
-            Func<SqlDataReader, Organisation> mapDataToOrganisation)
+            Func<SqlConnection, SqlCommand> commandToExecute)
         {
             var retrievedOrganisations = new List<Organisation>(0);
 
@@ -84,7 +81,7 @@ namespace PensionsRegulatorApi.Data
                         {
                             retrievedOrganisations
                                 .Add(
-                                    mapDataToOrganisation(
+                                    MapDataReaderToOrganisation(
                                         reader));
                         }
                     }
