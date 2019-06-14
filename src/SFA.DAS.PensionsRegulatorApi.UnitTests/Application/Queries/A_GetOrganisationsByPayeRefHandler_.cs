@@ -107,8 +107,4 @@ namespace SFA.DAS.PensionsRegulatorApi.UnitTests.Application.Queries
                 new GetOrganisationsByPayeRefHandler(mockRepository);
         }
     }
-
-    public class TestException : Exception
-    {
-    }
 }
