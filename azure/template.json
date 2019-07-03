@@ -52,6 +52,10 @@
         "internalApiAspSize": {
             "type": "string"
         },
+        "internalApiAspInstances": {
+            "type": "int",
+            "defaultValue": 1
+        },
         "internalApiCertificateName": {
             "type": "string"
         },
@@ -61,9 +65,8 @@
         "keyVaultResourceGroup": {
             "type": "string"
         },
-        "internalApiAspInstances": {
-            "type": "int",
-            "defaultValue": 1
+        "storageAccountContainerArray": {
+            "type": "string"
         }
     },
     "variables": {
@@ -258,6 +261,37 @@
                     }
                 }
             }
+        },
+        {
+            "apiVersion": "2017-05-10",
+            "name": "[concat('storage-container', parameters('storageAccountContainerArray')[copyIndex()].name)]",
+            "type": "Microsoft.Resources/deployments",
+            "condition": "[greater(length(parameters('storageAccountContainerArray')), 0)]",
+            "properties": {
+                "mode": "Incremental",
+                "templateLink": {
+                    "uri": "[concat(variables('deploymentUrlBase'), 'storage-container.json')]",
+                    "contentVersion": "1.0.0.0"
+                },
+                "parameters": {
+                    "storageAccountName": {
+                        "value": "[variables('storageAccountName')]"
+                    },
+                    "containerName": {
+                        "value": "[parameters('storageAccountContainerArray')[copyIndex()].name]"
+                    },
+                    "publicAccess": {
+                        "value": "[parameters('storageAccountContainerArray')[copyIndex()].publicAccess]"
+                    }
+                }
+            },
+            "copy": {
+                "name": "containercopy",
+                "count": "[length(parameters('storageAccountContainerArray'))]"
+            },
+            "dependsOn": [
+                "storage-account"
+            ]
         }
     ],
     "outputs": {
