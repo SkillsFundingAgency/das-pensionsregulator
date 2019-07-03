@@ -64,27 +64,6 @@
         "internalApiAspInstances": {
             "type": "int",
             "defaultValue": 1
-        },
-        "allowedHosts": {
-            "type": "string"
-        },
-        "activeDirectoryAppId": {
-            "type": "string"
-        },
-        "activeDirectoryTenant": {
-            "type": "string"
-        },
-        "activeDirectoryIdentifierUri": {
-            "type": "string"
-        },
-        "sharedSQLServerFQDN": {
-            "type": "string"
-        },
-        "SQLServerServiceAccountUsername": {
-            "type": "string"
-        },
-        "SQLServerServiceAccountPassword": {
-            "type": "securestring"
         }
     },
     "variables": {
@@ -93,8 +72,7 @@
         "internalApiAppServiceName": "[concat(variables('resourceNamePrefix'), 'intapi-as')]",
         "internalApiAppServicePlanName": "[concat(variables('resourceNamePrefix'), 'intapi-asp')]",
         "databaseName": "[concat(variables('resourceNamePrefix'), '-db')]",
-        "storageAccountName": "[toLower(concat('das', parameters('resourceEnvironmentName'), 'tprstr'))]",
-        "sqlConnectionstring": "[concat('Server=tcp:',parameters('SharedSQLServerFQDN'), ',1433;Initial Catalog=', variables('databaseName'),';Persist Security Info=False;User ID=', parameters('SQLServerServiceAccountUsername'), ';Password=', parameters('SQLServerServiceAccountPassword'), ';MultipleActiveResultSets=True;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;')]"
+        "storageAccountName": "[toLower(concat('das', parameters('resourceEnvironmentName'), 'tprstr'))]"
     },
     "resources": [
         {
@@ -200,22 +178,6 @@
                             {
                                 "name": "APPINSIGHTS_INSTRUMENTATIONKEY",
                                 "value": "[reference('internal-api-app-insights').outputs.InstrumentationKey.value]"
-                            },
-                            {
-                                "name": "Allowed:Hosts",
-                                "value": "[parameters('AllowedHosts')]"
-                            },
-                            {
-                                "name": "ActiveDirectory:AppId",
-                                "value": "[parameters('ActiveDirectoryAppId')]"
-                            },
-                            {
-                                "name": "ActiveDirectory:Tenant",
-                                "value": "[parameters('ActiveDirectoryTenant')]"
-                            },
-                            {
-                                "name": "ActiveDirectory:IdentifierUri",
-                                "value": "[parameters('ActiveDirectoryIdentifierUri')]"
                             }
                         ]
                     },
@@ -225,11 +187,6 @@
                                 "name": "Redis",
                                 "connectionString": "[parameters('loggingRedisConnectionString')]",
                                 "type": "Custom"
-                            },
-                            {
-                                "name": "PensionsRegulatorSql",
-                                "connectionString": "[variables('SqlConnectionstring')]",
-                                "type": "custom"
                             }
                         ]
                     },
@@ -311,6 +268,10 @@
         "DatabaseName": {
             "type": "string",
             "value": "[variables('databaseName')]"
+        },
+        "StorageAccountName": {
+            "type": "string",
+            "value": "[variables('storageAccountName')]"
         }
     }
 }
