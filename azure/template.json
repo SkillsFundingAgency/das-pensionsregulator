@@ -264,7 +264,7 @@
         },
         {
             "apiVersion": "2017-05-10",
-            "name": "[concat('storage-container', parameters('storageAccountContainerArray')[copyIndex()].name)]",
+            "name": "[concat('storage-container', parameters('storageAccountContainerArray'))]",
             "type": "Microsoft.Resources/deployments",
             "condition": "[greater(length(parameters('storageAccountContainerArray')), 0)]",
             "properties": {
@@ -278,16 +278,12 @@
                         "value": "[variables('storageAccountName')]"
                     },
                     "containerName": {
-                        "value": "[parameters('storageAccountContainerArray')[copyIndex()].name]"
+                        "value": "[parameters('storageAccountContainerArray')[0].name]"
                     },
                     "publicAccess": {
-                        "value": "[parameters('storageAccountContainerArray')[copyIndex()].publicAccess]"
+                        "value": "[parameters('storageAccountContainerArray')[0].publicAccess]"
                     }
                 }
-            },
-            "copy": {
-                "name": "containercopy",
-                "count": "[length(parameters('storageAccountContainerArray'))]"
             },
             "dependsOn": [
                 "storage-account"
