@@ -264,7 +264,7 @@
         },
         {
             "apiVersion": "2017-05-10",
-            "name": "[concat('storage-container', parameters('storageAccountContainerArray').name)]",
+            "name": "[concat('storage-container', parameters('storageAccountContainerArray')[0].name)]",
             "type": "Microsoft.Resources/deployments",
             "condition": "[greater(length(parameters('storageAccountContainerArray')), 0)]",
             "properties": {
