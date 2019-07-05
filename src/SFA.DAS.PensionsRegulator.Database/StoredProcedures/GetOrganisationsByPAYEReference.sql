@@ -2,9 +2,9 @@
 	@PAYESchemeReference varchar(25)
 AS
 SELECT 
-Name,
-Status,
-UniqueIdentity,
+OrganisationName,
+OrganisationStatus,
+TPRUniqueKey,
 AddressLine1,
 AddressLine2,
 AddressLine3,

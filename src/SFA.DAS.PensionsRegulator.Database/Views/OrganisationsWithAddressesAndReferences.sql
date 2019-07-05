@@ -1,10 +1,10 @@
 ﻿CREATE VIEW [dbo].[OrganisationsWithAddressesAndReferences]
 AS SELECT
-Organisation.OrganisationName as Name,
-Organisation.Status as Status,
+Organisation.OrganisationName as OrganisationName,
+Organisation.Status as OrganisationStatus,
 OrganisationPAYEScheme.PAYESchemeRef as PayeRef,
 Organisation.AOReference as AORN,
-Organisation.TPR_Unique_Id as UniqueIdentity,
+Organisation.TPR_Unique_Id as TPRUniqueKey,
 OrganisationAddress.AddressLine1 as AddressLine1,
 OrganisationAddress.AddressLine2 as AddressLine2,
 OrganisationAddress.AddressLine3 as AddressLine3,
