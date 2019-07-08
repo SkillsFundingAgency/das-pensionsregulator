@@ -59,11 +59,13 @@
     <Folder Include="Properties" />
     <Folder Include="Tables" />
     <Folder Include="StoredProcedures" />
+    <Folder Include="TestData" />
   </ItemGroup>
   <ItemGroup>
     <Build Include="Tables\Organisation.sql" />
     <Build Include="Tables\OrganisationPAYEScheme.sql" />
     <Build Include="Tables\OrganisationAddress.sql" />
     <Build Include="StoredProcedures\GetOrganisationsByPAYEReference.sql" />
+    <None Include="TestData\InsertTestData.sql" />
   </ItemGroup>
 </Project>
