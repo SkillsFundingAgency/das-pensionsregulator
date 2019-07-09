@@ -1,4 +1,4 @@
-﻿CREATE PROCEDURE [dbo].GetOrganisationsByPAYEReference
+﻿CREATE PROCEDURE [dbo].uSP_GetOrganisationsByPAYEReference
 	@PAYESchemeReference varchar(25)
 AS
 SELECT 
@@ -12,5 +12,5 @@ AddressLine4,
 AddressLine5,
 PostCode
 FROM
-OrganisationsWithAddressesAndReferences
+vw_OrgAornPayeDetails
 WHERE PAYERef = @PAYESchemeReference

@@ -1,4 +1,4 @@
-﻿CREATE VIEW [dbo].[OrganisationsWithAddressesAndReferences]
+﻿CREATE VIEW [dbo].[vw_OrgAornPayeDetails]
 AS SELECT
 Organisation.OrganisationName as OrganisationName,
 Organisation.Status as OrganisationStatus,

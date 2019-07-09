@@ -24,7 +24,7 @@ namespace PensionsRegulatorApi.Data
                 RetrieveRowsAndMapToOrganisations(
                     connection => new SqlCommand()
                     {
-                        CommandText = @"[dbo].GetOrganisationsByPAYEReference",
+                        CommandText = @"[dbo].uSP_GetOrganisationsByPAYEReference",
                         CommandType = CommandType.StoredProcedure,
                         Connection = connection,
                         Parameters =
@@ -46,7 +46,7 @@ namespace PensionsRegulatorApi.Data
                 RetrieveRowsAndMapToOrganisations(
                     connection => new SqlCommand()
                     {
-                        CommandText = @"[dbo].[GetOrganisationsByPAYEReferenceAndAORN]",
+                        CommandText = @"[dbo].[uSP_GetOrganisationsByPAYEReferenceAndAORN]",
                         CommandType = CommandType.StoredProcedure,
                         Connection = connection,
                         Parameters =

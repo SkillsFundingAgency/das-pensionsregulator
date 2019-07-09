@@ -65,8 +65,8 @@
     <Build Include="Tables\Organisation.sql" />
     <Build Include="Tables\OrganisationPAYEScheme.sql" />
     <Build Include="Tables\OrganisationAddress.sql" />
-    <Build Include="StoredProcedures\GetOrganisationsByPAYEReference.sql" />
-    <Build Include="StoredProcedures\GetOrganisationsByPAYEReferenceAndAORN.sql" />
-    <Build Include="Views\OrganisationsWithAddressesAndReferences.sql" />
+    <Build Include="StoredProcedures\uSP_GetOrganisationsByPAYEReference.sql" />
+    <Build Include="StoredProcedures\uSP_GetOrganisationsByPAYEReferenceAndAORN.sql" />
+    <Build Include="Views\vw_OrgAornPayeDetails.sql" />
   </ItemGroup>
 </Project>
