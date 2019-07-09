@@ -14,5 +14,5 @@ AddressLine5,
 PostCode
 FROM
 vw_OrgAornPayeDetails
-WHERE PAYERef = @PAYESchemeReference
-AND       AORN = @AORN
+WHERE PAYERef = UPPER(@PAYESchemeReference)
+AND       AORN = UPPER(@AORN)
