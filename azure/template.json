@@ -54,10 +54,17 @@
         },
         "internalApiAspInstances": {
             "type": "int",
-            "defaultValue": 1
+            "defaultValue": 2
         },
         "internalApiCertificateName": {
             "type": "string"
+        },
+        "workerAspSize": {
+            "type": "string"
+        },
+        "workerAspInstances": {
+            "type": "int",
+            "defaultValue": 2
         },
         "keyVaultName": {
             "type": "string"
@@ -74,6 +81,8 @@
         "resourceNamePrefix": "[toLower(concat('das-', parameters('resourceEnvironmentName'),'-', parameters('serviceName')))]",
         "internalApiAppServiceName": "[concat(variables('resourceNamePrefix'), 'intapi-as')]",
         "internalApiAppServicePlanName": "[concat(variables('resourceNamePrefix'), 'intapi-asp')]",
+        "workerFunctionAppName": "[concat(variables('resourceNamePrefix'), 'wkr-fa')]",
+        "workerAppServicePlanName": "[concat(variables('resourceNamePrefix'), 'wkr-asp')]",
         "databaseName": "[concat(variables('resourceNamePrefix'), '-db')]",
         "storageAccountName": "[toLower(concat('das', parameters('resourceEnvironmentName'), 'tprstr'))]"
     },
@@ -246,6 +255,110 @@
             }
         },
         {
+            "apiVersion": "2017-08-01",
+            "name": "worker-app-insights",
+            "type": "Microsoft.Resources/deployments",
+            "properties": {
+                "mode": "Incremental",
+                "templateLink": {
+                    "uri": "[concat(variables('deploymentUrlBase'),'application-insights.json')]",
+                    "contentVersion": "1.0.0.0"
+                },
+                "parameters": {
+                    "appInsightsName": {
+                        "value": "[variables('workerFunctionAppName')]"
+                    },
+                    "attachedService": {
+                        "value": "[variables('workerFunctionAppName')]"
+                    }
+                }
+            },
+            "dependsOn": []
+        },
+        {
+            "apiVersion": "2017-05-10",
+            "name": "worker-app-service-plan",
+            "type": "Microsoft.Resources/deployments",
+            "properties": {
+                "mode": "Incremental",
+                "templateLink": {
+                    "uri": "[concat(variables('deploymentUrlBase'), 'app-service-plan.json')]",
+                    "contentVersion": "1.0.0.0"
+                },
+                "parameters": {
+                    "appServicePlanName": {
+                        "value": "[variables('workerAppServicePlanName')]"
+                    },
+                    "aspSize": {
+                        "value": "[parameters('workerAspSize')]"
+                    },
+                    "aspInstances": {
+                        "value": "[parameters('workerAspInstances')]"
+                    }
+                }
+            }
+        },
+        {
+            "apiVersion": "2017-05-10",
+            "name": "worker-function-app",
+            "type": "Microsoft.Resources/deployments",
+            "properties": {
+                "mode": "Incremental",
+                "templateLink": {
+                    "uri": "[concat(variables('deploymentUrlBase'),'function-app.json')]",
+                    "contentVersion": "1.0.0.0"
+                },
+                "parameters": {
+                    "functionAppName": {
+                        "value": "[variables('workerFunctionAppName')]"
+                    },
+                    "appServicePlanName": {
+                        "value": "[variables('workerAppServicePlanName')]"
+                    },
+                    "appServicePlanResourceGroup": {
+                        "value": "[resourceGroup().name]"
+                    },
+                    "functionAppAppSettings": {
+                        "value": [
+                            {
+                                "name": "ConfigurationStorageConnectionString",
+                                "value": "[parameters('configurationStorageConnectionString')]"
+                            },
+                            {
+                                "name": "EnvironmentName",
+                                "value": "[parameters('environmentName')]"
+                            },
+                            {
+                                "name": "AzureWebJobsStorage",
+                                "value": "[reference('storage-account').outputs.storageConnectionString.value]"
+                            },
+                            {
+                                "name": "AzureWebJobsDashboard",
+                                "value": "[reference('storage-account').outputs.storageConnectionString.value]"
+                            },
+                            {
+                                "name": "APPINSIGHTS_INSTRUMENTATIONKEY",
+                                "value": "[reference('worker-function-app-insights').outputs.InstrumentationKey.value]"
+                            },
+                            {
+                                "name": "FUNCTIONS_EXTENSION_VERSION",
+                                "value": "~2"
+                            },
+                            {
+                                "name": "LoggingRedisConnectionString",
+                                "value": "[parameters('loggingRedisConnectionString')]"
+                            }
+                        ]
+                    }
+                }
+            },
+            "dependsOn": [
+                "worker-app-service-plan",
+                "worker-app-insights",
+                "storage-account"
+            ]
+        },
+        {
             "apiVersion": "2017-05-10",
             "name": "storage-account",
             "type": "Microsoft.Resources/deployments",
@@ -264,7 +377,7 @@
         },
         {
             "apiVersion": "2017-05-10",
-            "name": "[concat('storage-container', parameters('storageAccountContainerArray')[0])]",
+            "name": "[concat('storage-account-container', parameters('storageAccountContainerArray')[0])]",
             "type": "Microsoft.Resources/deployments",
             "condition": "[greater(length(parameters('storageAccountContainerArray')), 0)]",
             "properties": {
@@ -286,7 +399,7 @@
                 }
             },
             "copy": {
-                "name": "storagecontainercopy",
+                "name": "storageaccountcontainercopy",
                 "count": "[length(parameters('storageAccountContainerArray'))]"
             },
             "dependsOn": [
@@ -298,6 +411,10 @@
         "InternalApiAppServiceName": {
             "type": "string",
             "value": "[variables('internalApiAppServiceName')]"
+        },
+        "WorkerFunctionAppName": {
+            "type": "string",
+            "value": "[variables('workerFunctionAppName')]"
         },
         "DatabaseName": {
             "type": "string",
