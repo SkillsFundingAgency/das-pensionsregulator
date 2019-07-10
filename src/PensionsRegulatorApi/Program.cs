@@ -45,6 +45,7 @@ namespace PensionsRegulatorApi
                     });
                     config.AddJsonFile($"appSettings.{environmentName}.json", optional: true, reloadOnChange: false);
                     config.AddEnvironmentVariables();
+                    config.AddUserSecrets<Startup>();
                 })
                 .UseUrls("https://localhost:5051")
                 .UseNLog();
