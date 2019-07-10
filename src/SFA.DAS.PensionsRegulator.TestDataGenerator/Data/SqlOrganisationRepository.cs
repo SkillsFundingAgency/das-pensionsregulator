@@ -18,7 +18,7 @@ namespace SFA.DAS.PensionsRegulator.TestDataGenerator.Data
             _connectionString = connectionString;
         }
 
-        public int CreateSingleOrganisation(string name, int uniqueId)
+        public int CreateSingleOrganisation(string name, long uniqueId)
         {
             using (var connection = new SqlConnection(_connectionString))
             {
@@ -37,7 +37,7 @@ namespace SFA.DAS.PensionsRegulator.TestDataGenerator.Data
             }
         }
 
-        public int CreateSingleOrganisationWithAccountOfficeReferenceNumber(string name, int uniqueId, string accountOfficeReferenceNumber)
+        public int CreateSingleOrganisationWithAccountOfficeReferenceNumber(string name, long uniqueId, string accountOfficeReferenceNumber)
         {
             using (var connection = new SqlConnection(_connectionString))
             {

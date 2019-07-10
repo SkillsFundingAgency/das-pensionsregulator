@@ -60,6 +60,7 @@
     <Folder Include="Tables" />
     <Folder Include="StoredProcedures" />
     <Folder Include="TestData" />
+    <Folder Include="Views" />
   </ItemGroup>
   <ItemGroup>
     <Build Include="Tables\Organisation.sql" />
@@ -67,5 +68,7 @@
     <Build Include="Tables\OrganisationAddress.sql" />
     <Build Include="StoredProcedures\GetOrganisationsByPAYEReference.sql" />
     <None Include="TestData\InsertTestData.sql" />
+    <Build Include="StoredProcedures\GetOrganisationsByPAYEReferenceAndAORN.sql" />
+    <Build Include="Views\OrganisationsWithAddressesAndReferences.sql" />
   </ItemGroup>
 </Project>
