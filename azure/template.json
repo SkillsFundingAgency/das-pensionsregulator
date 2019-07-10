@@ -55,13 +55,6 @@
             "type": "string",
             "defaultValue": ""
         },
-        "internalApiAspSize": {
-            "type": "string"
-        },
-        "internalApiAspInstances": {
-            "type": "int",
-            "defaultValue": 2
-        },
         "internalApiCertificateName": {
             "type": "string"
         },
