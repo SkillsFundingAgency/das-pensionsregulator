@@ -59,11 +59,14 @@
     <Folder Include="Properties" />
     <Folder Include="Tables" />
     <Folder Include="StoredProcedures" />
+    <Folder Include="Views" />
   </ItemGroup>
   <ItemGroup>
     <Build Include="Tables\Organisation.sql" />
     <Build Include="Tables\OrganisationPAYEScheme.sql" />
     <Build Include="Tables\OrganisationAddress.sql" />
     <Build Include="StoredProcedures\GetOrganisationsByPAYEReference.sql" />
+    <Build Include="StoredProcedures\GetOrganisationsByPAYEReferenceAndAORN.sql" />
+    <Build Include="Views\OrganisationsWithAddressesAndReferences.sql" />
   </ItemGroup>
 </Project>
