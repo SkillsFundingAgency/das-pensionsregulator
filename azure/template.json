@@ -59,11 +59,16 @@
             "type": "string"
         },
         "workerAspSize": {
-            "type": "string"
+            "type": "string",
+            "defaultValue": "1"
         },
         "workerAspInstances": {
             "type": "int",
             "defaultValue": 2
+        },
+        "WorkerAspTier": {
+            "type": "string",
+            "defaultValue": "Basic"
         },
         "keyVaultName": {
             "type": "string"
@@ -264,6 +269,9 @@
                     },
                     "aspInstances": {
                         "value": "[parameters('workerAspInstances')]"
+                    },
+                    "nonASETier": {
+                        "value": "[parameters('workerAspTier')]"
                     }
                 }
             }
