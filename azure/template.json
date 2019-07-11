@@ -191,7 +191,8 @@
             },
             "dependsOn": [
                 "internal-api-app-insights",
-                "sql-database"
+                "sql-database",
+                "app-service-certificate"
             ]
         },
         {
