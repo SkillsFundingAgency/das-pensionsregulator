@@ -177,7 +177,7 @@
                         "value": "[parameters('internalApiCustomHostname')]"
                     },
                     "certificateThumbprint": {
-                        "value": "[reference('app-service-certificate').outputs.certificateThumbprint.value]"
+                        "value": "[if(greater(length(parameters('internalApiCertificateName')), 0), reference('app-service-certificate').outputs.certificateThumbprint.value, '')]"
                     },
                     "ipSecurityRestrictions": {
                         "value": "[parameters('appServiceAllowedIPs')]"
