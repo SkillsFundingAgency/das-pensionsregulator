@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using MediatR;
 using PensionsRegulatorApi.Data;
 using PensionsRegulatorApi.Domain;
@@ -9,16 +8,16 @@ namespace PensionsRegulatorApi.Application.Queries
 {
     
 
-    public class GetOrganisationsHandler : RequestHandler<GetOrganisations, IEnumerable<Organisation>>
+    public class GetOrganisationsByPayeRefHandler : RequestHandler<GetOrganisationsByPayeRef, IEnumerable<Organisation>>
     {
         private readonly IOrganisationRepository _repository;
 
-        public GetOrganisationsHandler(IOrganisationRepository repository)
+        public GetOrganisationsByPayeRefHandler(IOrganisationRepository repository)
         {
-            _repository = repository ?? throw new ArgumentNullException(nameof(repository));
+            _repository = repository;
         }
 
-        protected override IEnumerable<Organisation> Handle(GetOrganisations request)
+        protected override IEnumerable<Organisation> Handle(GetOrganisationsByPayeRef request)
         {
             return
                 _repository
