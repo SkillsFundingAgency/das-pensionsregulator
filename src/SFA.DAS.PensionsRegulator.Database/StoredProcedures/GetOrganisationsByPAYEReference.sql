@@ -12,6 +12,6 @@ AddressLine4,
 AddressLine5,
 PostCode
 FROM
-[dbo].[vw_OrgAornPayeDetails]
+[dbo].[OrgAornPayeDetails]
 WHERE PAYERef = @PAYESchemeReference
 GO

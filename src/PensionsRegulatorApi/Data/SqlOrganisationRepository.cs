@@ -78,12 +78,7 @@ namespace PensionsRegulatorApi.Data
                     using (var reader = command.ExecuteReader())
                     {
                         while (reader.Read())
-                            retrievedOrganisations
-                        {
-                                .Add(
-                                    MapDataReaderToOrganisation(
-                                        reader));
-                        }
+                            retrievedOrganisations.Add(MapDataReaderToOrganisation(reader));
                     }
                 }
             }
