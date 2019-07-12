@@ -54,7 +54,7 @@ namespace PensionsRegulatorApi
                 c.IncludeXmlComments(xmlPath);
             });
 
-            services.AddMediatR(typeof(GetOrganisations).Assembly);
+            services.AddMediatR(typeof(GetOrganisationsByPayeRef).Assembly);
             services.AddTransient<IOrganisationRepository, SqlOrganisationRepository>();
             services.Configure<ConnectionStrings>(Configuration.GetSection("ConnectionStrings"));
         }
