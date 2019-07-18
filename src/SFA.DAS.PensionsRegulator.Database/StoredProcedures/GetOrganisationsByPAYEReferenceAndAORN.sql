@@ -1,4 +1,4 @@
-﻿CREATE PROCEDURE [dbo].GetOrganisationsByPAYEReferenceAndAORN
+CREATE PROCEDURE [dbo].[GetOrganisationsByPAYEReferenceAndAORN]
 	@PAYESchemeReference varchar(25),
 	@AORN varchar(25)
 AS
@@ -13,6 +13,7 @@ AddressLine4,
 AddressLine5,
 PostCode
 FROM
-OrganisationsWithAddressesAndReferences
+[dbo].[OrgAornPayeDetails]
 WHERE PAYERef = @PAYESchemeReference
 AND       AORN = @AORN
+GO
