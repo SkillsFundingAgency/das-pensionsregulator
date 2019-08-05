@@ -60,6 +60,8 @@
     <Folder Include="Tables" />
     <Folder Include="StoredProcedures" />
     <Folder Include="Views" />
+    <Folder Include="Schema" />
+    <Folder Include="PostDeployment" />
   </ItemGroup>
   <ItemGroup>
     <Build Include="Tables\Organisation.sql" />
@@ -70,5 +72,23 @@
     <Build Include="Views\OrgAornPayeDetails.sql" />
     <Build Include="StoredProcedures\GetOrganisationsByPAYEReferenceAndAORN.sql" />
     <Build Include="Views\OrganisationsWithAddressesAndReferences.sql" />
+    <Build Include="Tables\Staging_TPR.sql" />
+    <Build Include="Tables\Staging_TPR_Rejected.sql" />
+    <Build Include="Tables\TPR_StagingHistory.sql" />
+    <Build Include="Tables\SourceFileList.sql" />
+    <Build Include="Tables\Data_Validation_Rules.sql" />
+    <Build Include="Tables\Log_Error_Details.sql" />
+    <Build Include="Tables\Log_Execution_Results.sql" />
+    <Build Include="Tables\Log_Record_Counts.sql" />
+    <Build Include="Tables\Log_RunId.sql" />
+    <Build Include="Views\vw_LoadStatus.sql" />
+    <Build Include="StoredProcedures\uSP_GenerateRunId.sql" />
+    <Build Include="StoredProcedures\uSP_ImportDataFromFile.sql" />
+    <Build Include="StoredProcedures\uSP_LoadTargetTables.sql" />
+    <Build Include="StoredProcedures\uSP_LoadTPRFile.sql" />
+    <Build Include="StoredProcedures\uSP_RunValidationChecks.sql" />
+    <Build Include="StoredProcedures\uSP_UpdateHistoryTable.sql" />
+    <Build Include="Schema\Mgmt.sql" />
+    <PostDeploy Include="PostDeployment\PostDeploy.sql" />
   </ItemGroup>
 </Project>
