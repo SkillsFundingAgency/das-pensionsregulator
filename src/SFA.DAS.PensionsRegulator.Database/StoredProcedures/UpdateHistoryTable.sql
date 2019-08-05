@@ -1,4 +1,4 @@
-﻿CREATE PROCEDURE [dbo].[uSP_UpdateHistoryTable]
+﻿CREATE PROCEDURE [dbo].[UpdateHistoryTable]
 (@RetentionDate Date)
 AS
 -- ====================================================================================
@@ -31,12 +31,12 @@ select @DateStamp =  CAST(CAST(YEAR(GETDATE()) AS VARCHAR)+RIGHT('0' + RTRIM(cas
   SELECT 
         @Run_Id
 	   ,'Step-5'
-	   ,'uSP_UpdateHistoryTable'
+	   ,'UpdateHistoryTable'
 	   ,getdate()
 	   ,0
 
    SELECT @LogID=MAX(LogId) FROM Mgmt.Log_Execution_Results 
-   WHERE StoredProcedureName='uSP_UpdateHistoryTable'
+   WHERE StoredProcedureName='UpdateHistoryTable'
      AND RunId=@Run_ID
 
 
@@ -267,7 +267,7 @@ BEGIN CATCH
 	    ERROR_STATE(),
 	    ERROR_SEVERITY(),
 	    ERROR_LINE(),
-	    'uSP_UpdateHistoryTable' AS ErrorProcedure,
+	    'UpdateHistoryTable' AS ErrorProcedure,
 	    ERROR_MESSAGE(),
 	    GETDATE(),
 		@Run_Id as RunId; 

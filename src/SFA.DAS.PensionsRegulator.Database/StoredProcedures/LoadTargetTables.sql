@@ -1,4 +1,4 @@
-﻿CREATE PROCEDURE [dbo].[uSP_LoadTargetTables]
+﻿CREATE PROCEDURE [dbo].[LoadTargetTables]
 AS
 -- ====================================================================================
 -- Author:      Himabindu Uddaraju
@@ -29,12 +29,12 @@ select @DateStamp =  CAST(CAST(YEAR(GETDATE()) AS VARCHAR)+RIGHT('0' + RTRIM(cas
   SELECT 
         @Run_Id
 	   ,'Step-4'
-	   ,'uSP_LoadTargetTables'
+	   ,'LoadTargetTables'
 	   ,getdate()
 	   ,0
 
   SELECT @LogID=MAX(LogId) FROM Mgmt.Log_Execution_Results 
-   WHERE StoredProcedureName='uSP_LoadTargetTables'
+   WHERE StoredProcedureName='LoadTargetTables'
      AND RunId=@Run_ID
 
   /* Insert Organisation Table */
@@ -390,7 +390,7 @@ BEGIN CATCH
 	    ERROR_STATE(),
 	    ERROR_SEVERITY(),
 	    ERROR_LINE(),
-	    'uSP_LoadTargetTables' AS ErrorProcedure,
+	    'LoadTargetTables' AS ErrorProcedure,
 	    ERROR_MESSAGE(),
 	    GETDATE(),
 		@Run_Id as RunId; 

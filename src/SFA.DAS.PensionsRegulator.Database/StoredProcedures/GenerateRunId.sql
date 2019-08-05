@@ -1,4 +1,4 @@
-﻿CREATE PROCEDURE [dbo].[uSP_GenerateRunId]
+﻿CREATE PROCEDURE [dbo].[GenerateRunId]
 AS
 -- =========================================================================
 -- Author:      Himabindu Uddaraju
@@ -36,11 +36,11 @@ select @DateStamp =  CAST(CAST(YEAR(GETDATE()) AS VARCHAR)+RIGHT('0' + RTRIM(cas
   SELECT 
         @Run_Id
 	   ,'Step-1'
-	   ,'uSP_GenerateRunId'
+	   ,'GenerateRunId'
 	   ,getdate()
 	   ,getdate()
 	   ,1
-	   ,'Pending- Go To Step2 uSP_ImportDataFromFile'
+	   ,'Pending- Go To Step2 ImportDataFromFile'
 
  
 /* Return Generated Run Id as Output*/
@@ -57,7 +57,7 @@ BEGIN CATCH
 	    ERROR_STATE(),
 	    ERROR_SEVERITY(),
 	    ERROR_LINE(),
-	    'dbo.uSP_GenerateRunId' AS ErrorProcedure,
+	    'dbo.GenerateRunId' AS ErrorProcedure,
 	    ERROR_MESSAGE(),
 	    GETDATE()
 		;

@@ -1,4 +1,4 @@
-﻿CREATE PROCEDURE [dbo].[uSP_ImportDataFromFile]
+﻿CREATE PROCEDURE [dbo].[ImportDataFromFile]
 (@Run_Id int,@DataSource varchar(255))
 AS
 -- =========================================================================
@@ -27,13 +27,13 @@ select @DateStamp =  CAST(CAST(YEAR(GETDATE()) AS VARCHAR)+RIGHT('0' + RTRIM(cas
   SELECT 
         @Run_Id
 	   ,'Step-2'
-	   ,'uSP_ImportDataFromFile'
+	   ,'ImportDataFromFile'
 	   ,getdate()
 	   ,0
 
   
   SELECT @LogID=MAX(LogId) FROM Mgmt.Log_Execution_Results 
-   WHERE StoredProcedureName='uSP_ImportDataFromFile'
+   WHERE StoredProcedureName='ImportDataFromFile'
      AND RunId=@Run_ID
 
 
@@ -41,7 +41,9 @@ select @DateStamp =  CAST(CAST(YEAR(GETDATE()) AS VARCHAR)+RIGHT('0' + RTRIM(cas
 
   DECLARE @FormatFile varchar(255)
 
-  SET @FormatFile='C:\Users\huddaraju\Documents\Hima_Docs\TPR_Files\TPRSchema.fmt'
+  --SET @FormatFile='C:\Users\huddaraju\Documents\Hima_Docs\TPR_Files\TPRSchema.fmt'
+
+  SET @FormatFile='TPRFormatFile.fmt'
 
   /* Truncate Staging Table */
 
@@ -241,10 +243,10 @@ SET @ExecuteSQL2='
 	     ,''Staging_TPR''
 		 ,(SELECT COUNT(*) FROM OPENROWSET (
 		                                     BULK '''+@FileName+'''
-		                                --  ,DATA_SOURCE='''+@DataSource+'''
+		                                    ,DATA_SOURCE='''+@DataSource+'''
                                             ,FIRSTROW=2
 					                        ,FORMATFILE='''+@FormatFile+'''
-				                         -- ,FORMATFILE_DATA_SOURCE='''+@DataSource+'''
+				                            ,FORMATFILE_DATA_SOURCE='''+@DataSource+'''
 		                                   ) AS tpr
            )
 		 ,(SELECT COUNT(*) FROM dbo.Staging_TPR WHERE SourceFileName='''+@FileName+''')
@@ -277,7 +279,7 @@ SET @ExecuteSQL2='
 UPDATE Mgmt.Log_Execution_Results
    SET Execution_Status=1
       ,EndDateTime=getdate()
-	  ,FullJobStatus='Pending- Go To Step3 uSP_LoadTargetTables'
+	  ,FullJobStatus='Pending- Go To Step3 LoadTargetTables'
  WHERE LogId=@LogID
    AND RunID=@Run_Id
 
@@ -305,7 +307,7 @@ BEGIN CATCH
 	    ERROR_STATE(),
 	    ERROR_SEVERITY(),
 	    ERROR_LINE(),
-	    'uSP_ImportDataFromFile' AS ErrorProcedure,
+	    'ImportDataFromFile' AS ErrorProcedure,
 	    ERROR_MESSAGE(),
 	    GETDATE(),
 		@Run_Id as RunId; 

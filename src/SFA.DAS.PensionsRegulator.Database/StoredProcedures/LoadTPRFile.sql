@@ -1,4 +1,4 @@
-﻿CREATE PROCEDURE [dbo].[uSP_LoadTPRFile]
+﻿CREATE PROCEDURE [dbo].[LoadTPRFile]
 
 AS
 -- ==========================================================
@@ -20,21 +20,21 @@ SET @DataSource='dastprStorConnection'
 
 /* Generate Run Id */
 
-EXEC @RunId= dbo.uSP_GenerateRunId
+EXEC @RunId= dbo.GenerateRunId
 
 
 
 /* Import Data to Staging from File */
 
-EXEC [dbo].[uSP_ImportDataFromFile] @RunId,@DataSource
+EXEC [dbo].[ImportDataFromFile] @RunId,@DataSource
 
 
 
 /* Run Validation Checks if Import File is Successful */
 
-IF EXISTS (SELECT * FROM Mgmt.Log_Execution_Results where StoredProcedureName='uSP_ImportDataFromFile' and Execution_Status=1 and RunId=@RunId)
+IF EXISTS (SELECT * FROM Mgmt.Log_Execution_Results where StoredProcedureName='ImportDataFromFile' and Execution_Status=1 and RunId=@RunId)
 BEGIN 
-EXEC dbo.uSP_RunValidationChecks
+EXEC dbo.RunValidationChecks
 END
 ELSE RAISERROR( 'Import Data From File Failed -Check Log Table For Errors',1,1)
 
@@ -42,9 +42,9 @@ ELSE RAISERROR( 'Import Data From File Failed -Check Log Table For Errors',1,1)
 
 /* Import Valid Records to Target Tables */
 
-IF EXISTS (SELECT * FROM Mgmt.Log_Execution_Results where StoredProcedureName='usp_RunValidationChecks' and Execution_Status=1 and RunId=@RunId) 
+IF EXISTS (SELECT * FROM Mgmt.Log_Execution_Results where StoredProcedureName='RunValidationChecks' and Execution_Status=1 and RunId=@RunId) 
 BEGIN
-EXEC dbo.uSP_LoadTargetTables
+EXEC dbo.LoadTargetTables
 END
 ELSE RAISERROR( 'Validation Checks Failed-Check Log Table For Errors',1,1)
 
@@ -52,9 +52,9 @@ ELSE RAISERROR( 'Validation Checks Failed-Check Log Table For Errors',1,1)
 
 /* Update History Table with Processed File */
 
-IF EXISTS (SELECT * FROM Mgmt.Log_Execution_Results where StoredProcedureName='usp_LoadTargetTables' and Execution_Status=1 and RunId=@RunId)
+IF EXISTS (SELECT * FROM Mgmt.Log_Execution_Results where StoredProcedureName='LoadTargetTables' and Execution_Status=1 and RunId=@RunId)
 BEGIN
-EXEC dbo.uSP_UpdateHistoryTable @RetentionDate
+EXEC dbo.UpdateHistoryTable @RetentionDate
 END
 ELSE RAISERROR( 'Loading Target Tables Failed-Check Log Table For Errors',1,1)
 
@@ -63,7 +63,7 @@ ELSE RAISERROR( 'Loading Target Tables Failed-Check Log Table For Errors',1,1)
 
 /* Raise Error if Updating History Table Failed */
 
-IF EXISTS (SELECT * FROM Mgmt.Log_Execution_Results where StoredProcedureName='usp_UpdateHistoryTable' and Execution_Status<>1 and RunId=@RunId)
+IF EXISTS (SELECT * FROM Mgmt.Log_Execution_Results where StoredProcedureName='UpdateHistoryTable' and Execution_Status<>1 and RunId=@RunId)
 BEGIN
 RAISERROR( 'Updating History Table Failed-Check Log Table For Errors',1,1)
 END

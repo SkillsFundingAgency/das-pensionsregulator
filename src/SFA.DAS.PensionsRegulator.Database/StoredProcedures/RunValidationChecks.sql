@@ -1,4 +1,4 @@
-﻿CREATE PROCEDURE [dbo].[uSP_RunValidationChecks]
+﻿CREATE PROCEDURE [dbo].[RunValidationChecks]
 AS
 -- ====================================================================================
 -- Author:      Himabindu Uddaraju
@@ -29,7 +29,7 @@ select @DateStamp =  CAST(CAST(YEAR(GETDATE()) AS VARCHAR)+RIGHT('0' + RTRIM(cas
   SELECT 
         @Run_Id
 	   ,'Step-3'
-	   ,'uSP_RunValidationChecks'
+	   ,'RunValidationChecks'
 	   ,getdate()
 	   ,0
 
@@ -376,7 +376,7 @@ BEGIN CATCH
 	    ERROR_STATE(),
 	    ERROR_SEVERITY(),
 	    ERROR_LINE(),
-	    'uSP_RunValidationChecks' AS ErrorProcedure,
+	    'RunValidationChecks' AS ErrorProcedure,
 	    ERROR_MESSAGE(),
 	    GETDATE(),
 		@Run_Id as RunId; 

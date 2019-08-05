@@ -1,4 +1,4 @@
-﻿CREATE VIEW [Mgmt].[vw_LoadStatus]
+﻿CREATE VIEW [Mgmt].[LoadStatus]
 as
 SELECT LR.Run_Id
 	  ,LER.LogId
