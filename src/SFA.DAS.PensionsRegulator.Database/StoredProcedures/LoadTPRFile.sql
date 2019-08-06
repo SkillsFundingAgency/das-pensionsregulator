@@ -34,7 +34,7 @@ EXEC [dbo].[ImportDataFromFile] @RunId,@DataSource
 
 IF EXISTS (SELECT * FROM Mgmt.Log_Execution_Results where StoredProcedureName='ImportDataFromFile' and Execution_Status=1 and RunId=@RunId)
 BEGIN 
-EXEC dbo.RunValidationChecks
+EXEC dbo.RunValidationChecks @RunId
 END
 ELSE RAISERROR( 'Import Data From File Failed -Check Log Table For Errors',1,1)
 
@@ -44,7 +44,7 @@ ELSE RAISERROR( 'Import Data From File Failed -Check Log Table For Errors',1,1)
 
 IF EXISTS (SELECT * FROM Mgmt.Log_Execution_Results where StoredProcedureName='RunValidationChecks' and Execution_Status=1 and RunId=@RunId) 
 BEGIN
-EXEC dbo.LoadTargetTables
+EXEC dbo.LoadTargetTables @RunId
 END
 ELSE RAISERROR( 'Validation Checks Failed-Check Log Table For Errors',1,1)
 
@@ -54,7 +54,7 @@ ELSE RAISERROR( 'Validation Checks Failed-Check Log Table For Errors',1,1)
 
 IF EXISTS (SELECT * FROM Mgmt.Log_Execution_Results where StoredProcedureName='LoadTargetTables' and Execution_Status=1 and RunId=@RunId)
 BEGIN
-EXEC dbo.UpdateHistoryTable @RetentionDate
+EXEC dbo.UpdateHistoryTable @RunId,@RetentionDate
 END
 ELSE RAISERROR( 'Loading Target Tables Failed-Check Log Table For Errors',1,1)
 

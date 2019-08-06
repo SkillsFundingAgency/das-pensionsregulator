@@ -1,4 +1,5 @@
 ﻿CREATE PROCEDURE [dbo].[LoadTargetTables]
+(@Run_Id bigint)
 AS
 -- ====================================================================================
 -- Author:      Himabindu Uddaraju
@@ -10,9 +11,9 @@ BEGIN TRY
 DECLARE @vSQL NVARCHAR(MAX)
 DECLARE @DateStamp VARCHAR(10)
 DECLARE @LogID int
-DECLARE @Run_ID int
+--DECLARE @Run_ID int
 
-SELECT @Run_ID= RunId FROM dbo.Staging_TPR
+--SELECT @Run_ID= RunId FROM dbo.Staging_TPR
 
 select @DateStamp =  CAST(CAST(YEAR(GETDATE()) AS VARCHAR)+RIGHT('0' + RTRIM(cast(MONTH(getdate()) as varchar)), 2) +RIGHT('0' +RTRIM(CAST(DAY(GETDATE()) AS VARCHAR)),2) as int)
 
@@ -42,6 +43,8 @@ select @DateStamp =  CAST(CAST(YEAR(GETDATE()) AS VARCHAR)+RIGHT('0' + RTRIM(cas
   --set xact_abort on
 
   IF ((SELECT COUNT(*) FROM dbo.Staging_TPR)<>0)
+
+  BEGIN
 
   BEGIN TRANSACTION
 
@@ -319,6 +322,17 @@ select @DateStamp =  CAST(CAST(YEAR(GETDATE()) AS VARCHAR)+RIGHT('0' + RTRIM(cas
 	   ON stpr.SourceSK=Org.SourceSK
 	  AND stpr.TPRUniqueID=Org.TPRUniqueId
     WHERE stpr.IsValid=1
+
+/* Log Record Counts */
+
+   INSERT INTO Mgmt.Log_Record_Counts
+   (LogId,RunId,SourceTableName,TargetTableName,SourceRecordCount,TargetRecordCount)
+   SELECT @LogID
+         ,@Run_Id
+         ,'Staging_TPR'
+	     ,'OrganisationPAYEScheme'
+	     ,(SELECT COUNT(*) FROM dbo.Staging_TPR WHERE RunID=@Run_ID)
+         ,(SELECT COUNT(*) FROM dbo.OrganisationPAYEScheme WHERE RunId=@Run_ID)	
   
 /* Recreate Indexes after finishing Load */
 
@@ -335,7 +349,7 @@ CREATE NONCLUSTERED  INDEX NCI_Organisation_SK ON dbo.OrganisationPAYEScheme(Org
 
 COMMIT TRANSACTION 
 
-
+END
 /* Update Log Execution Results as Success if the query ran succesfully*/
 
 UPDATE Mgmt.Log_Execution_Results
@@ -345,15 +359,6 @@ UPDATE Mgmt.Log_Execution_Results
  WHERE LogId=@LogID
    AND RunID=@Run_Id
 
-/* Log Record Counts */
-INSERT INTO Mgmt.Log_Record_Counts
-(LogId,RunId,SourceTableName,TargetTableName,SourceRecordCount,TargetRecordCount)
-SELECT @LogID
-      ,@Run_Id
-      ,'Staging_TPR'
-	  ,'OrganisationPAYEScheme'
-	  ,(SELECT COUNT(*) FROM dbo.Staging_TPR WHERE RunID=@Run_ID)
-      ,(SELECT COUNT(*) FROM dbo.OrganisationPAYEScheme WHERE RunId=@Run_ID)	
 
 /* Update Source File List as Processed */
 

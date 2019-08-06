@@ -1,5 +1,5 @@
 ﻿CREATE PROCEDURE [dbo].[ImportDataFromFile]
-(@Run_Id int,@DataSource varchar(255))
+(@Run_Id bigint,@DataSource varchar(255))
 AS
 -- =========================================================================
 -- Author:      Himabindu Uddaraju

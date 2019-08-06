@@ -1,5 +1,5 @@
 ﻿CREATE PROCEDURE [dbo].[UpdateHistoryTable]
-(@RetentionDate Date)
+(@Run_Id bigint,@RetentionDate Date)
 AS
 -- ====================================================================================
 -- Author:      Himabindu Uddaraju
@@ -12,9 +12,9 @@ BEGIN TRY
 DECLARE @vSQL NVARCHAR(MAX)
 DECLARE @DateStamp VARCHAR(10)
 DECLARE @LogID int
-DECLARE @Run_ID int
+--DECLARE @Run_ID int
 
-SELECT @Run_ID= RunId FROM dbo.Staging_TPR
+--SELECT @Run_ID= RunId FROM dbo.Staging_TPR
 
 select @DateStamp =  CAST(CAST(YEAR(GETDATE()) AS VARCHAR)+RIGHT('0' + RTRIM(cast(MONTH(getdate()) as varchar)), 2) +RIGHT('0' +RTRIM(CAST(DAY(GETDATE()) AS VARCHAR)),2) as int)
 
