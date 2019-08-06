@@ -341,7 +341,7 @@ COMMIT TRANSACTION
 UPDATE Mgmt.Log_Execution_Results
    SET Execution_Status=1
       ,EndDateTime=getdate()
-	  ,FullJobStatus='Pending- Go To Step5 uSP_UpdateHistoryTable'
+	  ,FullJobStatus='Pending- Go To Step5 UpdateHistoryTable'
  WHERE LogId=@LogID
    AND RunID=@Run_Id
 

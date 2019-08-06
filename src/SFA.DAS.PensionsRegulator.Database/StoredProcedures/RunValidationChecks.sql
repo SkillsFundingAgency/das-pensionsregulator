@@ -335,7 +335,7 @@ print 'DATE TESTS COMPLETE'
 UPDATE Mgmt.Log_Execution_Results
    SET Execution_Status=1
       ,EndDateTime=getdate()
-	  ,FullJobStatus='Pending- Go To Step4 uSP_LoadTargetTables'
+	  ,FullJobStatus='Pending- Go To Step4 LoadTargetTables'
  WHERE LogId=@LogID
    AND RunID=@Run_Id
 
