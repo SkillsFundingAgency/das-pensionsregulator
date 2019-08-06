@@ -30,6 +30,7 @@ namespace PensionsRegulatorApi
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddApplicationInsightsTelemetry();
             services.AddADAuthentication(Configuration);
             services.AddMvc(options => {
                 if (!Environment.IsDevelopment())
