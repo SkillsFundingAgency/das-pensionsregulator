@@ -328,6 +328,7 @@ print 'DATE TESTS COMPLETE'
 	 FROM dbo.Staging_TPR STPR
 	 JOIN dbo.Staging_TPR_Rejected STPRR
 	   ON STPR.SourceSK=STPRR.SourceSK
+	  AND STPR.RunID=STPRR.RunId
 
 
 
