@@ -66,7 +66,7 @@
 	[SourceFileName] [varchar](256) NULL,
 	[RunID] [int] NULL,
 	[IsValid] [bit] DEFAULT(1) NULL,
-	[InvalidReason] [varchar](256) NULL,
+	[InvalidReason] [varchar](512) NULL,
 	[RecordCreatedDate] [datetime2](7) DEFAULT(GETDATE()) NULL,
 	CONSTRAINT [PK_Staging_SourceSK] PRIMARY KEY CLUSTERED (SourceSK ASC)
 )

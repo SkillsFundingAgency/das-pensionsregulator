@@ -66,6 +66,6 @@
 	[SourceFileName] [varchar](256) NULL,
 	[RunID] [int] NULL,
 	[IsValid] [bit] NULL,
-	[InvalidReason] [varchar](256) NULL,
+	[InvalidReason] [varchar](512) NULL,
 	[RecordCreatedDate] [datetime2](7) DEFAULT(GETDATE()) NULL
 )
