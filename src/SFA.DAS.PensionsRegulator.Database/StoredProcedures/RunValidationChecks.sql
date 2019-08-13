@@ -188,20 +188,22 @@ print 'DECIMAL TESTS COMPLETE'
 			SELECT DVR.ColumnName
 				,DVR.ColumnType
 				, DVR.ColumnLength
+				, DVR.ColumnMinValue
+				, DVR.ColumnMaxValue
 				, 'IsNumeric Test'
-				, 'Numeric type field not Numeric.' AS ErrorMessage
+				, 'Numeric type field not Numeric Or Value is out of Range' AS ErrorMessage
 			FROM Mgmt.Data_Validation_Rules AS DVR
 			WHERE   DVR.ColumnType IN ('BIT', 'BIGINT','Long','Int','DECIMAL','SMALLINT', 'TINYINT')
-			 AND RunChecks=1 and RunNumericChecks=1 and ColumnNullable=1
+			 AND RunChecks=1 and RunNumericChecks=1 
 
 			OPEN IsNumericTestConfig
 			FETCH NEXT FROM IsNumericTestConfig INTO 
-			@ColumnName, @ColumnType, @ColumnLength, @TestName, @ErrorMessage
+			@ColumnName, @ColumnType, @ColumnLength,@ColumnMinValue,@ColumnMaxValue, @TestName, @ErrorMessage
 
 			WHILE @@FETCH_STATUS = 0
 			BEGIN
 				SET @SQL='
-				INSERT INTO dbo.Staging_TPR_Rejected
+			   INSERT INTO dbo.Staging_TPR_Rejected
 					  ( SourceSK,RunId,TPRUniqueID, ColumnName, TestName, ErrorMessage
 					  ) 
 			   SELECT SourceSK
@@ -211,9 +213,9 @@ print 'DECIMAL TESTS COMPLETE'
 				    , '''+ @TestName + ''' AS TestName
 					, '''+ @ErrorMessage +' Actual: ''+['+@ColumnName+'] AS ErrorMessage
      			 FROM dbo.Staging_TPR
-				WHERE ISNUMERIC(COALESCE(LTRIM(RTRIM(REPLACE('+ @ColumnName + ',''NULL'',''0''))),''0'')) = 0 
-				  AND LEN('+ @ColumnName + ') > 0
-		  
+				WHERE (ISNUMERIC(COALESCE(LTRIM(RTRIM(REPLACE('+ @ColumnName + ',''NULL'',''0''))),''0'')) = 0 )
+				  or (len('+ @ColumnName + ') > len('+@ColumnMaxValue+'))
+ 
 					   '
 				
 				EXEC (@SQL)
@@ -235,7 +237,7 @@ print 'NUMERIC TESTS COMPLETE'
 				,DVR.ColumnType
 				, DVR.ColumnLength
 				, 'Number Not Null Test'
-				, 'Not Null Fields contains Nulls.' AS ErrorMessage
+				, 'Not Numeric or Contains Null Or Value Out of Range.' AS ErrorMessage
 			FROM Mgmt.Data_Validation_Rules AS DVR
 			WHERE   DVR.ColumnType IN ('BIT', 'BIGINT','Long','Int','DECIMAL','SMALLINT', 'TINYINT')
 			 AND RunChecks=1 and RunNumericChecks=1 and ColumnNullable=0
@@ -258,7 +260,8 @@ print 'NUMERIC TESTS COMPLETE'
 				    , '''+ @TestName + ''' AS TestName
 					, '''+ @ErrorMessage +' Actual: ''+['+@ColumnName+'] AS ErrorMessage
      			 FROM dbo.Staging_TPR
-				WHERE LTRIM(RTRIM(REPLACE('+ @ColumnName + ',''NULL'',0))) IS NULL 
+				WHERE (ISNUMERIC(COALESCE(LTRIM(RTRIM(REPLACE('+ @ColumnName + ',''NULL'',''0''))),''0'')) = 0 )
+				   OR (LTRIM(RTRIM(REPLACE('+ @ColumnName + ',''NULL'',0))) IS NULL )
  
 					   '
 				
@@ -395,7 +398,3 @@ UPDATE Mgmt.Log_Execution_Results
    AND RunID=@Run_Id
 
 END CATCH
-
-
-
-
