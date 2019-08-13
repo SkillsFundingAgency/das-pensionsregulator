@@ -15,12 +15,12 @@ SELECT
 , PAYESchemeRef as PayeRef
 , AORN as AORN
 , UniqueID as TPRUniqueKey
-, AddressLine1 as AddressLine1
-, AddressLine2 as AddressLine2
-, AddressLine3 as AddressLine3
-, AddressLine4 as AddressLine4
-, AddressLine5 as AddressLine5
-, PostCode as PostCode
+, LTRIM(RTRIM(AddressLine1)) as AddressLine1
+, LTRIM(RTRIM(AddressLine2)) as AddressLine2
+, LTRIM(RTRIM(AddressLine3)) as AddressLine3
+, LTRIM(RTRIM(AddressLine4)) as AddressLine4
+, LTRIM(RTRIM(AddressLine5)) as AddressLine5
+, LTRIM(RTRIM(PostCode)) as PostCode
 FROM [dbo].Stg_Tpr_1218
 GO
 
