@@ -71,7 +71,7 @@ select @DateStamp =  CAST(CAST(YEAR(GETDATE()) AS VARCHAR)+RIGHT('0' + RTRIM(cas
    WHERE Cast(FileUploadedDateTime as Date)
  BETWEEN Cast(DATEADD(DAY,-3,GETDATE()) as Date)
      and Cast(GETDATE() as Date)
-	-- and ISNULL(LoadedToStaging,0)<>1
+	 and ISNULL(LoadedToStaging,0)<>1
 	 and ISNULL(FileProcessed,0)<>1
 	 and SFL.FileName like '%.txt%'
 

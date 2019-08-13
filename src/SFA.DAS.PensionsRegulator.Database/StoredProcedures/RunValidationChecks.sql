@@ -71,11 +71,10 @@ select @DateStamp =  CAST(CAST(YEAR(GETDATE()) AS VARCHAR)+RIGHT('0' + RTRIM(cas
 			BEGIN
 				   SET @SQL='
 				   INSERT INTO dbo.Staging_TPR_Rejected
-				  ( SourceSK,RunId,TPRUniqueID, ColumnName, TestName, ErrorMessage ) 
+				  ( SourceSK,RunId, ColumnName, TestName, ErrorMessage ) 
 				   SELECT SourceSK,
 				          RunId,
-						  TPRUniqueID,
-						'''+ @ColumnName + ''' AS ColumnName, 
+     					'''+ @ColumnName + ''' AS ColumnName, 
 						'''+ @TestName + ''' AS TestName,
 						'''+ @ErrorMessage +' Actual: '' + CAST(LEN('+ @ColumnName + ')AS VARCHAR(255))+ '' Against spec size: '+CAST(@columnLength AS VARCHAR(255)) + ''' AS ErrorMessage
 					FROM dbo.Staging_TPR
@@ -114,10 +113,9 @@ print 'STRING TESTS COMPLETE'
 			BEGIN
 				   SET @SQL='
 				   INSERT INTO dbo.Staging_TPR_Rejected
-				  ( SourceSK,RunId,TPRUniqueID, ColumnName, TestName, ErrorMessage ) 
+				  ( SourceSK,RunId, ColumnName, TestName, ErrorMessage ) 
 				   SELECT SourceSK,
 				          RunId,
-						  TPRUniqueID,
 						'''+ @ColumnName + ''' AS ColumnName, 
 						'''+ @TestName + ''' AS TestName,
 						'''+ @ErrorMessage +''' AS ErrorMessage
@@ -156,10 +154,9 @@ print 'STRING not null tests COMPLETE'
 			BEGIN
 				SET @SQL='
 				INSERT INTO dbo.Staging_TPR_Rejected
-				 ( SourceSK,RunId,TPRUniqueID, ColumnName, TestName, ErrorMessage ) 
+				 ( SourceSK,RunId,ColumnName, TestName, ErrorMessage ) 
 				SELECT SourceSK,
 				       RunID,
-					   TPRUniqueID,
 					'''+ @ColumnName + ''' AS ColumnName, 
 					'''+ @TestName + ''' AS TestName,
 					'''+ @ErrorMessage +' Actual: ''+ CAST('+ @ColumnName +' AS VARCHAR(255)) +'' Expected Decimal Places: '+ CAST(@ColumnPrecision  AS VARCHAR(255)) +''' AS ErrorMessage, 
@@ -204,11 +201,10 @@ print 'DECIMAL TESTS COMPLETE'
 			BEGIN
 				SET @SQL='
 			   INSERT INTO dbo.Staging_TPR_Rejected
-					  ( SourceSK,RunId,TPRUniqueID, ColumnName, TestName, ErrorMessage
+					  ( SourceSK,RunId,ColumnName, TestName, ErrorMessage
 					  ) 
 			   SELECT SourceSK
 			        , RunId
-					, TPRUniqueID
 					,'''+ @ColumnName + ''' AS ColumnName
 				    , '''+ @TestName + ''' AS TestName
 					, '''+ @ErrorMessage +' Actual: ''+['+@ColumnName+'] AS ErrorMessage
@@ -221,7 +217,7 @@ print 'DECIMAL TESTS COMPLETE'
 				EXEC (@SQL)
 
 				FETCH NEXT FROM IsNumericTestConfig INTO 
-				@ColumnName, @ColumnType, @ColumnLength, @TestName, @ErrorMessage
+				@ColumnName, @ColumnType, @ColumnLength,@ColumnMinValue,@ColumnMaxValue, @TestName, @ErrorMessage
 			END
 
 			CLOSE IsNumericTestConfig
@@ -251,11 +247,10 @@ print 'NUMERIC TESTS COMPLETE'
 			BEGIN
 				SET @SQL='
 				INSERT INTO dbo.Staging_TPR_Rejected
-					  ( SourceSK,RunId,TPRUniqueID, ColumnName, TestName, ErrorMessage
+					  ( SourceSK,RunId, ColumnName, TestName, ErrorMessage
 					  ) 
 			   SELECT SourceSK
 			        , RunId
-					, TPRUniqueID
 					,'''+ @ColumnName + ''' AS ColumnName
 				    , '''+ @TestName + ''' AS TestName
 					, '''+ @ErrorMessage +' Actual: ''+['+@ColumnName+'] AS ErrorMessage
@@ -299,11 +294,10 @@ print 'NUMERIC NOT  NULL TESTS COMPLETE'
 			BEGIN
 				SET @SQL='
 				INSERT INTO dbo.Staging_TPR_Rejected
-					  ( SourceSK,RunId,TPRUniqueID, ColumnName, TestName, ErrorMessage
+					  ( SourceSK,RunId, ColumnName, TestName, ErrorMessage
 					  ) 
 			   SELECT SourceSK
 			        , RunId
-					, TPRUniqueID
 					,'''+ @ColumnName + ''' AS ColumnName
 				    , '''+ @TestName + ''' AS TestName
 					, '''+ @ErrorMessage +' Actual: ''+['+@ColumnName+'] AS ErrorMessage
