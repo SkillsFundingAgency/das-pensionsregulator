@@ -7,17 +7,16 @@ IF EXISTS (SELECT * FROM INFORMATION_SCHEMA.TABLES
 DROP TABLE dbo.OrganisationPAYEScheme
 
 IF EXISTS (SELECT * FROM INFORMATION_SCHEMA.TABLES
-            WHERE TABLE_NAME = N'Organisation'
-		      AND TABLE_SCHEMA=N'dbo'
-	      )
-DROP TABLE dbo.Organisation
-
-
-IF EXISTS (SELECT * FROM INFORMATION_SCHEMA.TABLES
             WHERE TABLE_NAME = N'OrganisationAddress'
 		      AND TABLE_SCHEMA=N'dbo'
 	      )
 DROP TABLE dbo.OrganisationAddress
+
+IF EXISTS (SELECT * FROM INFORMATION_SCHEMA.TABLES
+            WHERE TABLE_NAME = N'Organisation'
+		      AND TABLE_SCHEMA=N'dbo'
+	      )
+DROP TABLE dbo.Organisation
 
 IF EXISTS (select * from INFORMATION_SCHEMA.ROUTINES
             where ROUTINE_NAME='uSP_LoadTPRFile'
