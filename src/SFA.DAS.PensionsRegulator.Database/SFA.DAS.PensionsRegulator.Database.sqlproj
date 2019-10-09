@@ -75,6 +75,6 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="PreDeployment\PreDeployment.sql" />
-    <None Include="PostDeployment\PostDeployment.sql" />
+    <PostDeploy Include="PostDeployment\PostDeployment.sql" />
   </ItemGroup>
 </Project>
