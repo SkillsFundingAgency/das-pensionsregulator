@@ -1,6 +1,6 @@
 ﻿/* Staging Table for Tpr */
 
-CREATE TABLE [dbo].[Stg_Tpr_1218](
+CREATE TABLE [dbo].[Stg_Tpr_1218_2](
 	[Record Type1] [varchar](max) NULL,
 	[UniqueID] [bigint] NULL,
 	[DistrictNumber] [smallint] NULL,
@@ -72,15 +72,7 @@ CREATE TABLE [dbo].[Stg_Tpr_1218](
 	[TaxYear] [varchar](50) NULL,
 	[CountEmploymentsP14] [varchar](50) NULL,
 	[PAYESchemeRef] [varchar](20) NULL,
-	[AORN] [varchar](13) NULL
+	[AORN] [varchar](13) NULL,
+	[PayeDerived] AS RIGHT('000'+left(PAYESchemeRef,CHARINDEX('/',PayeSchemeRef)-1),3)+SUBSTRING(PAYESchemeRef,CHARINDEX('/',PAYESchemeRef),LEN(PAYESCHEMEREF))  PERSISTED
 ) 
 GO
-CREATE CLUSTERED INDEX [CI_TPR_UniqueKey] ON [dbo].[Stg_Tpr_1218]([UniqueID])
-GO
-CREATE NONCLUSTERED INDEX [NCI_TPR_AORN] ON [dbo].[Stg_Tpr_1218]([AORN])
-GO
-CREATE NONCLUSTERED INDEX [NCI_TPR_PAYE] ON [dbo].[Stg_Tpr_1218]([PAYESchemeRef])
-GO
-CREATE NONCLUSTERED INDEX [NCI_TPR_PAYE_AORN] ON [dbo].[Stg_Tpr_1218]([PAYESchemeRef],[AORN])
-GO
-

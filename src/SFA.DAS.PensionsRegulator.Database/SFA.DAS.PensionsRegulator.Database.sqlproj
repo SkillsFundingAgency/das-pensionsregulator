@@ -72,9 +72,10 @@
     <Build Include="Views\OrgAornPayeDetails.sql" />
     <Build Include="StoredProcedures\GetOrganisationsByPAYEReferenceAndAORN.sql" />
     <Build Include="Views\OrganisationsWithAddressesAndReferences.sql" />
+    <Build Include="Tables\Stg_Tpr_1218_2.sql" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="PreDeployment\PreDeployment.sql" />
+    <PreDeploy Include="PreDeployment\PreDeployment.sql" />
     <PostDeploy Include="PostDeployment\PostDeployment.sql" />
   </ItemGroup>
 </Project>

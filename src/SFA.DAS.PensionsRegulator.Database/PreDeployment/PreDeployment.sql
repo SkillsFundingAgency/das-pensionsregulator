@@ -1,4 +1,5 @@
-﻿DECLARE @Date Date
+﻿/*
+DECLARE @Date Date
 
 SET @Date=getdate()
 
@@ -29,3 +30,4 @@ IF  EXISTS (SELECT * FROM sys.indexes WHERE NAME = N'NCI_TPR_PAYE_DERIVED' AND o
 DROP INDEX [NCI_TPR_PAYE_DERIVED] ON dbo.Stg_Tpr_1218
 
 END
+*/

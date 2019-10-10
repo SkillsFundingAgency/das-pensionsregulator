@@ -12,7 +12,7 @@ SELECT
 	  WHEN EndDateCode=5 THEN 'Cancelled'
 	  ELSE 'Unknown'
   END                                        as OrganisationStatus
-, PayeDerived                                as PayeRef
+, PAYESchemeRef                              as PayeRef
 , AORN                                       as AORN
 , UniqueID                                   as TPRUniqueKey
 , LTRIM(RTRIM(AddressLine1))                 as AddressLine1
