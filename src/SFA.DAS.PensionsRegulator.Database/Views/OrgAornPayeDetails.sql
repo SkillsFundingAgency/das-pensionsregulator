@@ -12,7 +12,7 @@ SELECT
 	  WHEN EndDateCode=5 THEN 'Cancelled'
 	  ELSE 'Unknown'
   END                                        as OrganisationStatus
-, PAYESchemeRef                              as PayeRef
+, PayeDerived                                as PayeRef
 , AORN                                       as AORN
 , UniqueID                                   as TPRUniqueKey
 , LTRIM(RTRIM(AddressLine1))                 as AddressLine1
@@ -21,7 +21,7 @@ SELECT
 , LTRIM(RTRIM(AddressLine4))                 as AddressLine4
 , LTRIM(RTRIM(AddressLine5))                 as AddressLine5
 , LTRIM(RTRIM(PostCode))                     as PostCode
-FROM [dbo].Stg_Tpr_1218
+FROM [dbo].Stg_Tpr_1218_2
 GO
 
 
