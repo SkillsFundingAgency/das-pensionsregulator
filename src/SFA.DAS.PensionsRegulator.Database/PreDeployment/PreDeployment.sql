@@ -1,9 +1,9 @@
-﻿/*
+﻿
 DECLARE @Date Date
 
 SET @Date=getdate()
 
-IF @Date < '2019-10-20'
+IF @Date < '2019-10-30'
 BEGIN
 
 IF  EXISTS (SELECT * FROM sys.indexes WHERE NAME = N'CI_TPR_UniqueKey' AND object_id = OBJECT_ID('Stg_Tpr_1218')) 
@@ -30,11 +30,6 @@ IF  EXISTS (SELECT * FROM sys.indexes WHERE NAME = N'NCI_TPR_PAYE_DERIVED' AND o
 DROP INDEX [NCI_TPR_PAYE_DERIVED] ON dbo.Stg_Tpr_1218
 
 END
-*/
 
 
-IF EXISTS (SELECT * FROM INFORMATION_SCHEMA.TABLES
-            WHERE TABLE_NAME = N'Stg_Tpr_1218_2'
-		      AND TABLE_SCHEMA=N'dbo'
-	      )
-DROP TABLE dbo.Stg_Tpr_1218_2
+

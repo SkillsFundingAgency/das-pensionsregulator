@@ -21,7 +21,7 @@ SELECT
 , LTRIM(RTRIM(AddressLine4))                 as AddressLine4
 , LTRIM(RTRIM(AddressLine5))                 as AddressLine5
 , LTRIM(RTRIM(PostCode))                     as PostCode
-FROM [dbo].Stg_Tpr_1218_2
+FROM [dbo].Stg_Tpr_1218
 GO
 
 
