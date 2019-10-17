@@ -1,0 +1,28 @@
+﻿/*
+DECLARE @Date Date
+
+SET @Date=getdate()
+
+IF @Date < '2019-10-30'
+BEGIN
+
+
+DROP INDEX IF EXISTS [CI_TPR_UniqueKey] ON dbo.Stg_Tpr_1218
+
+
+DROP INDEX IF EXISTS [NCI_TPR_AORN] ON dbo.Stg_Tpr_1218
+
+
+DROP INDEX IF EXISTS [NCI_TPR_PAYE] ON dbo.Stg_Tpr_1218
+
+
+DROP INDEX IF EXISTS [NCI_TPR_PAYE_AORN] ON dbo.Stg_Tpr_1218
+
+
+DROP INDEX IF EXISTS [NCI_TPR_PAYE_DERIVED] ON dbo.Stg_Tpr_1218
+
+
+END
+
+*/
+

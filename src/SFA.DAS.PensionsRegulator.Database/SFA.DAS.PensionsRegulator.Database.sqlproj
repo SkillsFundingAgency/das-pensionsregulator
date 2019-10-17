@@ -60,6 +60,8 @@
     <Folder Include="Tables" />
     <Folder Include="StoredProcedures" />
     <Folder Include="Views" />
+    <Folder Include="PreDeployment" />
+    <Folder Include="PostDeployment" />
   </ItemGroup>
   <ItemGroup>
     <Build Include="Tables\Organisation.sql" />
@@ -70,5 +72,9 @@
     <Build Include="Views\OrgAornPayeDetails.sql" />
     <Build Include="StoredProcedures\GetOrganisationsByPAYEReferenceAndAORN.sql" />
     <Build Include="Views\OrganisationsWithAddressesAndReferences.sql" />
+  </ItemGroup>
+  <ItemGroup>
+    <PreDeploy Include="PreDeployment\PreDeployment.sql" />
+    <PostDeploy Include="PostDeployment\PostDeployment.sql" />
   </ItemGroup>
 </Project>
