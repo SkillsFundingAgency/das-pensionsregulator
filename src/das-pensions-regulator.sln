@@ -1,13 +1,15 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 15
-VisualStudioVersion = 15.0.28307.329
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.29009.5
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PensionsRegulatorApi", "PensionsRegulatorApi\PensionsRegulatorApi.csproj", "{C1020DA3-E8A4-4B25-843E-51FD7AD4F78D}"
 EndProject
 Project("{00D1A9C2-B5F0-4AF3-8072-F6C62B433612}") = "SFA.DAS.PensionsRegulator.Database", "SFA.DAS.PensionsRegulator.Database\SFA.DAS.PensionsRegulator.Database.sqlproj", "{6E0FF5BB-5717-421B-89DC-C3D8917954D3}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SFA.DAS.PensionsRegulatorApi.UnitTests", "SFA.DAS.PensionsRegulatorApi.UnitTests\SFA.DAS.PensionsRegulatorApi.UnitTests.csproj", "{BFA06E64-2AE6-42B3-84D7-2BFE56930470}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SFA.DAS.PensionsRegulatorApi.UnitTests", "SFA.DAS.PensionsRegulatorApi.UnitTests\SFA.DAS.PensionsRegulatorApi.UnitTests.csproj", "{BFA06E64-2AE6-42B3-84D7-2BFE56930470}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PensionsRegulator.Functions", "PensionsRegulator.Functions\PensionsRegulator.Functions.csproj", "{DD3BC894-1AAD-4EFD-8145-256D5EF590BA}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -29,6 +31,10 @@ Global
 		{BFA06E64-2AE6-42B3-84D7-2BFE56930470}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{BFA06E64-2AE6-42B3-84D7-2BFE56930470}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{BFA06E64-2AE6-42B3-84D7-2BFE56930470}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DD3BC894-1AAD-4EFD-8145-256D5EF590BA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DD3BC894-1AAD-4EFD-8145-256D5EF590BA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DD3BC894-1AAD-4EFD-8145-256D5EF590BA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DD3BC894-1AAD-4EFD-8145-256D5EF590BA}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
