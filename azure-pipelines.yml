@@ -54,6 +54,13 @@ steps:
     projects: 'src/PensionsRegulatorApi/PensionsRegulatorApi.csproj'
     arguments: '--configuration $(buildConfiguration) --output $(build.artifactstagingdirectory)/publish --no-restore  --no-build'
 
+- task: DotNetCoreCLI@2
+  displayName: 'Publish Function App'
+  inputs:
+    command: publish
+    publishWebProjects: false
+    projects: 'src/PensionsRegulator.Functions/PensionsRegulator.Functions.csproj'
+    arguments: '--configuration $(buildConfiguration) --output $(build.artifactstagingdirectory)/publish --no-restore  --no-build'
 
 - task: VSBuild@1
   displayName: 'Build DACPAC'
