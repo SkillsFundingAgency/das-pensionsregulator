@@ -64,13 +64,12 @@ ALTER SCHEMA swap TRANSFER dbo.OrganisationPAYEScheme;
 ALTER SCHEMA dbo TRANSFER shadow.OrganisationPAYEScheme;
 ALTER SCHEMA shadow TRANSFER swap.OrganisationPAYEScheme;
 
-BEGIN TRANSACTION
 
-DELETE FROM shadow.OrganisationAddress
-DELETE FROM shadow.OrganisationPAYEScheme
+
+TRUNCATE TABLE shadow.OrganisationAddress
+TRUNCATE TABLE shadow.OrganisationPAYEScheme
 DELETE FROM shadow.Organisation
 
-COMMIT TRANSACTION
 
 END
 END
