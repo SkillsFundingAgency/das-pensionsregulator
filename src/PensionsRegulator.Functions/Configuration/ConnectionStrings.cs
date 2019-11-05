@@ -7,5 +7,6 @@ namespace PensionsRegulator.Functions.Configuration
     public class ConnectionStrings
     {
         public string PensionRegulatorDatabase { get; set; }
+        public string PensionRegulatorBlobStorage { get; set; }
     }
 }

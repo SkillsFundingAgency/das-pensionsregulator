@@ -8,7 +8,11 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using NLog.Extensions.Logging;
+using PensionsRegulator.Functions.Application.Services;
+using PensionsRegulator.Functions.Domain.Data;
+using PensionsRegulator.Functions.Domain.Services;
 using PensionsRegulator.Functions.Infrastructure.Configuration;
+using PensionsRegulator.Functions.Infrastructure.Data;
 using PensionsRegulator.Functions.Infrastructure.Logging;
 
 [assembly: FunctionsStartup(typeof(PensionsRegulator.Functions.Startup))]
@@ -21,7 +25,7 @@ namespace PensionsRegulator.Functions
 
         public Startup() { }
 
-         public Startup(IConfiguration configuration)
+        public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
         }
@@ -32,18 +36,14 @@ namespace PensionsRegulator.Functions
 
             builder.AddConfiguration((configBuilder) =>
             {
-                var tempConfig = new ConfigurationBuilder()
-                    .SetBasePath(executionContextOptions.AppDirectory)
-                    .AddJsonFile("local.settings.json", optional: true, reloadOnChange: true)
-                    .AddEnvironmentVariables()
+                var tempConfig = configBuilder
                     .Build();
 
                 var configuration = configBuilder
-                    .SetBasePath(executionContextOptions.AppDirectory)
-                    .AddJsonFile("local.settings.json", optional: true, reloadOnChange: true)
+                    //.AddJsonFile("local.settings.json", optional: true, reloadOnChange: true)
                     .AddAzureTableStorageConfiguration(
                         tempConfig["ConfigurationStorageConnectionString"],
-                        tempConfig["ConfigNames"].Split(','),
+                        tempConfig["ConfigNames"],
                         tempConfig["EnvironmentName"],
                         tempConfig["ConfigurationVersion"])
                     .Build();
@@ -58,8 +58,6 @@ namespace PensionsRegulator.Functions
 
         public void ConfigureServices(IServiceCollection services)
         {
-            services.Configure<Configuration.ConnectionStrings>(Configuration.GetSection("ConnectionStrings"));
-            
             services.AddLogging(loggingBuilder =>
             {
                 var nLogConfiguration = new NLogConfiguration();
@@ -72,6 +70,10 @@ namespace PensionsRegulator.Functions
 
                 nLogConfiguration.ConfigureNLog(Configuration);
             });
+
+            services.AddTransient<IPensionRegulatorImportService, PensionRegulatorImportService>();
+            services.AddTransient<IPensionRegulatorRepository>(s => new PensionRegulatorRepository(Configuration.GetValue<string>("PensionRegulatorSql"),s.GetRequiredService<ILogger>()));
+
         }
     }
 }
