@@ -43,7 +43,7 @@ select @DateStamp =  CAST(CAST(YEAR(GETDATE()) AS VARCHAR)+RIGHT('0' + RTRIM(cas
 
  -- SET @FormatFile='C:\Users\huddaraju\Documents\Hima_Docs\Testing_TPRStrategic\TPRFormatFile_v2.fmt'
 
-  --SET @FormatFile='TPRFormatFile_v2.fmt'
+  SET @FormatFile='TPRFormatFile.fmt'
 
   /* Truncate Staging Table */
 
