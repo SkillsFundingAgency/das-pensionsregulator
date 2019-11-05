@@ -1,0 +1,2 @@
+﻿CREATE Schema Shadow
+Go

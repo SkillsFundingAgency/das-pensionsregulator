@@ -1,4 +1,4 @@
-﻿CREATE TABLE [dbo].[Organisation](
+﻿CREATE TABLE [Shadow].[Organisation](
 	[OrgSK] [bigint] IDENTITY(1,1) NOT NULL,
 	[TPRUniqueId] [bigint] NOT NULL,
 	[OrganisationName] [varchar](256) NULL,
@@ -25,8 +25,8 @@
  CONSTRAINT [Unq_Org_TPRUniqueID] UNIQUE NONCLUSTERED (TPRUniqueId Asc)
 )
 GO
-CREATE NONCLUSTERED INDEX [NCI_Organisation_AORN] ON [dbo].[Organisation]([AORN] ASC)
+CREATE NONCLUSTERED INDEX [NCI_Organisation_AORN] ON [Shadow].[Organisation]([AORN] ASC)
 GO
-CREATE NONCLUSTERED INDEX [NCI_Organisation_SK] ON [dbo].[Organisation]([TPRUniqueId] ASC,[SourceSK] ASC)
+CREATE NONCLUSTERED INDEX [NCI_Organisation_SK] ON [Shadow].[Organisation]([TPRUniqueId] ASC,[SourceSK] ASC)
 GO
 

@@ -1,4 +1,4 @@
-﻿CREATE TABLE [dbo].[OrganisationAddress](
+﻿CREATE TABLE [Shadow].[OrganisationAddress](
 	[OrgAddSK] [bigint] IDENTITY(1,1) NOT NULL,
 	[OrgSK] [bigint] NULL,
 	[TPRUniqueID] [bigint] UNIQUE NOT NULL,
@@ -22,10 +22,10 @@
 	[SourceFileName] [varchar](255) NULL,
 	[RecordCreatedDate] [datetime2](7) DEFAULT(getdate()) NULL,
     CONSTRAINT [PK_OrgAdd_OrgAddSK] PRIMARY KEY CLUSTERED ([OrgAddSK] ASC),
-	CONSTRAINT [FK_OrgAdd_OrgSK] FOREIGN KEY (OrgSK) REFERENCES dbo.[Organisation](OrgSK)
+	CONSTRAINT [FK_OrgAdd_OrgSK] FOREIGN KEY (OrgSK) REFERENCES Shadow.[Organisation](OrgSK)
 	)
 GO
-CREATE NONCLUSTERED INDEX [NCI_Organisation_SK] ON [dbo].[OrganisationAddress]
+CREATE NONCLUSTERED INDEX [NCI_Organisation_SK] ON [Shadow].[OrganisationAddress]
 (
 	[OrgSK] ASC,
 	[TPRUniqueID] ASC,

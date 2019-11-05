@@ -62,16 +62,41 @@
     <Folder Include="Views" />
     <Folder Include="PreDeployment" />
     <Folder Include="PostDeployment" />
+    <Folder Include="Schema" />
   </ItemGroup>
   <ItemGroup>
-    <Build Include="Tables\Organisation.sql" />
-    <Build Include="Tables\OrganisationPAYEScheme.sql" />
-    <Build Include="Tables\OrganisationAddress.sql" />
     <Build Include="StoredProcedures\GetOrganisationsByPAYEReference.sql" />
     <Build Include="Tables\Stg_Tpr_1218.sql" />
     <Build Include="Views\OrgAornPayeDetails.sql" />
     <Build Include="StoredProcedures\GetOrganisationsByPAYEReferenceAndAORN.sql" />
     <Build Include="Views\OrganisationsWithAddressesAndReferences.sql" />
+    <Build Include="StoredProcedures\GenerateRunId.sql" />
+    <Build Include="StoredProcedures\ImportDataFromFile.sql" />
+    <Build Include="StoredProcedures\LoadSrcFileDetails.sql" />
+    <Build Include="StoredProcedures\LoadTargetCloneTables.sql" />
+    <Build Include="StoredProcedures\LoadTargetTables.sql" />
+    <Build Include="StoredProcedures\LoadTPRFile.sql" />
+    <Build Include="StoredProcedures\RunValidationChecks.sql" />
+    <Build Include="StoredProcedures\UpdateHistoryTable.sql" />
+    <Build Include="Tables\Log_Error_Details.sql" />
+    <Build Include="Tables\Log_Execution_Results.sql" />
+    <Build Include="Tables\Log_Record_Counts.sql" />
+    <Build Include="Tables\Log_RunId.sql" />
+    <Build Include="Tables\Organisation.sql" />
+    <Build Include="Tables\OrganisationAddress.sql" />
+    <Build Include="Tables\OrganisationPAYEScheme.sql" />
+    <Build Include="Tables\ShadowOrganisation.sql" />
+    <Build Include="Tables\ShadowOrganisationAddress.sql" />
+    <Build Include="Tables\ShadowOrganisationPAYEScheme.sql" />
+    <Build Include="Tables\SourceFileList.sql" />
+    <Build Include="Tables\Staging_TPR.sql" />
+    <Build Include="Tables\Staging_TPR_Rejected.sql" />
+    <Build Include="Tables\TPR_StagingHistory.sql" />
+    <Build Include="Tables\Data_Validation_Rules.sql" />
+    <Build Include="Schema\Mgmt.sql" />
+    <Build Include="Schema\Shadow.sql" />
+    <Build Include="Schema\Swap.sql" />
+    <Build Include="Views\LoadStatus.sql" />
   </ItemGroup>
   <ItemGroup>
     <PreDeploy Include="PreDeployment\PreDeployment.sql" />
