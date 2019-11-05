@@ -17,7 +17,7 @@ DECLARE @RetentionDate datetime
 
 SELECT @RetentionDate=DATEADD(MONTH, -3, GETDATE()) 
 
-SET @DataSource=''
+SET @DataSource='dastprStorConnection'
 
 /* Generate Run Id */
 
