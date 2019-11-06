@@ -91,7 +91,7 @@ select @DateStamp =  CAST(CAST(YEAR(GETDATE()) AS VARCHAR)+RIGHT('0' + RTRIM(cas
            ,[SourceFileName]
            ,[RecordCreatedDate])
    SELECT  TPRUniqueID
-          ,LTRIM(RTRIM(REPLACE(Name1,'NULL','')))+' '+LTRIM(RTRIM(REPLACE(Name2,'NULL','')))
+          ,COALESCE(LTRIM(RTRIM(REPLACE(Name1,'NULL',''))),'')+' '+COALESCE(LTRIM(RTRIM(REPLACE(Name2,'NULL',''))),'')
 		  ,DistrictNumber
 		  ,Reference
 		  ,CASE WHEN CompanyRegNo='NULL' THEN NULL  ELSE CompanyRegNo END as CompanyRegNo
