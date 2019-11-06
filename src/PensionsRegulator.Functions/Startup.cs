@@ -72,7 +72,7 @@ namespace PensionsRegulator.Functions
             });
 
             services.AddTransient<IPensionRegulatorImportService, PensionRegulatorImportService>();
-            services.AddTransient<IPensionRegulatorRepository>(s => new PensionRegulatorRepository(Configuration.GetValue<string>("PensionRegulatorSql"),s.GetRequiredService<ILogger>()));
+            services.AddTransient<IPensionRegulatorRepository>(s => new PensionRegulatorRepository(Configuration.GetValue<string>("PensionsRegulatorSQLConnectionString"),s.GetRequiredService<ILogger>()));
 
         }
     }

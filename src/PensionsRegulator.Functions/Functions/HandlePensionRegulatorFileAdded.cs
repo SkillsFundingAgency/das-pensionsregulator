@@ -24,7 +24,7 @@ namespace PensionsRegulator.Functions
 
         [FunctionName("HandlePensionRegulatorFileAdded")]
         public void Run(
-            [BlobTrigger("%PensionRegulatorBlobPath%", Connection = "PensionRegulatorBlobStorage")]Stream myBlob, string name)
+            [BlobTrigger("%PensionRegulatorBlobPath%", Connection = "PensionsRegulatorStorageConnectionString")]Stream myBlob, string name)
         {
             _log.LogInformation("HandlePensionRegulatorFileAdded blob trigger function processed a request.");
 

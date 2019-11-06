@@ -14,26 +14,29 @@ namespace PensionsRegulator.Functions
     public class ProcessNewPensionRegulatorFiles
     {
         private readonly IPensionRegulatorImportService _prImportService;
-        private readonly ILogger _log;
+        private ILogger _log;
 
-        public ProcessNewPensionRegulatorFiles(IPensionRegulatorImportService prImportService, ILogger log)
+        public ProcessNewPensionRegulatorFiles(IPensionRegulatorImportService prImportService)
         {
             _prImportService = prImportService;
-            _log = log;
         }
 
         [FunctionName("HttpProcessNewPensionRegulatorFiles")]
         public void Run(
-            [HttpTrigger(AuthorizationLevel.Function)]HttpRequest req)
+            [HttpTrigger(AuthorizationLevel.Function)]HttpRequest req, ILogger log)
         {
+            _log = log;
+
             _log.LogInformation("HttpProcessNewPensionRegulatorFiles Http trigger function processed a request.");
 
             TriggerPensionRegulatorFileImport();
         }
 
         [FunctionName("TimerProcessNewPensionRegulatorFiles")]
-        public void RunTimer([TimerTrigger("%PensionRegulatorImportProcessTimer%")] TimerInfo myTimer)
+        public void RunTimer([TimerTrigger("%PensionRegulatorImportProcessTimer%")] TimerInfo myTimer, ILogger log)
         {
+            _log = log;
+
             _log.LogInformation("TimerProcessNewPensionRegulatorFiles Timer trigger function processed a request.");
 
             TriggerPensionRegulatorFileImport();
