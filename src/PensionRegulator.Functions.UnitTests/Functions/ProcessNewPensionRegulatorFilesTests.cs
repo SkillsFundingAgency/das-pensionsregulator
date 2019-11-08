@@ -24,14 +24,14 @@ namespace PensionRegulator.Functions.UnitTests.Functions
 
             _pensionRegulatorService.Setup(s => s.ProcessFiles());
 
-            _sut = new ProcessNewPensionRegulatorFiles(_pensionRegulatorService.Object, _logger.Object);
+            _sut = new ProcessNewPensionRegulatorFiles(_pensionRegulatorService.Object);
         }
 
         [Test]
         public void Then_Blob_Is_Handled_Successfully()
         {
             System.IO.Stream stream = new System.IO.MemoryStream();
-            _sut.RunTimer(new TimerInfo(new WeeklySchedule(),new ScheduleStatus(),false));
+            _sut.RunTimer(new TimerInfo(new WeeklySchedule(),new ScheduleStatus(),false),_logger.Object);
 
             _pensionRegulatorService.Verify(v => v.ProcessFiles(), Times.Once);
         }
