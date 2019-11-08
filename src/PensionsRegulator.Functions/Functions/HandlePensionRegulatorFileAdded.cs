@@ -39,7 +39,7 @@ namespace PensionsRegulator.Functions
                 watch.Stop();
                 var elapsedMs = watch.ElapsedMilliseconds;
 
-                _log.LogInformation($"Processing of blob {name} completed successfully.");
+                _log.LogInformation($"Processing of blob '{name}' completed successfully.");
                 _log.LogInformation($"blob {{{name}}} processed in {elapsedMs} ms.");
 
             }

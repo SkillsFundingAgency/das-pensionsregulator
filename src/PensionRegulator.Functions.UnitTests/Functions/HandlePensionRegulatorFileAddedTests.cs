@@ -29,8 +29,10 @@ namespace PensionRegulator.Functions.UnitTests.Functions
         [Test]
         public void Then_Blob_Is_Handled_Successfully()
         {
+            var filename = "success";
+
             System.IO.Stream stream = new System.IO.MemoryStream();
-            _sut.Run(stream, "success");
+            _sut.Run(stream, filename);
 
             _logger.Verify(
                 x => x.Log(
@@ -47,7 +49,7 @@ namespace PensionRegulator.Functions.UnitTests.Functions
                 x => x.Log(
                     LogLevel.Information,
                     It.IsAny<EventId>(),
-                    It.Is<It.IsAnyType>((o, t) => string.Equals("Begin processing of blob success", o.ToString(),
+                    It.Is<It.IsAnyType>((o, t) => string.Equals($"Begin processing of blob {filename}", o.ToString(),
                         StringComparison.InvariantCultureIgnoreCase)),
                     It.IsAny<Exception>(),
                     (Func<It.IsAnyType, Exception, string>) It.IsAny<object>()),
@@ -59,7 +61,7 @@ namespace PensionRegulator.Functions.UnitTests.Functions
                 x => x.Log(
                     LogLevel.Information,
                     It.IsAny<EventId>(),
-                    It.Is<It.IsAnyType>((o, t) => string.Equals("Processing of blob completed successfully.",
+                    It.Is<It.IsAnyType>((o, t) => string.Equals($"Processing of blob '{filename}' completed successfully.",
                         o.ToString(), StringComparison.InvariantCultureIgnoreCase)),
                     It.IsAny<Exception>(),
                     (Func<It.IsAnyType, Exception, string>) It.IsAny<object>()),
