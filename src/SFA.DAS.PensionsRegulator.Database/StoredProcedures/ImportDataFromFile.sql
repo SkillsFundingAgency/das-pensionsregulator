@@ -74,18 +74,7 @@ select @DateStamp =  CAST(CAST(YEAR(GETDATE()) AS VARCHAR)+RIGHT('0' + RTRIM(cas
 	 and ISNULL(LoadedToStaging,0)<>1
 	 and ISNULL(FileProcessed,0)<>1
 	 and SFL.FileName like '%.txt%'
-
-/* Update SourceFileList with the  RunId that's processing the File */
- UPDATE SFL
-    SET SFL.RunId=@Run_Id
-   FROM Mgmt.SourceFileList SFL
-  WHERE
- Cast(FileUploadedDateTime as Date)
- BETWEEN Cast(DATEADD(DAY,-3,GETDATE()) as Date)
-     and Cast(GETDATE() as Date)
-	 and ISNULL(LoadedToStaging,0)<>1
-	 and ISNULL(FileProcessed,0)<>1
-	 and SFL.FileName like '%.txt%'
+	 and SFL.FileName not like '%.fmt%'
 
  DECLARE @Counter Int
   SELECT @Counter=MIN(ID) FROM #tFiles
@@ -96,6 +85,14 @@ select @DateStamp =  CAST(CAST(YEAR(GETDATE()) AS VARCHAR)+RIGHT('0' + RTRIM(cas
   SELECT @FileName=Value 
     FROM #tFiles
    WHERE ID=@Counter
+
+
+/* Update SourceFileList with the  RunId that's processing the File */
+ UPDATE SFL
+    SET SFL.RunId=@Run_Id
+   FROM Mgmt.SourceFileList SFL
+  WHERE SFL.SourceFileID='''+cast(@counter as varchar(15))+'''
+
 
  DECLARE @ExecuteSQL1 NVARCHAR(MAX)
  DECLARE @ExecuteSQL2 NVARCHAR(MAX)
