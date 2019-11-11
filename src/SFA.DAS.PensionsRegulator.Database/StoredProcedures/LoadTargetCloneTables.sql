@@ -42,7 +42,7 @@ select @DateStamp =  CAST(CAST(YEAR(GETDATE()) AS VARCHAR)+RIGHT('0' + RTRIM(cas
 
   --set xact_abort on
 
-  IF ((SELECT COUNT(*) FROM dbo.Staging_TPR) > 4500000)
+  IF ((SELECT COUNT(*) FROM dbo.Staging_TPR) > 4500000) --- Checking if the No. Of Valid Records Count are within the threshold, If not don't refresh
 
   BEGIN
 
@@ -335,10 +335,6 @@ CREATE NONCLUSTERED  INDEX NCI_Organisation_SK ON shadow.OrganisationAddress(Org
 
 CREATE NONCLUSTERED  INDEX NCI_Organisation_SK ON shadow.OrganisationPAYEScheme(OrgSK,TPRUniqueId,SourceSK)  
 
-
---COMMIT TRANSACTION 
-
-END
 /* Update Log Execution Results as Success if the query ran succesfully*/
 
 UPDATE Mgmt.Log_Execution_Results
@@ -348,15 +344,47 @@ UPDATE Mgmt.Log_Execution_Results
  WHERE LogId=@LogID
    AND RunID=@Run_Id
 
+--COMMIT TRANSACTION 
 
-/* Update Source File List as Processed */
+END
+ELSE
+BEGIN
+  DECLARE @RangeErrorId int
 
---UPDATE SFL
---   SET SFL.FileProcessed=1
---  FROM Mgmt.SourceFileList SFL
--- WHERE RunId=@Run_ID
-  
+  INSERT INTO Mgmt.Log_Error_Details
+	  (UserName
+	  ,ErrorNumber
+	  ,ErrorState
+	  ,ErrorSeverity
+	  ,ErrorLine
+	  ,ErrorProcedure
+	  ,ErrorMessage
+	  ,ErrorDateTime
+	  ,Run_Id
+	  )
+  SELECT 
+        SUSER_SNAME(),
+	    99999,
+	    ERROR_STATE(),
+	    9,
+	    ERROR_LINE(),
+	    'LoadTargetCloneTables' AS ErrorProcedure,
+	    'Valid Staged Records are less than expected',
+	    GETDATE(),
+		@Run_Id as RunId; 
 
+  SELECT @RangeErrorId=MAX(ErrorId) FROM Mgmt.Log_Error_Details
+
+/* Update Log Execution Results as Fail if there is an Error*/
+
+UPDATE Mgmt.Log_Execution_Results
+   SET Execution_Status=0
+      ,EndDateTime=getdate()
+	  ,ErrorId=@RangeErrorId
+ WHERE LogId=@LogID
+   AND RunID=@Run_Id
+
+END
 
 END TRY
 
