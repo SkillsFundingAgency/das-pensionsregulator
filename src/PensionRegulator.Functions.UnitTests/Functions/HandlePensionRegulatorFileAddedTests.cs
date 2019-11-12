@@ -23,7 +23,7 @@ namespace PensionRegulator.Functions.UnitTests.Functions
             _pensionRegulatorService.Setup(s => s.RegisterNewTrpFile("success"));
             _pensionRegulatorService.Setup(s => s.RegisterNewTrpFile("failure")).Throws<Exception>();
 
-            _sut = new HandlePensionRegulatorFileAdded(_pensionRegulatorService.Object, _logger.Object);
+            _sut = new HandlePensionRegulatorFileAdded(_pensionRegulatorService.Object);
         }
 
         [Test]
@@ -32,7 +32,7 @@ namespace PensionRegulator.Functions.UnitTests.Functions
             var filename = "success";
 
             System.IO.Stream stream = new System.IO.MemoryStream();
-            _sut.Run(stream, filename);
+            _sut.Run(stream, filename, _logger.Object);
 
             _logger.Verify(
                 x => x.Log(
@@ -73,7 +73,7 @@ namespace PensionRegulator.Functions.UnitTests.Functions
         {
             System.IO.Stream stream = new System.IO.MemoryStream();
 
-            Assert.Throws<Exception>(() => _sut.Run(stream, "failure"));
+            Assert.Throws<Exception>(() => _sut.Run(stream, "failure", _logger.Object));
 
             _logger.Verify(
                 x => x.Log(
