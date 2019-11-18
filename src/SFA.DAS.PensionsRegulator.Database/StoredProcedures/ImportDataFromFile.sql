@@ -264,7 +264,7 @@ SET @ExecuteSQL2='
 UPDATE Mgmt.Log_Execution_Results
    SET Execution_Status=1
       ,EndDateTime=getdate()
-	  ,FullJobStatus='Pending- Go To Step3 LoadTargetTables'
+	  ,FullJobStatus='Pending- Go To Step3 RunValidationChecks'
  WHERE LogId=@LogID
    AND RunID=@Run_Id
 

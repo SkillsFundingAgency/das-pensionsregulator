@@ -78,9 +78,10 @@ select @DateStamp =  CAST(CAST(YEAR(GETDATE()) AS VARCHAR)+RIGHT('0' + RTRIM(cas
 						'''+ @TestName + ''' AS TestName,
 						'''+ @ErrorMessage +' Actual: '' + CAST(LEN('+ @ColumnName + ')AS VARCHAR(255))+ '' Against spec size: '+CAST(@columnLength AS VARCHAR(255)) + ''' AS ErrorMessage
 					FROM dbo.Staging_TPR
-				   WHERE LEN(REPLACE('+ @ColumnName + ',''NULL'','''')) > '+ CAST(@ColumnLength AS varchar(255)) +''
+				   WHERE LEN(REPLACE('+ @ColumnName + ',''NULL'',''''))  >'+  CAST(@ColumnLength AS varchar(255)) +''
 	   
 				EXEC (@SQL)
+				--PRINT @SQL
 
 				FETCH NEXT FROM StringTestConfig INTO
 				@ColumnName, @ColumnType, @ColumnLength, @TestName, @ErrorMessage
@@ -90,6 +91,47 @@ select @DateStamp =  CAST(CAST(YEAR(GETDATE()) AS VARCHAR)+RIGHT('0' + RTRIM(cas
 			DEALLOCATE StringTestConfig
 
 print 'STRING TESTS COMPLETE'
+
+/* String FixedLength Tests */
+
+			DECLARE StringTestConfig CURSOR FOR
+			SELECT DVR.ColumnName
+				,DVR.ColumnType
+				, DVR.ColumnLength
+				, 'String Length Test'
+				, 'String length fails Specification.' AS ErrorMessage
+			FROM Mgmt.Data_Validation_Rules AS DVR
+			WHERE DVR.ColumnType IN ('VARCHAR', 'NVARCHAR','CHAR','NCHAR')
+			  AND RunChecks=1 and RunTextLengthChecks=1 and RunFixedLengthChecks=1
+
+			OPEN StringTestConfig
+			FETCH NEXT FROM StringTestConfig INTO
+			@ColumnName, @ColumnType, @ColumnLength, @TestName, @ErrorMessage
+
+			WHILE @@FETCH_STATUS = 0
+			BEGIN
+				   SET @SQL='
+				   INSERT INTO dbo.Staging_TPR_Rejected
+				  ( SourceSK,RunId, ColumnName, TestName, ErrorMessage ) 
+				   SELECT SourceSK,
+				          RunId,
+     					'''+ @ColumnName + ''' AS ColumnName, 
+						'''+ @TestName + ''' AS TestName,
+						'''+ @ErrorMessage +' Actual: '' + CAST(LEN('+ @ColumnName + ')AS VARCHAR(255))+ '' Against spec size: '+CAST(@columnLength AS VARCHAR(255)) + ''' AS ErrorMessage
+					FROM dbo.Staging_TPR
+				   WHERE LEN(REPLACE('+ @ColumnName + ',''NULL'',''''))  <>'+  CAST(@ColumnLength AS varchar(255)) +''
+	   
+				EXEC (@SQL)
+				--PRINT @SQL
+
+				FETCH NEXT FROM StringTestConfig INTO
+				@ColumnName, @ColumnType, @ColumnLength, @TestName, @ErrorMessage
+			END
+
+			CLOSE StringTestConfig
+			DEALLOCATE StringTestConfig
+
+print 'STRING FIXED LENGTH TESTS COMPLETE'
 
 			-- End String length test
 
@@ -122,9 +164,11 @@ print 'STRING TESTS COMPLETE'
 						'''+ @TestName + ''' AS TestName,
 						'''+ @ErrorMessage +''' AS ErrorMessage
 					FROM dbo.Staging_TPR
-				   WHERE REPLACE('+ @ColumnName + ',''NULL'','''') IS NULL'
-	   
+				   WHERE '+ @ColumnName + ' IS NULL
+				      OR '+@ColumnName+'=''NULL''
+	             '
 				EXEC (@SQL)
+				--PRINT @SQL
 
 				FETCH NEXT FROM StringNotNullConfig INTO
 				@ColumnName, @ColumnType, @ColumnLength, @TestName, @ErrorMessage
@@ -213,12 +257,14 @@ print 'DECIMAL TESTS COMPLETE'
 				    , '''+ @TestName + ''' AS TestName
 					, '''+ @ErrorMessage +' Actual: ''+['+@ColumnName+'] AS ErrorMessage
      			 FROM dbo.Staging_TPR
-				WHERE (ISNUMERIC(COALESCE(LTRIM(RTRIM(REPLACE('+ @ColumnName + ',''NULL'',''0''))),''0'')) = 0 )
-				  or (len('+ @ColumnName + ') > len('+@ColumnMaxValue+'))
+				WHERE (ISNUMERIC(COALESCE(LTRIM(RTRIM(REPLACE('+ @ColumnName + ',''NULL'',''-1''))),''-1'')) = 0 )
+				  or (CAST(REPLACE('+ @ColumnName +' ,''NULL'',-1) AS BIGINT) > '+@ColumnMaxValue+')
+				  or (CAST(REPLACE('+ @ColumnName +',''NULL'',-1) AS BIGINT) < '+@ColumnMinValue+')
  
 					   '
 				
 				EXEC (@SQL)
+				--PRINT @SQL
 
 				FETCH NEXT FROM IsNumericTestConfig INTO 
 				@ColumnName, @ColumnType, @ColumnLength,@ColumnMinValue,@ColumnMaxValue, @TestName, @ErrorMessage
@@ -229,6 +275,55 @@ print 'DECIMAL TESTS COMPLETE'
 
 print 'NUMERIC TESTS COMPLETE'
 
+-- IsNumeric and Fixed Length test
+  
+            SET @SQL=''
+
+			DECLARE IsNumericTestConfig CURSOR FOR
+			SELECT DVR.ColumnName
+				,DVR.ColumnType
+				, DVR.ColumnLength
+				, DVR.ColumnMinValue
+				, DVR.ColumnMaxValue
+				, 'IsNumeric Test'
+				, 'Numeric type field Length fails Specification' AS ErrorMessage
+			FROM Mgmt.Data_Validation_Rules AS DVR
+			WHERE   DVR.ColumnType IN ('BIT', 'BIGINT','Long','Int','DECIMAL','SMALLINT', 'TINYINT')
+			 AND RunChecks=1 and RunNumericChecks=1 and RunFixedLengthChecks=1
+
+			OPEN IsNumericTestConfig
+			FETCH NEXT FROM IsNumericTestConfig INTO 
+			@ColumnName, @ColumnType, @ColumnLength,@ColumnMinValue,@ColumnMaxValue, @TestName, @ErrorMessage
+
+			WHILE @@FETCH_STATUS = 0
+			BEGIN
+				SET @SQL='
+			   INSERT INTO dbo.Staging_TPR_Rejected
+					  ( SourceSK,RunId,ColumnName, TestName, ErrorMessage
+					  ) 
+			   SELECT SourceSK
+			        , RunId
+					,'''+ @ColumnName + ''' AS ColumnName
+				    , '''+ @TestName + ''' AS TestName
+					, '''+ @ErrorMessage +' Actual: ''+['+@ColumnName+'] AS ErrorMessage
+     			 FROM dbo.Staging_TPR
+				WHERE (ISNUMERIC(COALESCE(LTRIM(RTRIM(REPLACE('+ @ColumnName + ',''NULL'',''-1''))),''-1'')) = 0 )
+				   or (LEN(REPLACE('+ @ColumnName + ',''NULL'',''''))  <>'+  CAST(@ColumnLength AS varchar(255)) +')
+
+ 
+					   '
+				
+				EXEC (@SQL)
+				--PRINT @SQL
+
+				FETCH NEXT FROM IsNumericTestConfig INTO 
+				@ColumnName, @ColumnType, @ColumnLength,@ColumnMinValue,@ColumnMaxValue, @TestName, @ErrorMessage
+			END
+
+			CLOSE IsNumericTestConfig
+			DEALLOCATE IsNumericTestConfig
+
+print 'NUMERIC FIXED LENGTH TESTS COMPLETE'
 
 -- Numeric not null  test
             SET @SQL=''
@@ -260,12 +355,14 @@ print 'NUMERIC TESTS COMPLETE'
 				    , '''+ @TestName + ''' AS TestName
 					, '''+ @ErrorMessage +' Actual: ''+['+@ColumnName+'] AS ErrorMessage
      			 FROM dbo.Staging_TPR
-				WHERE (ISNUMERIC(COALESCE(LTRIM(RTRIM(REPLACE('+ @ColumnName + ',''NULL'',''0''))),''0'')) = 0 )
-				   OR (LTRIM(RTRIM(REPLACE('+ @ColumnName + ',''NULL'',0))) IS NULL )
+				WHERE '+ @ColumnName + ' IS NULL
+				      OR LTRIM(RTRIM('+@ColumnName+'))=''NULL''
  
 					   '
 				
 				EXEC (@SQL)
+
+				--PRINT @SQL
 
 
 
@@ -312,6 +409,7 @@ print 'NUMERIC NOT  NULL TESTS COMPLETE'
 					   '
 				
 				EXEC (@SQL)
+				--PRINT @SQL
 
 				FETCH NEXT FROM IsDateTestConfig INTO 
 				@ColumnName, @ColumnType, @ColumnLength, @TestName, @ErrorMessage
@@ -340,7 +438,7 @@ print 'DATE NULLABLE TESTS COMPLETE'
 UPDATE Mgmt.Log_Execution_Results
    SET Execution_Status=1
       ,EndDateTime=getdate()
-	  ,FullJobStatus='Pending- Go To Step4 LoadTargetTables'
+	  ,FullJobStatus='Pending- Go To Step4 LoadTargetCloneTables'
  WHERE LogId=@LogID
    AND RunID=@Run_Id
 
@@ -398,6 +496,3 @@ UPDATE Mgmt.Log_Execution_Results
    AND RunID=@Run_Id
 
 END CATCH
-GO
-
-

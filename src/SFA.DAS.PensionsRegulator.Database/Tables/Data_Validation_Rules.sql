@@ -1,5 +1,5 @@
 ﻿CREATE TABLE [Mgmt].[Data_Validation_Rules](
-	[ID] [int] IDENTITY(1,1) NOT NULL,
+    [ID] [int] IDENTITY(1,1) NOT NULL,
 	[ColumnName] [varchar](255) NOT NULL,
 	[ColumnNullable] [bit] NOT NULL,
 	[ColumnType] [varchar](255) NOT NULL,
@@ -16,5 +16,6 @@
 	[RunValueRangeChecks] [bit] NOT NULL,
 	[RunDecimalPlacesCheck] [bit] NOT NULL,
 	[RunDataChecks] [bit] NOT NULL,
+	[RunFixedLengthChecks] [bit] NULL,
 	CONSTRAINT [PK_DVR_ID] PRIMARY KEY CLUSTERED (ID)
 ) 
