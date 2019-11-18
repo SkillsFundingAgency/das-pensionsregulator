@@ -14,18 +14,20 @@ namespace PensionsRegulator.Functions
     public class HandlePensionRegulatorFileAdded
     {
         private readonly IPensionRegulatorImportService _prImportService;
-        private readonly ILogger _log;
+        private ILogger _log;
 
-        public HandlePensionRegulatorFileAdded(IPensionRegulatorImportService prImportService, ILogger log)
+        public HandlePensionRegulatorFileAdded(IPensionRegulatorImportService prImportService)
         {
             _prImportService = prImportService;
-            _log = log;
+        
         }
 
         [FunctionName("HandlePensionRegulatorFileAdded")]
         public void Run(
-            [BlobTrigger("%PensionRegulatorBlobPath%", Connection = "PensionsRegulatorStorageConnectionString")]Stream myBlob, string name)
+            [BlobTrigger("%PensionRegulatorBlobPath%", Connection = "PensionsRegulatorStorageConnectionString")]Stream myBlob, string name, ILogger log)
         {
+            _log = log;
+
             _log.LogInformation("HandlePensionRegulatorFileAdded blob trigger function processed a request.");
 
             _log.LogInformation($"Begin processing of blob {name}");
