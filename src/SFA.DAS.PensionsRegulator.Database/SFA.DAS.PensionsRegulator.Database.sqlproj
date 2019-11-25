@@ -25,6 +25,8 @@
     <TargetDatabaseSet>True</TargetDatabaseSet>
     <IgnoreUserSettingsObjects>False</IgnoreUserSettingsObjects>
     <IgnorePermissions>True</IgnorePermissions>
+    <ExcludeUsers>True</ExcludeUsers>
+    <ExcludeLogins>True</ExcludeLogins>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <OutputPath>bin\Release\</OutputPath>
@@ -38,6 +40,8 @@
     <WarningLevel>4</WarningLevel>
     <IgnoreRoleMembership>True</IgnoreRoleMembership>
     <IgnorePermissions>True</IgnorePermissions>
+    <ExcludeUsers>True</ExcludeUsers>
+    <ExcludeLogins>True</ExcludeLogins>    
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <OutputPath>bin\Debug\</OutputPath>
@@ -52,6 +56,8 @@
     <WarningLevel>4</WarningLevel>
     <IgnoreRoleMembership>True</IgnoreRoleMembership>
     <IgnorePermissions>True</IgnorePermissions>
+    <ExcludeUsers>True</ExcludeUsers>
+    <ExcludeLogins>True</ExcludeLogins>
   </PropertyGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">11.0</VisualStudioVersion>
