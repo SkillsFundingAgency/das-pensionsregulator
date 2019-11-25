@@ -23,7 +23,7 @@
     <SqlServerVerification>False</SqlServerVerification>
     <IncludeCompositeObjects>True</IncludeCompositeObjects>
     <TargetDatabaseSet>True</TargetDatabaseSet>
-    <IgnoreUserSettingsObjects>False</IgnoreUserSettingsObjects>
+    <IgnoreRoleMembership>True</IgnoreRoleMembership>
     <IgnorePermissions>True</IgnorePermissions>
     <ExcludeUsers>True</ExcludeUsers>
     <ExcludeLogins>True</ExcludeLogins>
