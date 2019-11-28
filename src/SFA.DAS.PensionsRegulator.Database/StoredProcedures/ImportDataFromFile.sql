@@ -91,7 +91,7 @@ select @DateStamp =  CAST(CAST(YEAR(GETDATE()) AS VARCHAR)+RIGHT('0' + RTRIM(cas
  UPDATE SFL
     SET SFL.RunId=@Run_Id
    FROM Mgmt.SourceFileList SFL
-  WHERE SFL.SourceFileID='''+cast(@counter as varchar(15))+'''
+  WHERE SFL.SourceFileID=@Counter
 
 
  DECLARE @ExecuteSQL1 NVARCHAR(MAX)
