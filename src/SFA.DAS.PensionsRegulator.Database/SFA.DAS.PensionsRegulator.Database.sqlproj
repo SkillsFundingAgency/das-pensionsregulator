@@ -77,4 +77,7 @@
     <PreDeploy Include="PreDeployment\PreDeployment.sql" />
     <PostDeploy Include="PostDeployment\PostDeployment.sql" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="SFA.DAS.PensionsRegulator.Database.publish.xml" />
+  </ItemGroup>
 </Project>
