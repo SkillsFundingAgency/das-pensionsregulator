@@ -69,6 +69,7 @@ steps:
     Contents: |
      azure\**
      src\**\*.dacpac
+     src\**\*.publish.xml
     TargetFolder: '$(build.artifactstagingdirectory)/publish'
     OverWrite: true
 
