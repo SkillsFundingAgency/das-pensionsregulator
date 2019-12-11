@@ -45,6 +45,3 @@ CREATE NONCLUSTERED INDEX [NCI_Organisation_SK] ON [dbo].[OrganisationPAYEScheme
 	[SourceSK] ASC
 )
 GO
-
-
-

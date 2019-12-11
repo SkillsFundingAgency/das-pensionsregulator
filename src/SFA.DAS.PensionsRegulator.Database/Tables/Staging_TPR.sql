@@ -57,6 +57,10 @@
 	[InvalidReason] [varchar](512) NULL,
 	[RecordCreatedDate] [datetime2](7) DEFAULT(getdate()) NULL,
  CONSTRAINT [PK_Staging_SourceSK] PRIMARY KEY CLUSTERED (SourceSK ASC)
- )
+  )
+go
+CREATE NONCLUSTERED INDEX NCI_Staging_TPR
+      ON dbo.Staging_TPR(TPRUniqueID)
+
 GO
 

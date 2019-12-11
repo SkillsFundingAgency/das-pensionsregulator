@@ -51,7 +51,7 @@ select @DateStamp =  CAST(CAST(YEAR(GETDATE()) AS VARCHAR)+RIGHT('0' + RTRIM(cas
 
   /* Drop Existing Index before the load */
 
-    DROP INDEX IF EXISTS NCI_Staging_TPR ON dbo.Staging_TPR
+   -- DROP INDEX IF EXISTS NCI_Staging_TPR ON dbo.Staging_TPR
 
 
 /* Get list of Files on Blob Storage and loop around to load the files into Staging */
@@ -255,8 +255,8 @@ SET @ExecuteSQL2='
 
 /* Recreate the Index */
 
-  CREATE NONCLUSTERED INDEX NCI_Staging_TPR
-      ON dbo.Staging_TPR(TPRUniqueID)
+  --CREATE NONCLUSTERED INDEX NCI_Staging_TPR
+  --    ON dbo.Staging_TPR(TPRUniqueID)
 
 
 /* Update Log Execution Results as Success if the query ran succesfully*/

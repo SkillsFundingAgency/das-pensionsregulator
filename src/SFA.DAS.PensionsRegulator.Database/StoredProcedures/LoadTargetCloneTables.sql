@@ -50,15 +50,15 @@ select @DateStamp =  CAST(CAST(YEAR(GETDATE()) AS VARCHAR)+RIGHT('0' + RTRIM(cas
 
   /* Drop Existing Indexes */
 
-  DROP INDEX IF EXISTS NCI_Organisation_AORN ON shadow.Organisation
+  --DROP INDEX IF EXISTS NCI_Organisation_AORN ON shadow.Organisation
 
-  DROP INDEX IF EXISTS NCI_Organisation_PAYEScheme ON shadow.OrganisationPAYEScheme
+  --DROP INDEX IF EXISTS NCI_Organisation_PAYEScheme ON shadow.OrganisationPAYEScheme
 
-  DROP INDEX IF EXISTS NCI_Organisation_SK ON shadow.Organisation
+  --DROP INDEX IF EXISTS NCI_Organisation_SK ON shadow.Organisation
 
-  DROP INDEX IF EXISTS NCI_Organisation_SK ON shadow.OrganisationAddress
+  --DROP INDEX IF EXISTS NCI_Organisation_SK ON shadow.OrganisationAddress
 
-  DROP INDEX IF EXISTS NCI_Organisation_SK ON shadow.OrganisationPAYEScheme
+  --DROP INDEX IF EXISTS NCI_Organisation_SK ON shadow.OrganisationPAYEScheme
 
   /* Clear Existing Tables before Load */
   
@@ -325,15 +325,15 @@ select @DateStamp =  CAST(CAST(YEAR(GETDATE()) AS VARCHAR)+RIGHT('0' + RTRIM(cas
   
 /* Recreate Indexes after finishing Load */
 
-CREATE NONCLUSTERED  INDEX NCI_Organisation_AORN ON shadow.Organisation(AORN)
+--CREATE NONCLUSTERED  INDEX NCI_Organisation_AORN ON shadow.Organisation(AORN)
 
-CREATE NONCLUSTERED  INDEX NCI_Organisation_PAYEScheme ON shadow.OrganisationPAYEScheme(PAYEScheme)
+--CREATE NONCLUSTERED  INDEX NCI_Organisation_PAYEScheme ON shadow.OrganisationPAYEScheme(PAYEScheme)
 
-CREATE NONCLUSTERED INDEX NCI_Organisation_SK ON shadow.Organisation(TPRUniqueID,SourceSK)
+--CREATE NONCLUSTERED INDEX NCI_Organisation_SK ON shadow.Organisation(TPRUniqueID,SourceSK)
 
-CREATE NONCLUSTERED  INDEX NCI_Organisation_SK ON shadow.OrganisationAddress(OrgSK,TPRUniqueId,SourceSK)  
+--CREATE NONCLUSTERED  INDEX NCI_Organisation_SK ON shadow.OrganisationAddress(OrgSK,TPRUniqueId,SourceSK)  
 
-CREATE NONCLUSTERED  INDEX NCI_Organisation_SK ON shadow.OrganisationPAYEScheme(OrgSK,TPRUniqueId,SourceSK)  
+--CREATE NONCLUSTERED  INDEX NCI_Organisation_SK ON shadow.OrganisationPAYEScheme(OrgSK,TPRUniqueId,SourceSK)  
 
 /* Update Log Execution Results as Success if the query ran succesfully*/
 

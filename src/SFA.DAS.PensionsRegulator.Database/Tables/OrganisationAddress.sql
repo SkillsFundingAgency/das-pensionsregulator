@@ -32,3 +32,4 @@ CREATE NONCLUSTERED INDEX [NCI_Organisation_SK] ON [dbo].[OrganisationAddress]
 	[SourceSK] ASC
 )
 GO
+
