@@ -66,8 +66,8 @@ ALTER SCHEMA shadow TRANSFER swap.OrganisationPAYEScheme;
 
 
 
-TRUNCATE TABLE shadow.OrganisationAddress
-TRUNCATE TABLE shadow.OrganisationPAYEScheme
+DELETE FROM shadow.OrganisationAddress
+DELETE FROM shadow.OrganisationPAYEScheme
 DELETE FROM shadow.Organisation
 
 

@@ -47,7 +47,7 @@ select @DateStamp =  CAST(CAST(YEAR(GETDATE()) AS VARCHAR)+RIGHT('0' + RTRIM(cas
 
   /* Truncate Staging Table */
 
-   TRUNCATE TABLE dbo.Staging_TPR
+   DELETE FROM dbo.Staging_TPR
 
   /* Drop Existing Index before the load */
 
