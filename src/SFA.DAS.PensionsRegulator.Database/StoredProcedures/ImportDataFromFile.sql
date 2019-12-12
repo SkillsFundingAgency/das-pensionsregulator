@@ -67,7 +67,9 @@ select @DateStamp =  CAST(CAST(YEAR(GETDATE()) AS VARCHAR)+RIGHT('0' + RTRIM(cas
   INSERT INTO #tFiles(ID,Value)
   SELECT SFL.[SourceFileId]
         ,SFL.[FileName]
-    FROM Mgmt.SourceFileList SFL
+    FROM (select *
+                 ,row_number() over (partition by FileName order by FileUploadedDateTime desc) rn
+            from mgmt.SourceFileList) SFL
    WHERE Cast(FileUploadedDateTime as Date)
  BETWEEN Cast(DATEADD(DAY,-3,GETDATE()) as Date)
      and Cast(GETDATE() as Date)
@@ -75,6 +77,7 @@ select @DateStamp =  CAST(CAST(YEAR(GETDATE()) AS VARCHAR)+RIGHT('0' + RTRIM(cas
 	 and ISNULL(FileProcessed,0)<>1
 	 and SFL.FileName like '%.txt%'
 	 and SFL.FileName not like '%.fmt%'
+	 and SFL.rn=1
 
  DECLARE @Counter Int
   SELECT @Counter=MIN(ID) FROM #tFiles

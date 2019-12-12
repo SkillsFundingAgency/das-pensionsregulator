@@ -15,7 +15,7 @@ DECLARE @RunId int
 DECLARE @DataSource varchar(255)
 DECLARE @RetentionDate datetime
 
-SELECT @RetentionDate=DATEADD(MONTH, -3, GETDATE()) 
+SELECT @RetentionDate=DATEADD(MONTH, -1, GETDATE()) 
 
 SET @DataSource='dastprStorConnection'
 
