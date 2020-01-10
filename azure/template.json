@@ -36,8 +36,8 @@
             "defaultValue": "Standard"
         },
         "serverlessAutoPauseDelay": {
-            "type": "int",
-            "defaultValue": 480
+            "type": "string",
+            "defaultValue": "480"
         },
         "logAnalyticsSubscriptionId": {
             "type": "string",
