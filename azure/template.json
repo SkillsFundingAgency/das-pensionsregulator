@@ -35,6 +35,10 @@
             "type": "string",
             "defaultValue": "Standard"
         },
+        "serverlessAutoPauseDelay": {
+            "type": "string",
+            "defaultValue": "480"
+        },
         "logAnalyticsSubscriptionId": {
             "type": "string",
             "defaultValue": "[subscription().subscriptionId]"
@@ -230,6 +234,9 @@
                     },
                     "databaseTier": {
                         "value": "[parameters('databaseTier')]"
+                    },
+                    "serverlessAutoPauseDelay": {
+                        "value": "[parameters('serverlessAutoPauseDelay')]"
                     },
                     "logAnalyticsSubscriptionId": {
                         "value": "[parameters('logAnalyticsSubscriptionId')]"
