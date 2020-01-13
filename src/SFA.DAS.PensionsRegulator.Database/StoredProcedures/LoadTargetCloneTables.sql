@@ -40,35 +40,52 @@ select @DateStamp =  CAST(CAST(YEAR(GETDATE()) AS VARCHAR)+RIGHT('0' + RTRIM(cas
 
   /* Insert Organisation Table */
 
-  --set xact_abort on
+  set xact_abort on
 
-  --IF ((SELECT COUNT(*) FROM dbo.Staging_TPR) > 4500000) --- Checking if the No. Of Valid Records Count are within the threshold, If not don't refresh
+  IF ((SELECT COUNT(*) FROM Tpr.Staging_Data) > 4500000) --- Checking if the No. Of Valid Records Count are within the threshold, If not don't refresh
 
-  --BEGIN
+  BEGIN
 
   --BEGIN TRANSACTION
 
-  /* Drop Existing Indexes */
+  /* Drop Existing Indexes and Rebuild later after the load is complete */
 
-  --DROP INDEX IF EXISTS NCI_Organisation_AORN ON shadow.Organisation
+  DROP INDEX IF EXISTS NCI_Organisation_AORN ON ShadowTpr.Organisation
 
-  --DROP INDEX IF EXISTS NCI_Organisation_PAYEScheme ON shadow.OrganisationPAYEScheme
+  DROP INDEX IF EXISTS NCI_Organisation_PAYEScheme ON ShadowTpr.OrganisationPAYEScheme
 
-  --DROP INDEX IF EXISTS NCI_Organisation_SK ON shadow.Organisation
+  DROP INDEX IF EXISTS NCI_Organisation_SK ON ShadowTpr.Organisation
 
-  --DROP INDEX IF EXISTS NCI_Organisation_SK ON shadow.OrganisationAddress
+  DROP INDEX IF EXISTS NCI_Organisation_SK ON ShadowTpr.OrganisationAddress
 
-  --DROP INDEX IF EXISTS NCI_Organisation_SK ON shadow.OrganisationPAYEScheme
+  DROP INDEX IF EXISTS NCI_Organisation_SK ON ShadowTpr.OrganisationPAYEScheme
+
+  --ALTER INDEX PK_Org_OrgSK ON Shadow.Organisation DISABLE
+
+  --ALTER INDEX PK_OrgAdd_OrgAddSK ON Shadow.OrganisationAddress DISABLE;  
+
+  --ALTER INDEX PK_OrgPAYEScheme_OrgSchemeSK ON Shadow.OrganisationPAYEScheme DISABLE;  
 
   /* Clear Existing Tables before Load */
   
-  DELETE FROM shadow.OrganisationPAYEScheme
-  DELETE FROM shadow.OrganisationAddress
-  DELETE FROM shadow.Organisation
+  TRUNCATE TABLE ShadowTpr.OrganisationPAYEScheme
+  TRUNCATE TABLE ShadowTpr.OrganisationAddress
+  TRUNCATE TABLE ShadowTpr.Organisation
   
+  /* Break down the Insert Statement */
+
+	--DECLARE @SourceSK INT
+ --   DECLARE @Loop INT
+
+ --   SET @SourceSK = 0
+ --   SET @Loop = 1
+
+ --   WHILE @Loop = 1
+ --   BEGIN
+   
   /* Start Data Load into Main Tables */
 
-  INSERT INTO [shadow].[Organisation]
+  INSERT INTO [ShadowTpr].[Organisation]
            ([TPRUniqueId]
            ,[OrganisationName]
            ,[DistrictNumber]
@@ -90,7 +107,8 @@ select @DateStamp =  CAST(CAST(YEAR(GETDATE()) AS VARCHAR)+RIGHT('0' + RTRIM(cas
            ,[RunId]
            ,[SourceFileName]
            ,[RecordCreatedDate])
-   SELECT  TPRUniqueID
+   SELECT  --TOP 100000
+           TPRUniqueID
           ,COALESCE(LTRIM(RTRIM(REPLACE(Name1,'NULL',''))),'')+' '+COALESCE(LTRIM(RTRIM(REPLACE(Name2,'NULL',''))),'')
 		  ,DistrictNumber
 		  ,Reference
@@ -123,23 +141,33 @@ select @DateStamp =  CAST(CAST(YEAR(GETDATE()) AS VARCHAR)+RIGHT('0' + RTRIM(cas
 		  ,RunID
 		  ,SourceFileName
 		  ,GETDATE()
-     FROM dbo.Staging_TPR
+     FROM Tpr.Staging_Data
 	WHERE IsValid=1
+	 -- AND SourceSK > @SourceSK
+  --  ORDER BY SourceSK
 
-   /* Log Record Counts */
-   INSERT INTO Mgmt.Log_Record_Counts
-   (LogId,RunId,SourceTableName,TargetTableName,SourceRecordCount,TargetRecordCount)
-   SELECT @LogID
-         ,@Run_Id
-		 ,'Staging_TPR'
-	     ,'Organisation-shadow'
-		 ,(SELECT COUNT(*) FROM dbo.Staging_TPR WHERE RunID=@Run_ID)
-         ,(SELECT COUNT(*) FROM shadow.Organisation WHERE RunId=@Run_ID)		                                   
+	
+  --  IF @@ROWCOUNT > 0 
+  --      SELECT @SourceSK = MAX(SOURCESK) 
+  --        FROM shadow.Organisation
+  --  ELSE
+  --      SET @Loop = 0
+
+		--PRINT @SOURCESK
+  --  END
+	
 
 
 /* Insert Organisation Address Table */
 
- INSERT INTO [shadow].[OrganisationAddress]
+
+    --SET @SourceSK = 0
+    --SET @Loop = 1
+
+    --WHILE @Loop = 1
+    --BEGIN
+
+ INSERT INTO [ShadowTpr].[OrganisationAddress]
            ([OrgSK]
            ,[TPRUniqueID]
            ,[OrganisationFullAddress]
@@ -161,7 +189,8 @@ select @DateStamp =  CAST(CAST(YEAR(GETDATE()) AS VARCHAR)+RIGHT('0' + RTRIM(cas
            ,[RunId]
            ,[SourceFileName]
            ,[RecordCreatedDate])
-  SELECT Org.OrgSK
+  SELECT --TOP 100000
+         Org.OrgSK
         ,Stpr.TPRUniqueID
 		,LTRIM(RTRIM(CASE WHEN Stpr.AddressLine1='NULL' THEN NULL ELSE Stpr.AddressLine1 END))+' ' 
 		+LTRIM(RTRIM(CASE WHEN Stpr.AddressLine2='NULL' THEN NULL ELSE Stpr.AddressLine2 END))+' '
@@ -190,29 +219,36 @@ select @DateStamp =  CAST(CAST(YEAR(GETDATE()) AS VARCHAR)+RIGHT('0' + RTRIM(cas
 		,stpr.SourceFileName
 		,getdate() as insertdate
 	--into #temp1
-    FROM dbo.Staging_TPR stpr
+    FROM Tpr.Staging_Data stpr
 	LEFT
-	JOIN shadow.Organisation Org
+	JOIN ShadowTpr.Organisation Org
 	  ON stpr.SourceSK=Org.SourceSK
 	 AND stpr.TPRUniqueID=Org.TPRUniqueId
    WHERE stpr.IsValid=1
+   --  AND stpr.SourceSK > @SourceSK
+   --ORDER BY stpr.SourceSK
+
+	
+   -- IF @@ROWCOUNT > 0 
+   --     SELECT @SourceSK = MAX(SOURCESK) 
+   --       FROM shadow.OrganisationAddress
+   -- ELSE
+   --     SET @Loop = 0
+   -- END
+	
+
    
-     /* Log Record Counts */
-   INSERT INTO Mgmt.Log_Record_Counts
-   (LogId,RunId,SourceTableName,TargetTableName,SourceRecordCount,TargetRecordCount)
-   SELECT @LogID
-         ,@Run_Id
-		 ,'Staging_TPR'
-	     ,'OrganisationAddress-shadow'
-		 ,(SELECT COUNT(*) FROM dbo.Staging_TPR WHERE RunID=@Run_ID)
-         ,(SELECT COUNT(*) FROM shadow.Organisation WHERE RunId=@Run_ID)		                                   
 
 
 
 	/* Insert into Organisation PAYEScheme */
+    --SET @SourceSK = 0
+    --SET @Loop = 1
 
+    --WHILE @Loop = 1
+    --BEGIN
 
-	INSERT INTO [shadow].[OrganisationPAYEScheme]
+	INSERT INTO [ShadowTpr].[OrganisationPAYEScheme]
            ([OrgSK]
            ,[TPRUniqueID]
            ,[PAYEScheme]
@@ -241,7 +277,8 @@ select @DateStamp =  CAST(CAST(YEAR(GETDATE()) AS VARCHAR)+RIGHT('0' + RTRIM(cas
            ,[RunId]
            ,[SourceFileName]
            ,[RecordCreatedDate])
-   SELECT Org.OrgSK
+   SELECT --TOP 100000
+          Org.OrgSK
          ,stpr.TPRUniqueId
 		 ,ltrim(rtrim(stpr.DistrictNumber))+'/'+ltrim(rtrim(stpr.Reference))
 		 ,CASE WHEN stpr.StartDate='NULL' THEN NULL ELSE CONVERT(VARCHAR,stpr.StartDate,23) END as SchemeStartDate
@@ -305,12 +342,44 @@ select @DateStamp =  CAST(CAST(YEAR(GETDATE()) AS VARCHAR)+RIGHT('0' + RTRIM(cas
          ,stpr.RunID
          ,stpr.SourceFileName
          ,getdate()
-     FROM dbo.Staging_TPR stpr
+     FROM Tpr.Staging_Data stpr
 	 LEFT
-	 JOIN shadow.Organisation Org
+	 JOIN ShadowTpr.Organisation Org
 	   ON stpr.SourceSK=Org.SourceSK
 	  AND stpr.TPRUniqueID=Org.TPRUniqueId
     WHERE stpr.IsValid=1
+	  --AND stpr.SourceSK > @SourceSK
+   -- ORDER BY stpr.SourceSK
+
+	
+   -- IF @@ROWCOUNT > 0 
+   --     SELECT @SourceSK = MAX(SOURCESK) 
+   --       FROM shadow.OrganisationPAYEScheme
+   -- ELSE
+   --     SET @Loop = 0
+   -- END
+	
+   /* Log Record Counts */
+   INSERT INTO Mgmt.Log_Record_Counts
+   (LogId,RunId,SourceTableName,TargetTableName,SourceRecordCount,TargetRecordCount)
+   SELECT @LogID
+         ,@Run_Id
+		 ,'Staging_TPR'
+	     ,'Organisation-shadow'
+		 ,(SELECT COUNT(*) FROM Tpr.Staging_Data WHERE RunID=@Run_ID)
+         ,(SELECT COUNT(*) FROM ShadowTpr.Organisation WHERE RunId=@Run_ID)	
+		 
+     /* Log Record Counts */
+   INSERT INTO Mgmt.Log_Record_Counts
+   (LogId,RunId,SourceTableName,TargetTableName,SourceRecordCount,TargetRecordCount)
+   SELECT @LogID
+         ,@Run_Id
+		 ,'Staging_TPR'
+	     ,'OrganisationAddress-shadow'
+		 ,(SELECT COUNT(*) FROM Tpr.Staging_Data WHERE RunID=@Run_ID)
+         ,(SELECT COUNT(*) FROM ShadowTpr.Organisation WHERE RunId=@Run_ID)		                                   
+		 	                                   
+
 
 /* Log Record Counts */
 
@@ -320,20 +389,27 @@ select @DateStamp =  CAST(CAST(YEAR(GETDATE()) AS VARCHAR)+RIGHT('0' + RTRIM(cas
          ,@Run_Id
          ,'Staging_TPR'
 	     ,'OrganisationPAYEScheme-shadow'
-	     ,(SELECT COUNT(*) FROM dbo.Staging_TPR WHERE RunID=@Run_ID)
-         ,(SELECT COUNT(*) FROM shadow.OrganisationPAYEScheme WHERE RunId=@Run_ID)	
+	     ,(SELECT COUNT(*) FROM Tpr.Staging_Data WHERE RunID=@Run_ID)
+         ,(SELECT COUNT(*) FROM ShadowTpr.OrganisationPAYEScheme WHERE RunId=@Run_ID)	
   
 /* Recreate Indexes after finishing Load */
 
---CREATE NONCLUSTERED  INDEX NCI_Organisation_AORN ON shadow.Organisation(AORN)
+CREATE NONCLUSTERED  INDEX NCI_Organisation_AORN ON ShadowTpr.Organisation(AORN)
 
---CREATE NONCLUSTERED  INDEX NCI_Organisation_PAYEScheme ON shadow.OrganisationPAYEScheme(PAYEScheme)
+CREATE NONCLUSTERED  INDEX NCI_Organisation_PAYEScheme ON ShadowTpr.OrganisationPAYEScheme(PAYEScheme)
 
---CREATE NONCLUSTERED INDEX NCI_Organisation_SK ON shadow.Organisation(TPRUniqueID,SourceSK)
+CREATE NONCLUSTERED INDEX NCI_Organisation_SK ON ShadowTpr.Organisation(TPRUniqueID,SourceSK)
 
---CREATE NONCLUSTERED  INDEX NCI_Organisation_SK ON shadow.OrganisationAddress(OrgSK,TPRUniqueId,SourceSK)  
+CREATE NONCLUSTERED  INDEX NCI_Organisation_SK ON ShadowTpr.OrganisationAddress(OrgSK,TPRUniqueId,SourceSK)  
 
---CREATE NONCLUSTERED  INDEX NCI_Organisation_SK ON shadow.OrganisationPAYEScheme(OrgSK,TPRUniqueId,SourceSK)  
+CREATE NONCLUSTERED  INDEX NCI_Organisation_SK ON ShadowTpr.OrganisationPAYEScheme(OrgSK,TPRUniqueId,SourceSK) 
+
+--ALTER INDEX PK_Org_OrgSK ON Shadow.Organisation REBUILD
+
+--ALTER INDEX PK_OrgAdd_OrgAddSK ON Shadow.OrganisationAddress REBUILD
+
+--ALTER INDEX PK_OrgPAYEScheme_OrgSchemeSK ON Shadow.OrganisationPAYEScheme REBUILD   
+
 
 /* Update Log Execution Results as Success if the query ran succesfully*/
 
@@ -346,45 +422,45 @@ UPDATE Mgmt.Log_Execution_Results
 
 --COMMIT TRANSACTION 
 
---END
---ELSE
---BEGIN
---  DECLARE @RangeErrorId int
+END
+ELSE
+BEGIN
+  DECLARE @RangeErrorId int
 
---  INSERT INTO Mgmt.Log_Error_Details
---	  (UserName
---	  ,ErrorNumber
---	  ,ErrorState
---	  ,ErrorSeverity
---	  ,ErrorLine
---	  ,ErrorProcedure
---	  ,ErrorMessage
---	  ,ErrorDateTime
---	  ,Run_Id
---	  )
---  SELECT 
---        SUSER_SNAME(),
---	    99999,
---	    ERROR_STATE(),
---	    9,
---	    ERROR_LINE(),
---	    'LoadTargetCloneTables' AS ErrorProcedure,
---	    'Valid Staged Records are less than expected',
---	    GETDATE(),
---		@Run_Id as RunId; 
+  INSERT INTO Mgmt.Log_Error_Details
+	  (UserName
+	  ,ErrorNumber
+	  ,ErrorState
+	  ,ErrorSeverity
+	  ,ErrorLine
+	  ,ErrorProcedure
+	  ,ErrorMessage
+	  ,ErrorDateTime
+	  ,Run_Id
+	  )
+  SELECT 
+        SUSER_SNAME(),
+	    99999,
+	    ERROR_STATE(),
+	    9,
+	    ERROR_LINE(),
+	    'LoadTargetCloneTables' AS ErrorProcedure,
+	    'Valid Staged Records are less than expected',
+	    GETDATE(),
+		@Run_Id as RunId; 
 
---  SELECT @RangeErrorId=MAX(ErrorId) FROM Mgmt.Log_Error_Details
+  SELECT @RangeErrorId=MAX(ErrorId) FROM Mgmt.Log_Error_Details
 
 /* Update Log Execution Results as Fail if there is an Error*/
 
---UPDATE Mgmt.Log_Execution_Results
---   SET Execution_Status=0
---      ,EndDateTime=getdate()
---	  ,ErrorId=@RangeErrorId
--- WHERE LogId=@LogID
---   AND RunID=@Run_Id
+UPDATE Mgmt.Log_Execution_Results
+   SET Execution_Status=0
+      ,EndDateTime=getdate()
+	  ,ErrorId=@RangeErrorId
+ WHERE LogId=@LogID
+   AND RunID=@Run_Id
 
---END
+END
 
 END TRY
 
@@ -429,6 +505,3 @@ UPDATE Mgmt.Log_Execution_Results
    AND RunID=@Run_Id
 
 END CATCH
-GO
-
-

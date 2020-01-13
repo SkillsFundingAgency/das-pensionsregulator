@@ -89,14 +89,15 @@
     <Build Include="Tables\ShadowOrganisationAddress.sql" />
     <Build Include="Tables\ShadowOrganisationPAYEScheme.sql" />
     <Build Include="Tables\SourceFileList.sql" />
-    <Build Include="Tables\Staging_TPR.sql" />
-    <Build Include="Tables\Staging_TPR_Rejected.sql" />
-    <Build Include="Tables\TPR_StagingHistory.sql" />
+    <Build Include="Tables\Staging_Data.sql" />
+    <Build Include="Tables\Staging_Data_Rejected.sql" />
+    <Build Include="Tables\StagingHistory.sql" />
     <Build Include="Tables\Data_Validation_Rules.sql" />
     <Build Include="Schema\Mgmt.sql" />
-    <Build Include="Schema\Shadow.sql" />
+    <Build Include="Schema\ShadowTpr.sql" />
     <Build Include="Schema\Swap.sql" />
     <Build Include="Views\LoadStatus.sql" />
+    <Build Include="Schema\Tpr.sql" />
   </ItemGroup>
   <ItemGroup>
     <PreDeploy Include="PreDeployment\PreDeployment.sql" />

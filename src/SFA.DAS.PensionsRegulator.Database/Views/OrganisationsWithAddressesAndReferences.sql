@@ -12,6 +12,6 @@ OrganisationAddress.AddressLine4 as AddressLine4,
 OrganisationAddress.AddressLine5 as AddressLine5,
 OrganisationAddress.PostCode as PostCode
 FROM
-Organisation JOIN
-OrganisationPAYEScheme on OrganisationPAYEScheme.OrgSK = Organisation.OrgSK LEFT JOIN
-OrganisationAddress on OrganisationAddress.OrgSK = OrganisationPAYEScheme.OrgSK
+Tpr.Organisation JOIN
+Tpr.OrganisationPAYEScheme on OrganisationPAYEScheme.OrgSK = Organisation.OrgSK LEFT JOIN
+Tpr.OrganisationAddress on OrganisationAddress.OrgSK = OrganisationPAYEScheme.OrgSK

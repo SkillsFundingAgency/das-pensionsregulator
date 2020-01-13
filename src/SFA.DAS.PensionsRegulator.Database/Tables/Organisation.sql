@@ -1,4 +1,4 @@
-﻿CREATE TABLE [dbo].[Organisation](
+﻿CREATE TABLE [Tpr].[Organisation](
 	[OrgSK] [bigint] IDENTITY(1,1) NOT NULL,
 	[TPRUniqueId] [bigint] NOT NULL,
 	[OrganisationName] [varchar](256) NULL,
@@ -21,12 +21,12 @@
 	[RunId] [bigint] NULL,
 	[SourceFileName] [varchar](255) NULL,
 	[RecordCreatedDate] [datetime2](7) DEFAULT(GETDATE()) NULL,
- CONSTRAINT [PK_Org_OrgSK] PRIMARY KEY CLUSTERED ([OrgSK] ASC),
- CONSTRAINT [Unq_Org_TPRUniqueID] UNIQUE NONCLUSTERED (TPRUniqueId Asc)
+ CONSTRAINT [PK_Org_OrgSK] PRIMARY KEY CLUSTERED([OrgSK] ASC)
 )
 GO
-CREATE NONCLUSTERED INDEX [NCI_Organisation_AORN] ON [dbo].[Organisation]([AORN] ASC)
+CREATE NONCLUSTERED INDEX [NCI_Organisation_AORN] ON [Tpr].[Organisation]([AORN] ASC)
 GO
-CREATE NONCLUSTERED INDEX [NCI_Organisation_SK] ON [dbo].[Organisation]([TPRUniqueId] ASC,[SourceSK] ASC)
+CREATE NONCLUSTERED INDEX [NCI_Organisation_SK] ON [Tpr].[Organisation]([TPRUniqueId] ASC,[SourceSK] ASC)
 GO
+
 

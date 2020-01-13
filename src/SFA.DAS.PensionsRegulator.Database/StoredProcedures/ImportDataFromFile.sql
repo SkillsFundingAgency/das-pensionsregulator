@@ -47,11 +47,12 @@ select @DateStamp =  CAST(CAST(YEAR(GETDATE()) AS VARCHAR)+RIGHT('0' + RTRIM(cas
 
   /* Truncate Staging Table */
 
-   DELETE FROM dbo.Staging_TPR
+  TRUNCATE TABLE Tpr.Staging_Data
 
   /* Drop Existing Index before the load */
 
-   -- DROP INDEX IF EXISTS NCI_Staging_TPR ON dbo.Staging_TPR
+   DROP INDEX IF EXISTS NCI_Staging_TPR ON Tpr.Staging_Data
+
 
 
 /* Get list of Files on Blob Storage and loop around to load the files into Staging */
@@ -71,7 +72,7 @@ select @DateStamp =  CAST(CAST(YEAR(GETDATE()) AS VARCHAR)+RIGHT('0' + RTRIM(cas
                  ,row_number() over (partition by FileName order by FileUploadedDateTime desc) rn
             from mgmt.SourceFileList) SFL
    WHERE Cast(FileUploadedDateTime as Date)
- BETWEEN Cast(DATEADD(DAY,-3,GETDATE()) as Date)
+ BETWEEN Cast(DATEADD(DAY,-6,GETDATE()) as Date)
      and Cast(GETDATE() as Date)
 	 and ISNULL(LoadedToStaging,0)<>1
 	 and ISNULL(FileProcessed,0)<>1
@@ -102,7 +103,7 @@ select @DateStamp =  CAST(CAST(YEAR(GETDATE()) AS VARCHAR)+RIGHT('0' + RTRIM(cas
 
      SET @ExecuteSQL1='
 
-	INSERT INTO [dbo].[Staging_TPR]
+	INSERT INTO [Tpr].[Staging_Data]
            ([RecordType1]
 		   ,[TPRUniqueID]
 		   ,[DistrictNumber]
@@ -237,7 +238,7 @@ SET @ExecuteSQL2='
 				                            ,FORMATFILE_DATA_SOURCE='''+@DataSource+'''
 		                                   ) AS tpr
            )
-		 ,(SELECT COUNT(*) FROM dbo.Staging_TPR WHERE SourceFileName='''+@FileName+''')
+		 ,(SELECT COUNT(*) FROM Tpr.Staging_Data WHERE SourceFileName='''+@FileName+''')
 
   /* Update Flag in SourceFileList as Loaded */
 
@@ -258,8 +259,9 @@ SET @ExecuteSQL2='
 
 /* Recreate the Index */
 
-  --CREATE NONCLUSTERED INDEX NCI_Staging_TPR
-  --    ON dbo.Staging_TPR(TPRUniqueID)
+  CREATE NONCLUSTERED INDEX NCI_Staging_TPR
+      ON Tpr.Staging_Data(TPRUniqueID)
+
 
 
 /* Update Log Execution Results as Success if the query ran succesfully*/

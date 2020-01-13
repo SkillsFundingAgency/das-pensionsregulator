@@ -26,3 +26,82 @@ END
 
 */
 
+/* Drop OrganisationAddress Table as it's replaced with Tpr.OrganistionAddress */
+
+IF EXISTS (SELECT * FROM INFORMATION_SCHEMA.TABLES
+            WHERE TABLE_NAME = N'OrganisationAddress'
+		      AND TABLE_SCHEMA=N'dbo'
+	      )
+DROP TABLE dbo.OrganisationAddress
+
+/* Drop OrganisationPAYEScheme Table as it's replaced with Tpr.OrganistionPAYEScheme */
+
+IF EXISTS (SELECT * FROM INFORMATION_SCHEMA.TABLES
+            WHERE TABLE_NAME = N'OrganisationPAYEScheme'
+		      AND TABLE_SCHEMA=N'dbo'
+	      )
+DROP TABLE dbo.OrganisationPAYEScheme
+
+/* Drop Organisation Table as it's replaced with Tpr.Organistion */
+
+IF EXISTS (SELECT * FROM INFORMATION_SCHEMA.TABLES
+            WHERE TABLE_NAME = N'Organisation'
+		      AND TABLE_SCHEMA=N'dbo'
+	      )
+DROP TABLE dbo.Organisation
+
+/* Drop OrganisationAddress Table as it's replaced with Tpr.OrganistionAddress */
+
+IF EXISTS (SELECT * FROM INFORMATION_SCHEMA.TABLES
+            WHERE TABLE_NAME = N'OrganisationAddress'
+		      AND TABLE_SCHEMA=N'shadow'
+	      )
+DROP TABLE Shadow.OrganisationAddress
+
+/* Drop OrganisationPAYEScheme Table as it's replaced with Tpr.OrganistionPAYEScheme */
+
+IF EXISTS (SELECT * FROM INFORMATION_SCHEMA.TABLES
+            WHERE TABLE_NAME = N'OrganisationPAYEScheme'
+		      AND TABLE_SCHEMA=N'shadow'
+	      )
+DROP TABLE Shadow.OrganisationPAYEScheme
+
+/* Drop Organisation Table as it's replaced with Tpr.Organistion */
+
+IF EXISTS (SELECT * FROM INFORMATION_SCHEMA.TABLES
+            WHERE TABLE_NAME = N'Organisation'
+		      AND TABLE_SCHEMA=N'shadow'
+	      )
+DROP TABLE Shadow.Organisation
+
+
+/* Drop Staging_TPR Table as it's replaced with Tpr.Staging_TPR */
+
+IF EXISTS (SELECT * FROM INFORMATION_SCHEMA.TABLES
+            WHERE TABLE_NAME = N'Staging_TPR'
+		      AND TABLE_SCHEMA=N'dbo'
+	      )
+DROP TABLE dbo.Staging_TPR
+
+/* Drop Staging_TPR_Rejected Table as it's replaced with Tpr.Staging_TPR_Rejected */
+
+IF EXISTS (SELECT * FROM INFORMATION_SCHEMA.TABLES
+            WHERE TABLE_NAME = N'Staging_TPR_Rejected'
+		      AND TABLE_SCHEMA=N'dbo'
+	      )
+DROP TABLE dbo.Staging_TPR_Rejected
+
+/* Drop Staging_TPR_Rejected Table as it's replaced with Tpr.Tpr_StaigingHistory */
+
+IF EXISTS (SELECT * FROM INFORMATION_SCHEMA.TABLES
+            WHERE TABLE_NAME = N'TPR_StagingHistory'
+		      AND TABLE_SCHEMA=N'dbo'
+	      )
+DROP TABLE dbo.TPR_StagingHistory
+
+
+
+
+
+
+

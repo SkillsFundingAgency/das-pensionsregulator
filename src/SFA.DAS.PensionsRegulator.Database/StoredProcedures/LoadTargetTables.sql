@@ -42,7 +42,7 @@ select @DateStamp =  CAST(CAST(YEAR(GETDATE()) AS VARCHAR)+RIGHT('0' + RTRIM(cas
 
   --set xact_abort on
 
-  IF ((SELECT COUNT(*) FROM dbo.Staging_TPR) > 4500000)
+  IF ((SELECT COUNT(*) FROM Tpr.Staging_Data) > 4500000)
 
   BEGIN
 
@@ -51,24 +51,24 @@ select @DateStamp =  CAST(CAST(YEAR(GETDATE()) AS VARCHAR)+RIGHT('0' + RTRIM(cas
   BEGIN
 
   --Swap schema
-ALTER SCHEMA swap TRANSFER dbo.Organisation;
-ALTER SCHEMA dbo TRANSFER shadow.Organisation;
-ALTER SCHEMA shadow TRANSFER swap.Organisation;
+ALTER SCHEMA swap TRANSFER Tpr.Organisation;
+ALTER SCHEMA Tpr TRANSFER ShadowTpr.Organisation;
+ALTER SCHEMA ShadowTpr TRANSFER swap.Organisation;
 
 
-ALTER SCHEMA swap TRANSFER dbo.OrganisationAddress;
-ALTER SCHEMA dbo TRANSFER shadow.OrganisationAddress;
-ALTER SCHEMA shadow TRANSFER swap.OrganisationAddress;
+ALTER SCHEMA swap TRANSFER Tpr.OrganisationAddress;
+ALTER SCHEMA Tpr TRANSFER ShadowTpr.OrganisationAddress;
+ALTER SCHEMA ShadowTpr TRANSFER swap.OrganisationAddress;
 
-ALTER SCHEMA swap TRANSFER dbo.OrganisationPAYEScheme;
-ALTER SCHEMA dbo TRANSFER shadow.OrganisationPAYEScheme;
-ALTER SCHEMA shadow TRANSFER swap.OrganisationPAYEScheme;
+ALTER SCHEMA swap TRANSFER Tpr.OrganisationPAYEScheme;
+ALTER SCHEMA Tpr TRANSFER ShadowTpr.OrganisationPAYEScheme;
+ALTER SCHEMA ShadowTpr TRANSFER swap.OrganisationPAYEScheme;
 
 
 
-DELETE FROM shadow.OrganisationAddress
-DELETE FROM shadow.OrganisationPAYEScheme
-DELETE FROM shadow.Organisation
+TRUNCATE TABLE ShadowTpr.OrganisationAddress
+TRUNCATE TABLE ShadowTpr.OrganisationPAYEScheme
+TRUNCATE TABLE ShadowTpr.Organisation
 
 
 END
@@ -139,6 +139,3 @@ UPDATE Mgmt.Log_Execution_Results
    AND RunID=@Run_Id
 
 END CATCH
-GO
-
-

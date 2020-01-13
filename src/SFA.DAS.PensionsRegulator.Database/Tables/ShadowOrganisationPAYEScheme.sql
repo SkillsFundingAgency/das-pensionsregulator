@@ -1,7 +1,7 @@
-﻿CREATE TABLE [Shadow].[OrganisationPAYEScheme](
+﻿CREATE TABLE [ShadowTpr].[OrganisationPAYEScheme](
 	[OrgSchemeSK] [bigint] IDENTITY(1,1) NOT NULL,
 	[OrgSK] [bigint] NULL,
-	[TPRUniqueID] [bigint] UNIQUE NOT NULL,
+	[TPRUniqueID] [bigint] NOT NULL,
 	[PAYEScheme] [varchar](100) NULL,
 	[SchemeStartDate] [date] NULL,
 	[SchemeEndDate] [date] NULL,
@@ -28,17 +28,16 @@
 	[SourceFileName] [varchar](255) NULL,
 	[RecordCreatedDate] [datetime2](7) DEFAULT(GETDATE()) NULL,
 	[SignalCodeDesc] [varchar](256) NULL,
-    CONSTRAINT [PK_OrgPAYEScheme_OrgSchemeSK] PRIMARY KEY CLUSTERED (OrgSchemeSK ASC),
-    CONSTRAINT [FK_OrganisationPAYEScheme_OrgSK] FOREIGN KEY (OrgSK) REFERENCES Shadow.[Organisation](OrgSK)
+    CONSTRAINT [PK_OrgPAYEScheme_OrgSchemeSK] PRIMARY KEY CLUSTERED (OrgSchemeSK ASC)
 	)
 
 GO
-CREATE NONCLUSTERED INDEX [NCI_Organisation_PAYEScheme] ON [Shadow].[OrganisationPAYEScheme]
+CREATE NONCLUSTERED INDEX [NCI_Organisation_PAYEScheme] ON [ShadowTpr].[OrganisationPAYEScheme]
 (
 	[PAYEScheme] ASC
 )
 GO
-CREATE NONCLUSTERED INDEX [NCI_Organisation_SK] ON [Shadow].[OrganisationPAYEScheme]
+CREATE NONCLUSTERED INDEX [NCI_Organisation_SK] ON [ShadowTpr].[OrganisationPAYEScheme]
 (
 	[OrgSK] ASC,
 	[TPRUniqueID] ASC,

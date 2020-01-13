@@ -1,4 +1,5 @@
-﻿CREATE TABLE [dbo].[Staging_TPR](
+﻿
+CREATE TABLE [Tpr].[StagingHistory](
 	[RecordType1] [varchar](256) NULL,
 	[TPRUniqueID] [varchar](256) NULL,
 	[DistrictNumber] [varchar](256) NULL,
@@ -19,10 +20,11 @@
 	[UniqueRefDistrict] [varchar](256) NULL,
 	[UniqueReference] [varchar](256) NULL,
 	[RecordType2] [varchar](256) NULL,
+	[AddressId] [varchar](256) NULL,
 	[Name1] [nvarchar](256) NULL,
 	[Name2] [nvarchar](256) NULL,
 	[TelephoneNumber] [varchar](256) NULL,
-	[EmailAddress] [nvarchar](256) MASKED WITH (FUNCTION = 'email()') NULL,
+	[EmailAddress] [nvarchar](256) NULL,
 	[AddressType] [varchar](256) NULL,
 	[ADI] [varchar](256) NULL,
 	[AddressLine1] [varchar](256) NULL,
@@ -50,17 +52,14 @@
 	[EEC_Code] [varchar](256) NULL,
 	[DateTaken] [varchar](256) NULL,
 	[NumberCounted] [varchar](256) NULL,
-	[SourceSK] [int] IDENTITY(1,1) NOT NULL,
+	[SourceSK] [int] NOT NULL,
 	[SourceFileName] [varchar](256) NULL,
 	[RunID] [int] NULL,
-	[IsValid] [bit] DEFAULT(1) NULL,
+	[IsValid] [bit] NULL,
 	[InvalidReason] [varchar](512) NULL,
-	[RecordCreatedDate] [datetime2](7) DEFAULT(getdate()) NULL,
- CONSTRAINT [PK_Staging_SourceSK] PRIMARY KEY CLUSTERED (SourceSK ASC)
-  )
-go
-CREATE NONCLUSTERED INDEX NCI_Staging_TPR
-      ON dbo.Staging_TPR(TPRUniqueID)
-
+	[RecordCreatedDate] [datetime2](7) DEFAULT(getdate()) NULL
+) 
 GO
+
+
 

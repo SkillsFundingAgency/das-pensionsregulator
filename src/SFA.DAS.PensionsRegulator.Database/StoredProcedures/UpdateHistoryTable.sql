@@ -42,7 +42,7 @@ select @DateStamp =  CAST(CAST(YEAR(GETDATE()) AS VARCHAR)+RIGHT('0' + RTRIM(cas
 
 /* Update History Table with Latest Processed File */
 
-INSERT INTO [dbo].[TPR_StagingHistory]
+INSERT INTO [Tpr].[StagingHistory]
            ([RecordType1]
            ,[TPRUniqueID]
            ,[DistrictNumber]
@@ -157,9 +157,9 @@ INSERT INTO [dbo].[TPR_StagingHistory]
            ,[IsValid]
            ,[InvalidReason]
            ,[RecordCreatedDate]
-	FROM dbo.Staging_TPR stpr
+	FROM Tpr.Staging_Data stpr
    WHERE NOT EXISTS (SELECT 1
-                       FROM dbo.TPR_StagingHistory tsh
+                       FROM Tpr.StagingHistory tsh
 					  WHERE tsh.SourceSK=stpr.SourceSK
 					    AND tsh.RunId=stpr.RunID)
 
@@ -171,8 +171,8 @@ INSERT INTO [dbo].[TPR_StagingHistory]
          ,@Run_Id
 		 ,'Staging_TPR'
 	     ,'TPR_StagingHistory'
-		 ,(SELECT COUNT(*) FROM dbo.Staging_TPR WHERE RunID=@Run_ID)
-         ,(SELECT COUNT(*) FROM dbo.TPR_StagingHistory WHERE RunId=@Run_ID)	
+		 ,(SELECT COUNT(*) FROM Tpr.Staging_Data WHERE RunID=@Run_ID)
+         ,(SELECT COUNT(*) FROM Tpr.StagingHistory WHERE RunId=@Run_ID)	
   
 						
 
@@ -183,13 +183,13 @@ INSERT INTO [dbo].[TPR_StagingHistory]
  (ToDeleteRID INT)
 
  INSERT INTO @ToDeleteRunId(ToDeleteRID)
- SELECT RunId 
-   FROM dbo.TPR_StagingHistory TPRHist
+ SELECT distinct RunId 
+   FROM Tpr.StagingHistory TPRHist
   WHERE RecordCreatedDate < @RetentionDate
 
  DELETE TPRHist
-   FROM dbo.TPR_StagingHistory TPRHist
-  WHERE RecordCreatedDate < @RetentionDate
+   FROM Tpr.StagingHistory TPRHist
+  WHERE RunID in (SELECT ToDeleteRID FROM @ToDeleteRunId)
 
  UPDATE SFL
     SET SFL.FileRemovedFromHistory=1
