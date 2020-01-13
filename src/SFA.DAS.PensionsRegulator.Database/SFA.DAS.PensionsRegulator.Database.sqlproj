@@ -89,8 +89,8 @@
     <Build Include="Tables\ShadowOrganisationAddress.sql" />
     <Build Include="Tables\ShadowOrganisationPAYEScheme.sql" />
     <Build Include="Tables\SourceFileList.sql" />
-    <Build Include="Tables\Staging_Data.sql" />
-    <Build Include="Tables\Staging_Data_Rejected.sql" />
+    <Build Include="Tables\StagingData.sql" />
+    <Build Include="Tables\StagingDataRejected.sql" />
     <Build Include="Tables\StagingHistory.sql" />
     <Build Include="Tables\Data_Validation_Rules.sql" />
     <Build Include="Schema\Mgmt.sql" />

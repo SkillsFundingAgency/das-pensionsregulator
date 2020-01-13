@@ -42,7 +42,7 @@ select @DateStamp =  CAST(CAST(YEAR(GETDATE()) AS VARCHAR)+RIGHT('0' + RTRIM(cas
 
   set xact_abort on
 
-  IF ((SELECT COUNT(*) FROM Tpr.Staging_Data) > 4500000) --- Checking if the No. Of Valid Records Count are within the threshold, If not don't refresh
+  IF ((SELECT COUNT(*) FROM Tpr.StagingData) > 4500000) --- Checking if the No. Of Valid Records Count are within the threshold, If not don't refresh
 
   BEGIN
 
@@ -141,7 +141,7 @@ select @DateStamp =  CAST(CAST(YEAR(GETDATE()) AS VARCHAR)+RIGHT('0' + RTRIM(cas
 		  ,RunID
 		  ,SourceFileName
 		  ,GETDATE()
-     FROM Tpr.Staging_Data
+     FROM Tpr.StagingData
 	WHERE IsValid=1
 	 -- AND SourceSK > @SourceSK
   --  ORDER BY SourceSK
@@ -219,7 +219,7 @@ select @DateStamp =  CAST(CAST(YEAR(GETDATE()) AS VARCHAR)+RIGHT('0' + RTRIM(cas
 		,stpr.SourceFileName
 		,getdate() as insertdate
 	--into #temp1
-    FROM Tpr.Staging_Data stpr
+    FROM Tpr.StagingData stpr
 	LEFT
 	JOIN ShadowTpr.Organisation Org
 	  ON stpr.SourceSK=Org.SourceSK
@@ -342,7 +342,7 @@ select @DateStamp =  CAST(CAST(YEAR(GETDATE()) AS VARCHAR)+RIGHT('0' + RTRIM(cas
          ,stpr.RunID
          ,stpr.SourceFileName
          ,getdate()
-     FROM Tpr.Staging_Data stpr
+     FROM Tpr.StagingData stpr
 	 LEFT
 	 JOIN ShadowTpr.Organisation Org
 	   ON stpr.SourceSK=Org.SourceSK
@@ -364,9 +364,9 @@ select @DateStamp =  CAST(CAST(YEAR(GETDATE()) AS VARCHAR)+RIGHT('0' + RTRIM(cas
    (LogId,RunId,SourceTableName,TargetTableName,SourceRecordCount,TargetRecordCount)
    SELECT @LogID
          ,@Run_Id
-		 ,'Staging_TPR'
+		 ,'StagingData'
 	     ,'Organisation-shadow'
-		 ,(SELECT COUNT(*) FROM Tpr.Staging_Data WHERE RunID=@Run_ID)
+		 ,(SELECT COUNT(*) FROM Tpr.StagingData WHERE RunID=@Run_ID)
          ,(SELECT COUNT(*) FROM ShadowTpr.Organisation WHERE RunId=@Run_ID)	
 		 
      /* Log Record Counts */
@@ -374,9 +374,9 @@ select @DateStamp =  CAST(CAST(YEAR(GETDATE()) AS VARCHAR)+RIGHT('0' + RTRIM(cas
    (LogId,RunId,SourceTableName,TargetTableName,SourceRecordCount,TargetRecordCount)
    SELECT @LogID
          ,@Run_Id
-		 ,'Staging_TPR'
+		 ,'StagingData'
 	     ,'OrganisationAddress-shadow'
-		 ,(SELECT COUNT(*) FROM Tpr.Staging_Data WHERE RunID=@Run_ID)
+		 ,(SELECT COUNT(*) FROM Tpr.StagingData WHERE RunID=@Run_ID)
          ,(SELECT COUNT(*) FROM ShadowTpr.Organisation WHERE RunId=@Run_ID)		                                   
 		 	                                   
 
@@ -387,9 +387,9 @@ select @DateStamp =  CAST(CAST(YEAR(GETDATE()) AS VARCHAR)+RIGHT('0' + RTRIM(cas
    (LogId,RunId,SourceTableName,TargetTableName,SourceRecordCount,TargetRecordCount)
    SELECT @LogID
          ,@Run_Id
-         ,'Staging_TPR'
+         ,'StagingData'
 	     ,'OrganisationPAYEScheme-shadow'
-	     ,(SELECT COUNT(*) FROM Tpr.Staging_Data WHERE RunID=@Run_ID)
+	     ,(SELECT COUNT(*) FROM Tpr.StagingData WHERE RunID=@Run_ID)
          ,(SELECT COUNT(*) FROM ShadowTpr.OrganisationPAYEScheme WHERE RunId=@Run_ID)	
   
 /* Recreate Indexes after finishing Load */

@@ -1,4 +1,4 @@
-﻿CREATE TABLE [Tpr].[Staging_Data](
+﻿CREATE TABLE [Tpr].[StagingData](
 	[RecordType1] [varchar](256) NULL,
 	[TPRUniqueID] [varchar](256) NULL,
 	[DistrictNumber] [varchar](256) NULL,
@@ -60,6 +60,6 @@
   )
 go
 CREATE NONCLUSTERED INDEX NCI_Staging_TPR
-      ON Tpr.Staging_Data(TPRUniqueID)
+      ON Tpr.StagingData(TPRUniqueID)
 GO
 

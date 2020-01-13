@@ -40,7 +40,7 @@ select @DateStamp =  CAST(CAST(YEAR(GETDATE()) AS VARCHAR)+RIGHT('0' + RTRIM(cas
   /* Delete any existing rejected rows for the same Run id */
 
   DELETE STPR
-    FROM Tpr.Staging_Data_Rejected STPR
+    FROM Tpr.StagingDataRejected STPR
    WHERE STPR.RunId=@Run_ID
 
 /* String Tests */
@@ -70,14 +70,14 @@ select @DateStamp =  CAST(CAST(YEAR(GETDATE()) AS VARCHAR)+RIGHT('0' + RTRIM(cas
 			WHILE @@FETCH_STATUS = 0
 			BEGIN
 				   SET @SQL='
-				   INSERT INTO Tpr.Staging_Data_Rejected
+				   INSERT INTO Tpr.StagingDataRejected
 				  ( SourceSK,RunId, ColumnName, TestName, ErrorMessage ) 
 				   SELECT SourceSK,
 				          RunId,
      					'''+ @ColumnName + ''' AS ColumnName, 
 						'''+ @TestName + ''' AS TestName,
 						'''+ @ErrorMessage +' Actual: '' + CAST(LEN('+ @ColumnName + ')AS VARCHAR(255))+ '' Against spec size: '+CAST(@columnLength AS VARCHAR(255)) + ''' AS ErrorMessage
-					FROM Tpr.Staging_Data
+					FROM Tpr.StagingData
 				   WHERE LEN(REPLACE('+ @ColumnName + ',''NULL'',''''))  >'+  CAST(@ColumnLength AS varchar(255)) +''
 	   
 				EXEC (@SQL)
@@ -111,14 +111,14 @@ print 'STRING TESTS COMPLETE'
 			WHILE @@FETCH_STATUS = 0
 			BEGIN
 				   SET @SQL='
-				   INSERT INTO Tpr.Staging_Data_Rejected
+				   INSERT INTO Tpr.StagingDataRejected
 				  ( SourceSK,RunId, ColumnName, TestName, ErrorMessage ) 
 				   SELECT SourceSK,
 				          RunId,
      					'''+ @ColumnName + ''' AS ColumnName, 
 						'''+ @TestName + ''' AS TestName,
 						'''+ @ErrorMessage +' Actual: '' + CAST(LEN('+ @ColumnName + ')AS VARCHAR(255))+ '' Against spec size: '+CAST(@columnLength AS VARCHAR(255)) + ''' AS ErrorMessage
-					FROM Tpr.Staging_Data
+					FROM Tpr.StagingData
 				   WHERE LEN(REPLACE('+ @ColumnName + ',''NULL'',''''))  <>'+  CAST(@ColumnLength AS varchar(255)) +''
 	   
 				EXEC (@SQL)
@@ -156,14 +156,14 @@ print 'STRING FIXED LENGTH TESTS COMPLETE'
 			WHILE @@FETCH_STATUS = 0
 			BEGIN
 				   SET @SQL='
-				   INSERT INTO Tpr.Staging_Data_Rejected
+				   INSERT INTO Tpr.StagingDataRejected
 				  ( SourceSK,RunId, ColumnName, TestName, ErrorMessage ) 
 				   SELECT SourceSK,
 				          RunId,
 						'''+ @ColumnName + ''' AS ColumnName, 
 						'''+ @TestName + ''' AS TestName,
 						'''+ @ErrorMessage +''' AS ErrorMessage
-					FROM Tpr.Staging_Data
+					FROM Tpr.StagingData
 				   WHERE '+ @ColumnName + ' IS NULL
 				      OR '+@ColumnName+'=''NULL''
 	             '
@@ -200,14 +200,14 @@ print 'STRING not null tests COMPLETE'
 			WHILE @@FETCH_STATUS = 0
 			BEGIN
 				SET @SQL='
-				INSERT INTO Tpr.Staging_Data_Rejected
+				INSERT INTO Tpr.StagingDataRejected
 				 ( SourceSK,RunId,ColumnName, TestName, ErrorMessage ) 
 				SELECT SourceSK,
 				       RunID,
 					'''+ @ColumnName + ''' AS ColumnName, 
 					'''+ @TestName + ''' AS TestName,
 					'''+ @ErrorMessage +' Actual: ''+ CAST('+ @ColumnName +' AS VARCHAR(255)) +'' Expected Decimal Places: '+ CAST(@ColumnPrecision  AS VARCHAR(255)) +''' AS ErrorMessage, 
-				FROM Tpr.Staging_Data
+				FROM Tpr.StagingData
 				WHERE ISNUMERIC(COALESCE(LTRIM(RTRIM('+ @ColumnName + ')),''0'')) = 1
 					AND LEN('+ @ColumnName + ') > 0
 					AND (CHARINDEX(''.'','+ @ColumnName + ',1) =  0
@@ -248,7 +248,7 @@ print 'DECIMAL TESTS COMPLETE'
 			WHILE @@FETCH_STATUS = 0
 			BEGIN
 				SET @SQL='
-			   INSERT INTO Tpr.Staging_Data_Rejected
+			   INSERT INTO Tpr.StagingDataRejected
 					  ( SourceSK,RunId,ColumnName, TestName, ErrorMessage
 					  ) 
 			   SELECT SourceSK
@@ -256,7 +256,7 @@ print 'DECIMAL TESTS COMPLETE'
 					,'''+ @ColumnName + ''' AS ColumnName
 				    , '''+ @TestName + ''' AS TestName
 					, '''+ @ErrorMessage +' Actual: ''+['+@ColumnName+'] AS ErrorMessage
-     			 FROM Tpr.Staging_Data
+     			 FROM Tpr.StagingData
 				WHERE (ISNUMERIC(COALESCE(LTRIM(RTRIM(REPLACE('+ @ColumnName + ',''NULL'',''-1''))),''-1'')) = 0 )
 				  or (CAST(REPLACE('+ @ColumnName +' ,''NULL'',-1) AS BIGINT) > '+@ColumnMaxValue+')
 				  or (CAST(REPLACE('+ @ColumnName +',''NULL'',-1) AS BIGINT) < '+@ColumnMinValue+')
@@ -298,7 +298,7 @@ print 'NUMERIC TESTS COMPLETE'
 			WHILE @@FETCH_STATUS = 0
 			BEGIN
 				SET @SQL='
-			   INSERT INTO Tpr.Staging_Data_Rejected
+			   INSERT INTO Tpr.StagingDataRejected
 					  ( SourceSK,RunId,ColumnName, TestName, ErrorMessage
 					  ) 
 			   SELECT SourceSK
@@ -306,7 +306,7 @@ print 'NUMERIC TESTS COMPLETE'
 					,'''+ @ColumnName + ''' AS ColumnName
 				    , '''+ @TestName + ''' AS TestName
 					, '''+ @ErrorMessage +' Actual: ''+['+@ColumnName+'] AS ErrorMessage
-     			 FROM Tpr.Staging_Data
+     			 FROM Tpr.StagingData
 				WHERE (ISNUMERIC(COALESCE(LTRIM(RTRIM(REPLACE('+ @ColumnName + ',''NULL'',''-1''))),''-1'')) = 0 )
 				   or (LEN(REPLACE('+ @ColumnName + ',''NULL'',''''))  <>'+  CAST(@ColumnLength AS varchar(255)) +')
 
@@ -346,7 +346,7 @@ print 'NUMERIC FIXED LENGTH TESTS COMPLETE'
 			WHILE @@FETCH_STATUS = 0
 			BEGIN
 				SET @SQL='
-				INSERT INTO Tpr.Staging_Data_Rejected
+				INSERT INTO Tpr.StagingDataRejected
 					  ( SourceSK,RunId, ColumnName, TestName, ErrorMessage
 					  ) 
 			   SELECT SourceSK
@@ -354,7 +354,7 @@ print 'NUMERIC FIXED LENGTH TESTS COMPLETE'
 					,'''+ @ColumnName + ''' AS ColumnName
 				    , '''+ @TestName + ''' AS TestName
 					, '''+ @ErrorMessage +' Actual: ''+['+@ColumnName+'] AS ErrorMessage
-     			 FROM Tpr.Staging_Data
+     			 FROM Tpr.StagingData
 				WHERE '+ @ColumnName + ' IS NULL
 				      OR LTRIM(RTRIM('+@ColumnName+'))=''NULL''
  
@@ -396,7 +396,7 @@ print 'NUMERIC NOT  NULL TESTS COMPLETE'
 			WHILE @@FETCH_STATUS = 0
 			BEGIN
 				SET @SQL='
-				INSERT INTO Tpr.Staging_Data_Rejected
+				INSERT INTO Tpr.StagingDataRejected
 					  ( SourceSK,RunId, ColumnName, TestName, ErrorMessage
 					  ) 
 			   SELECT SourceSK
@@ -404,7 +404,7 @@ print 'NUMERIC NOT  NULL TESTS COMPLETE'
 					,'''+ @ColumnName + ''' AS ColumnName
 				    , '''+ @TestName + ''' AS TestName
 					, '''+ @ErrorMessage +' Actual: ''+['+@ColumnName+'] AS ErrorMessage
-     			 FROM Tpr.Staging_Data
+     			 FROM Tpr.StagingData
 				WHERE ISDATE(COALESCE(LTRIM(RTRIM(REPLACE(REPLACE('+ @ColumnName + ',''NULL'',''1900-01-01''),''0001-01-01'',''1973-01-01''))),''1900-01-01'')) = 0 	  
 					   '
 				
@@ -426,8 +426,8 @@ print 'DATE NULLABLE TESTS COMPLETE'
    UPDATE STPR
       SET STPR.IsValid=0
 	     ,STPR.InvalidReason=STPRR.ErrorMessage
-	 FROM Tpr.Staging_Data STPR
-	 JOIN Tpr.Staging_Data_Rejected STPRR
+	 FROM Tpr.StagingData STPR
+	 JOIN Tpr.StagingDataRejected STPRR
 	   ON STPR.SourceSK=STPRR.SourceSK
 	  AND STPR.RunID=STPRR.RunId
 
@@ -448,11 +448,11 @@ UPDATE Mgmt.Log_Execution_Results
    (LogId,RunId,SourceTableName,TargetTableName,SourceRecordCount,TargetRecordCount,InvalidRecordCount)
    SELECT @LogID
          ,@Run_Id
-		 ,'Staging_TPR'
-	     ,'Staging_TPR_Rejected'
-		 ,(SELECT COUNT(*) FROM Tpr.Staging_Data WHERE RunID=@Run_ID)
-		 ,(SELECT COUNT(*) FROM Tpr.Staging_Data WHERE RunID=@Run_ID and IsValid=0)
-         ,(SELECT COUNT(DISTINCT SourceSK) FROM Tpr.Staging_Data_Rejected WHERE RunId=@Run_ID)		                                   
+		 ,'StagingData'
+	     ,'StagingDataRejected'
+		 ,(SELECT COUNT(*) FROM Tpr.StagingData WHERE RunID=@Run_ID)
+		 ,(SELECT COUNT(*) FROM Tpr.StagingData WHERE RunID=@Run_ID and IsValid=0)
+         ,(SELECT COUNT(DISTINCT SourceSK) FROM Tpr.StagingDataRejected WHERE RunId=@Run_ID)		                                   
 
 
 

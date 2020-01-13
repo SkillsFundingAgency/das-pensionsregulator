@@ -47,11 +47,11 @@ select @DateStamp =  CAST(CAST(YEAR(GETDATE()) AS VARCHAR)+RIGHT('0' + RTRIM(cas
 
   /* Truncate Staging Table */
 
-  TRUNCATE TABLE Tpr.Staging_Data
+  TRUNCATE TABLE Tpr.StagingData
 
   /* Drop Existing Index before the load */
 
-   DROP INDEX IF EXISTS NCI_Staging_TPR ON Tpr.Staging_Data
+   DROP INDEX IF EXISTS NCI_Staging_TPR ON Tpr.StagingData
 
 
 
@@ -103,7 +103,7 @@ select @DateStamp =  CAST(CAST(YEAR(GETDATE()) AS VARCHAR)+RIGHT('0' + RTRIM(cas
 
      SET @ExecuteSQL1='
 
-	INSERT INTO [Tpr].[Staging_Data]
+	INSERT INTO [Tpr].[StagingData]
            ([RecordType1]
 		   ,[TPRUniqueID]
 		   ,[DistrictNumber]
@@ -229,7 +229,7 @@ SET @ExecuteSQL2='
    SELECT '''+CAST(@LogID AS VARCHAR(15))+'''
          ,'''+CAST(@Run_Id AS VARCHAR(15))+'''
 		 ,'''+@FileName+'''
-	     ,''Staging_TPR''
+	     ,''StagingData''
 		 ,(SELECT COUNT(*) FROM OPENROWSET (
 		                                     BULK '''+@FileName+'''
 		                                    ,DATA_SOURCE='''+@DataSource+'''
@@ -238,7 +238,7 @@ SET @ExecuteSQL2='
 				                            ,FORMATFILE_DATA_SOURCE='''+@DataSource+'''
 		                                   ) AS tpr
            )
-		 ,(SELECT COUNT(*) FROM Tpr.Staging_Data WHERE SourceFileName='''+@FileName+''')
+		 ,(SELECT COUNT(*) FROM Tpr.StagingData WHERE SourceFileName='''+@FileName+''')
 
   /* Update Flag in SourceFileList as Loaded */
 
@@ -260,7 +260,7 @@ SET @ExecuteSQL2='
 /* Recreate the Index */
 
   CREATE NONCLUSTERED INDEX NCI_Staging_TPR
-      ON Tpr.Staging_Data(TPRUniqueID)
+      ON Tpr.StagingData(TPRUniqueID)
 
 
 

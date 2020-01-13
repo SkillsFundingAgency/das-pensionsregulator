@@ -42,7 +42,7 @@ select @DateStamp =  CAST(CAST(YEAR(GETDATE()) AS VARCHAR)+RIGHT('0' + RTRIM(cas
 
   --set xact_abort on
 
-  IF ((SELECT COUNT(*) FROM Tpr.Staging_Data) > 4500000)
+  IF ((SELECT COUNT(*) FROM Tpr.StagingData) > 4500000)
 
   BEGIN
 

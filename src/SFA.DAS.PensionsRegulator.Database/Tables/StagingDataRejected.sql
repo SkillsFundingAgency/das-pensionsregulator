@@ -1,4 +1,4 @@
-﻿CREATE TABLE [Tpr].[Staging_Data_Rejected](
+﻿CREATE TABLE [Tpr].[StagingDataRejected](
 	[SourceSK] [bigint] NULL,
 	[RunId] [bigint] NULL,
 	[ColumnName] [varchar](256) NULL,

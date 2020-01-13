@@ -157,7 +157,7 @@ INSERT INTO [Tpr].[StagingHistory]
            ,[IsValid]
            ,[InvalidReason]
            ,[RecordCreatedDate]
-	FROM Tpr.Staging_Data stpr
+	FROM Tpr.StagingData stpr
    WHERE NOT EXISTS (SELECT 1
                        FROM Tpr.StagingHistory tsh
 					  WHERE tsh.SourceSK=stpr.SourceSK
@@ -169,9 +169,9 @@ INSERT INTO [Tpr].[StagingHistory]
    (LogId,RunId,SourceTableName,TargetTableName,SourceRecordCount,TargetRecordCount)
    SELECT @LogID
          ,@Run_Id
-		 ,'Staging_TPR'
-	     ,'TPR_StagingHistory'
-		 ,(SELECT COUNT(*) FROM Tpr.Staging_Data WHERE RunID=@Run_ID)
+		 ,'StagingData'
+	     ,'StagingHistory'
+		 ,(SELECT COUNT(*) FROM Tpr.StagingData WHERE RunID=@Run_ID)
          ,(SELECT COUNT(*) FROM Tpr.StagingHistory WHERE RunId=@Run_ID)	
   
 						
