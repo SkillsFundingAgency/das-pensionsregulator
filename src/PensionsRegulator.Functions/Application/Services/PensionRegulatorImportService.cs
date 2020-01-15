@@ -5,6 +5,8 @@ using Microsoft.Extensions.Logging;
 using PensionsRegulator.Functions.Domain.Data;
 using PensionsRegulator.Functions.Domain.Services;
 
+
+
 namespace PensionsRegulator.Functions.Application.Services
 {
     public class PensionRegulatorImportService : IPensionRegulatorImportService
@@ -20,7 +22,8 @@ namespace PensionsRegulator.Functions.Application.Services
 
         public void ProcessFiles()
         {
-            _pensionRegulatorRepository.LoadPensionRegulatorFile();
+            var ExecProc = System.Threading.Tasks.Task.Factory.StartNew(() => _pensionRegulatorRepository.LoadPensionRegulatorFile());
+            ExecProc.Wait();
         }
 
         public void RegisterNewTrpFile(string fileName)
