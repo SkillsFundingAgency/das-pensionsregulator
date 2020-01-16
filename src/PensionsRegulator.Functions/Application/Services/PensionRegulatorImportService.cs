@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading;
 using System.Collections.Generic;
 using System.Text;
 using Microsoft.Extensions.Logging;
@@ -22,8 +23,8 @@ namespace PensionsRegulator.Functions.Application.Services
 
         public void ProcessFiles()
         {
-            var ExecProc = System.Threading.Tasks.Task.Factory.StartNew(() => _pensionRegulatorRepository.LoadPensionRegulatorFile());
-            ExecProc.Wait();
+            _pensionRegulatorRepository.LoadPensionRegulatorFile();
+            Thread.Sleep(3600);
         }
 
         public void RegisterNewTrpFile(string fileName)
