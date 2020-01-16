@@ -27,7 +27,7 @@ namespace PensionsRegulator.Functions
         {
             _log = log;
 
-            _log.LogInformation("HttpProcessNewPensionRegulatorFiles Http trigger function processed a request.");
+            _log.LogInformation("HttpProcessNewPensionRegulatorFiles Http trigger function processed a request.Test");
 
             TriggerPensionRegulatorFileImport();
         }
