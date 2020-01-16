@@ -31,8 +31,8 @@ namespace PensionsRegulator.Functions.Infrastructure.Data
                 }
                 catch (Exception e)
                 {
-                    _logger.LogError("SP execution of LoadTPRFile Failed:", e);
-                    throw;
+                    //_logger.LogError("SP execution of LoadTPRFile Failed:", e);
+                    throw new ArithmeticException($"SP execution of LoadTPRFile Failed: {e}");
                 }
             }
 
