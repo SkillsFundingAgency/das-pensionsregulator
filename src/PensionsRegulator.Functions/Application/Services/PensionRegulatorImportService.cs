@@ -24,7 +24,6 @@ namespace PensionsRegulator.Functions.Application.Services
         public void ProcessFiles()
         {
             _pensionRegulatorRepository.LoadPensionRegulatorFile();
-            Thread.Sleep(3600);
         }
 
         public void RegisterNewTrpFile(string fileName)
