@@ -1,4 +1,4 @@
-﻿CREATE TABLE [Tpr].[OrganisationPAYEScheme](
+﻿CREATE TABLE [ShadowTpr].[OrganisationPAYEScheme](
 	[OrgSchemeSK] [bigint] IDENTITY(1,1) NOT NULL,
 	[OrgSK] [bigint] NULL,
 	[TPRUniqueID] [bigint] NOT NULL,
@@ -32,15 +32,18 @@
 	)
 
 GO
-CREATE NONCLUSTERED INDEX [NCI_Organisation_PAYEScheme] ON [Tpr].[OrganisationPAYEScheme]
+CREATE NONCLUSTERED INDEX [NCI_Organisation_PAYEScheme] ON [ShadowTpr].[OrganisationPAYEScheme]
 (
 	[PAYEScheme] ASC
 )
 GO
-CREATE NONCLUSTERED INDEX [NCI_Organisation_SK] ON [Tpr].[OrganisationPAYEScheme]
+CREATE NONCLUSTERED INDEX [NCI_Organisation_SK] ON [ShadowTpr].[OrganisationPAYEScheme]
 (
 	[OrgSK] ASC,
 	[TPRUniqueID] ASC,
 	[SourceSK] ASC
 )
 GO
+
+
+

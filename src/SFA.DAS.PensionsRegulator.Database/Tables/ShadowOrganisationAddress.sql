@@ -1,4 +1,4 @@
-﻿CREATE TABLE [Tpr].[OrganisationAddress](
+﻿CREATE TABLE [ShadowTpr].[OrganisationAddress](
 	[OrgAddSK] [bigint] IDENTITY(1,1) NOT NULL,
 	[OrgSK] [bigint] NULL,
 	[TPRUniqueID] [bigint] NOT NULL,
@@ -24,11 +24,10 @@
     CONSTRAINT [PK_OrgAdd_OrgAddSK] PRIMARY KEY CLUSTERED ([OrgAddSK] ASC)
 	)
 GO
-CREATE NONCLUSTERED INDEX [NCI_Organisation_SK] ON [Tpr].[OrganisationAddress]
+CREATE NONCLUSTERED INDEX [NCI_Organisation_SK] ON [ShadowTpr].[OrganisationAddress]
 (
 	[OrgSK] ASC,
 	[TPRUniqueID] ASC,
 	[SourceSK] ASC
 )
 GO
-
