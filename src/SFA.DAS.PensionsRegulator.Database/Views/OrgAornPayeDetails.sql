@@ -6,7 +6,7 @@ AS
           Org.OrganisationName              as OrganisationName
          ,OrgPAYE.SchemeEndDateCodeDesc     as OrganisationStatus
          ,OrgPAYE.PAYEScheme                as PayeRef
-         ,Org.AOReference                   as AORN
+         ,Org.AORN                          as AORN
          ,Org.TPRUniqueId                   as TPRUniqueKey
          ,OrgAdd.AddressLine1               as AddressLine1
          ,OrgAdd.AddressLine2               as AddressLine2
