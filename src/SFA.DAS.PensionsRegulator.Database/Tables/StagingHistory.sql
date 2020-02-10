@@ -60,6 +60,9 @@ CREATE TABLE [Tpr].[StagingHistory](
 	[RecordCreatedDate] [datetime2](7) DEFAULT(getdate()) NULL
 ) 
 GO
+CREATE NONCLUSTERED INDEX NCI_StagingHistory_TPR
+      ON Tpr.StagingHistory(RunID,SourceSK,RecordCreatedDate)
+GO
 
 
 

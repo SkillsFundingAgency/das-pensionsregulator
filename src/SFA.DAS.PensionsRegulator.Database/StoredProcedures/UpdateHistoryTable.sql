@@ -39,6 +39,11 @@ select @DateStamp =  CAST(CAST(YEAR(GETDATE()) AS VARCHAR)+RIGHT('0' + RTRIM(cas
    WHERE StoredProcedureName='UpdateHistoryTable'
      AND RunId=@Run_ID
 
+/* Drop and Re-Create Index */
+
+
+  DROP INDEX IF EXISTS NCI_StagingHistory_TPR ON Tpr.StagingHistory
+
 
 /* Update History Table with Latest Processed File */
 
@@ -158,10 +163,19 @@ INSERT INTO [Tpr].[StagingHistory]
            ,[InvalidReason]
            ,[RecordCreatedDate]
 	FROM Tpr.StagingData stpr
-   WHERE NOT EXISTS (SELECT 1
-                       FROM Tpr.StagingHistory tsh
-					  WHERE tsh.SourceSK=stpr.SourceSK
-					    AND tsh.RunId=stpr.RunID)
+   --WHERE NOT EXISTS (SELECT 1
+   --                    FROM Tpr.StagingHistory tsh
+			--		  WHERE tsh.SourceSK=stpr.SourceSK
+			--		    AND tsh.RunId=stpr.RunID)
+
+
+
+/* Create Index */
+
+CREATE INDEX NCI_StagingHistory_TPR ON Tpr.StagingHistory(RunId,SourceSK,RecordCreatedDate)
+
+
+
 
    /* Update Record Counts */
 
