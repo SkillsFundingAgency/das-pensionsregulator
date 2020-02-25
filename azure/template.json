@@ -339,10 +339,6 @@
                                 "value": "[reference('storage-account').outputs.storageConnectionString.value]"
                             },
                             {
-                                "name": "AzureWebJobsDashboard",
-                                "value": "[reference('storage-account').outputs.storageConnectionString.value]"
-                            },
-                            {
                                 "name": "APPINSIGHTS_INSTRUMENTATIONKEY",
                                 "value": "[reference('worker-app-insights').outputs.InstrumentationKey.value]"
                             },
@@ -353,6 +349,10 @@
                             {
                                 "name": "LoggingRedisConnectionString",
                                 "value": "[parameters('loggingRedisConnectionString')]"
+                            },
+                            {
+                                "name": "FUNCTIONS_WORKER_RUNTIME",
+                                "value": "dotnet"
                             }
                         ]
                     }
