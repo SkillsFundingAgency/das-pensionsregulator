@@ -170,13 +170,6 @@ INSERT INTO [Tpr].[StagingHistory]
 
 
 
-/* Create Index */
-
-CREATE INDEX NCI_StagingHistory_TPR ON Tpr.StagingHistory(RunId,SourceSK,RecordCreatedDate)
-
-
-
-
    /* Update Record Counts */
 
    INSERT INTO Mgmt.Log_Record_Counts
@@ -197,9 +190,10 @@ CREATE INDEX NCI_StagingHistory_TPR ON Tpr.StagingHistory(RunId,SourceSK,RecordC
  (ToDeleteRID INT)
 
  INSERT INTO @ToDeleteRunId(ToDeleteRID)
- SELECT distinct RunId 
-   FROM Tpr.StagingHistory TPRHist
-  WHERE RecordCreatedDate < @RetentionDate
+ SELECT DISTINCT RunId
+   FROM Mgmt.SourceFileList
+  WHERE FileProcessed=1
+    AND FileProcessedDate<@RetentionDate
 
  DELETE TPRHist
    FROM Tpr.StagingHistory TPRHist
@@ -209,6 +203,11 @@ CREATE INDEX NCI_StagingHistory_TPR ON Tpr.StagingHistory(RunId,SourceSK,RecordC
     SET SFL.FileRemovedFromHistory=1
    FROM Mgmt.SourceFileList SFL
   WHERE SFL.RunID IN (SELECT ToDeleteRID FROM @ToDeleteRunId)
+
+
+/* Create Index */
+
+CREATE INDEX NCI_StagingHistory_TPR ON Tpr.StagingHistory(RunId,SourceSK,RecordCreatedDate)
 
 
 /* Update Source File List as Processed */
