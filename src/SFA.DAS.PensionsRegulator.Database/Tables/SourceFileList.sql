@@ -5,6 +5,7 @@
 	[LoadedToStaging] [bit] NULL,
 	[StagingLoadDate] [datetime2](7) NULL,
 	[FileProcessed] [bit] NULL,
+	[FileProcessedDate] [datetime2](7) NULL,
 	[FileLoadedToHistory] [bit] NULL,
 	[FileRemovedFromHistory] [bit] DEFAULT(0) NULL,
 	[RunId] [bigint] NULL,

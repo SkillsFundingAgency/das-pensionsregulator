@@ -91,6 +91,7 @@ UPDATE Mgmt.Log_Execution_Results
 
 UPDATE SFL
    SET SFL.FileProcessed=1
+      ,SFL.FileProcessedDate=getdate()
   FROM Mgmt.SourceFileList SFL
  WHERE RunId=@Run_ID
   

@@ -33,7 +33,7 @@ namespace PensionsRegulator.Functions
         }
 
         [FunctionName("TimerProcessNewPensionRegulatorFiles")]
-        [Timeout("01:00:00")]
+        [Timeout("04:00:00")]
         public void RunTimer([TimerTrigger("%PensionRegulatorImportProcessTimer%")] TimerInfo myTimer, ILogger log)
         {
             _log = log;

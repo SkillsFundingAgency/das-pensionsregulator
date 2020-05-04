@@ -77,6 +77,14 @@ IF EXISTS (SELECT * FROM Mgmt.Log_Execution_Results where StoredProcedureName='U
 BEGIN
 RAISERROR( 'Updating History Table Failed-Check Log Table For Errors',1,1)
 END
+
+
+IF EXISTS (SELECT * FROM Mgmt.Log_Execution_Results where StoredProcedureName='UpdateHistoryTable' and Execution_Status=1 and RunId=@RunId)
+BEGIN
+UPDATE Mgmt.Log_RunId SET EndDateTime=getdate() Where Run_Id=@RunId
+END
+
+
 GO
 
 
