@@ -27,7 +27,7 @@ namespace PensionsRegulator.Functions.Infrastructure.Data
                 try
                 {
                     connection.Open();
-                    connection.Execute("LoadTPRFile", commandTimeout:3600, commandType: CommandType.StoredProcedure);
+                    connection.Execute("LoadTPRFile", commandType: CommandType.StoredProcedure);
                 }
                 catch (Exception e)
                 {
