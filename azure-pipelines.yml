@@ -26,10 +26,12 @@ jobs:
   workspace:
     clean: all  
   steps:
-  - task: gittools.gitversion.gitversion-task.GitVersion@4
+  - task: UseGitVersion@5
     displayName: GitVersion
     inputs:
-      updateAssemblyInfo: true
+      versionSpec: 5.x
+      useConfigFile: true
+      configFilePath: GitVersion.yml
 
   - task: DotNetCoreCLI@2
     displayName: dot restore
