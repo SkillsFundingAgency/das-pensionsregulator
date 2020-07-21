@@ -7,9 +7,6 @@ trigger:
 
 pr: none
 
-workspace:
-    clean: all
-
 variables:
   buildConfiguration: 'release'
   buildPlatform: 'anycpu'
@@ -22,75 +19,93 @@ resources:
     ref: refs/heads/master
     endpoint: "GitHub (SFA)"
 
-pool:
-  name: 'Continuous Integration 02 - SSD - 160ACU'
-  demands: 
-  - msbuild
-  - visualstudio
+jobs:
+- job: 'CodeBuild'
+  pool:
+    name: 'DAS - Continuous Integration'
+  workspace:
+    clean: all  
+  steps:
+  - task: gittools.gitversion.gitversion-task.GitVersion@4
+    displayName: GitVersion
+    inputs:
+      updateAssemblyInfo: true
 
-steps:
-- task: gittools.gitversion.gitversion-task.GitVersion@4
-  displayName: GitVersion
-  inputs:
-    updateAssemblyInfo: true
+  - task: DotNetCoreCLI@2
+    displayName: dot restore
+    inputs:
+      command: restore
+      projects: 'src/**/*.csproj'
+      noCache: true
 
-- task: DotNetCoreCLI@2
-  displayName: dot restore
-  inputs:
-    command: restore
-    projects: 'src/**/*.csproj'
-    noCache: true
+  - task: DotNetCoreCLI@2
+    displayName: dotnet build
+    inputs:
+      projects: 'src/**/*.csproj'
+      arguments: '--configuration $(buildConfiguration)  --no-restore'
+      
+  - task: DotNetCoreCLI@2
+    displayName: dotnet test
+    inputs:
+      command: test
+      projects: '**/*.UnitTests.csproj'
+      arguments: '--configuration $(buildConfiguration) --no-build'
 
-- task: DotNetCoreCLI@2
-  displayName: dotnet build
-  inputs:
-    projects: 'src/**/*.csproj'
-    arguments: '--configuration $(buildConfiguration)  --no-restore'
-    
-- task: DotNetCoreCLI@2
-  displayName: dotnet test
-  inputs:
-    command: test
-    projects: '**/*.UnitTests.csproj'
-    arguments: '--configuration $(buildConfiguration) --no-build'
+  - template: azure-pipelines-templates/dependency-check.yml@das-platform-building-blocks
 
-- template: azure-pipelines-templates/dependency-check.yml@das-platform-building-blocks
+  - task: DotNetCoreCLI@2
+    displayName: 'Publish Internal API'
+    inputs:
+      command: publish
+      publishWebProjects: false
+      projects: 'src/PensionsRegulatorApi/PensionsRegulatorApi.csproj'
+      arguments: '--configuration $(buildConfiguration) --output $(build.artifactstagingdirectory)/publish --no-restore  --no-build'
 
-- task: DotNetCoreCLI@2
-  displayName: 'Publish Internal API'
-  inputs:
-    command: publish
-    publishWebProjects: false
-    projects: 'src/PensionsRegulatorApi/PensionsRegulatorApi.csproj'
-    arguments: '--configuration $(buildConfiguration) --output $(build.artifactstagingdirectory)/publish --no-restore  --no-build'
+  - task: DotNetCoreCLI@2
+    displayName: 'Publish Function App'
+    inputs:
+      command: publish
+      publishWebProjects: false
+      projects: 'src/PensionsRegulator.Functions/PensionsRegulator.Functions.csproj'
+      arguments: '--configuration $(buildConfiguration) --output $(build.artifactstagingdirectory)/publish --no-restore  --no-build'
 
-- task: DotNetCoreCLI@2
-  displayName: 'Publish Function App'
-  inputs:
-    command: publish
-    publishWebProjects: false
-    projects: 'src/PensionsRegulator.Functions/PensionsRegulator.Functions.csproj'
-    arguments: '--configuration $(buildConfiguration) --output $(build.artifactstagingdirectory)/publish --no-restore  --no-build'
+  - task: CopyFiles@2
+    displayName: 'Copy Files to: $(build.artifactstagingdirectory)'
+    inputs:
+      Contents: |
+        azure/**
+        src/**/*.publish.xml
+      TargetFolder: '$(build.artifactstagingdirectory)/publish'
+      OverWrite: true
 
-- task: VSBuild@1
-  displayName: 'Build DACPAC'
-  inputs:
-    solution: 'src/SFA.DAS.PensionsRegulator.Database/SFA.DAS.PensionsRegulator.Database.sqlproj'
-    platform: '$(buildPlatform)'
-    configuration: '$(buildConfiguration)'
-    msbuildArgs: '/p:PackageLocation="$(build.artifactstagingdirectory)/publish"'
+  - task: PublishBuildArtifacts@1
+    displayName: 'Publish Artifact'
+    inputs:
+      PathtoPublish: '$(build.artifactstagingdirectory)/publish'
 
-- task: CopyFiles@2
-  displayName: 'Copy Files to: $(build.artifactstagingdirectory)'
-  inputs:
-    Contents: |
-     azure\**
-     src\**\*.dacpac
-     src\**\*.publish.xml
-    TargetFolder: '$(build.artifactstagingdirectory)/publish'
-    OverWrite: true
+- job: 'DACPACBuild'
+  pool:
+    name: 'DAS - Continuous Integration'
+    demands: Agent.OS -equals Windows_NT
+  workspace:
+    clean: all  
+  steps:
+  - task: VSBuild@1
+    displayName: 'Build DACPAC'
+    inputs:
+      solution: 'src/SFA.DAS.PensionsRegulator.Database/SFA.DAS.PensionsRegulator.Database.sqlproj'
+      platform: '$(buildPlatform)'
+      configuration: '$(buildConfiguration)'
+      msbuildArgs: '/p:PackageLocation="$(build.artifactstagingdirectory)/publish"'
 
-- task: PublishBuildArtifacts@1
-  displayName: 'Publish Artifact'
-  inputs:
-    PathtoPublish: '$(build.artifactstagingdirectory)/publish'
+  - task: CopyFiles@2
+    displayName: 'Copy Files to: $(build.artifactstagingdirectory)'
+    inputs:
+      Contents: |
+        src/**/*.dacpac
+      TargetFolder: '$(build.artifactstagingdirectory)/publish'
+
+  - task: PublishBuildArtifacts@1
+    displayName: 'Publish Artifact'
+    inputs:
+      PathtoPublish: '$(build.artifactstagingdirectory)/publish'
