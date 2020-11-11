@@ -30,6 +30,7 @@ namespace PensionsRegulatorApi
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddApplicationInsightsTelemetry();
             services.AddADAuthentication(Configuration);
             services.AddMvc(options => {
                 if (!Environment.IsDevelopment())
@@ -57,6 +58,7 @@ namespace PensionsRegulatorApi
             services.AddMediatR(typeof(GetOrganisationsByPayeRef).Assembly);
             services.AddTransient<IOrganisationRepository, SqlOrganisationRepository>();
             services.Configure<ConnectionStrings>(Configuration.GetSection("ConnectionStrings"));
+            services.AddHealthChecks();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -75,6 +77,7 @@ namespace PensionsRegulatorApi
             app.UseHttpsRedirection();
             app.UseAuthentication();
             app.UseMvc();
+            app.UseHealthChecks("/health");
             app.UseSwagger();
 
             app.UseSwaggerUI(c =>
