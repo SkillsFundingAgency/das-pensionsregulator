@@ -36,8 +36,7 @@ namespace PensionsRegulator.Functions
 
             builder.AddConfiguration((configBuilder) =>
             {
-                var tempConfig = configBuilder
-                    .Build();
+                var tempConfig = configBuilder.AddEnvironmentVariables().Build();
 
                 var configuration = configBuilder
                     //.AddJsonFile("local.settings.json", optional: true, reloadOnChange: true)
