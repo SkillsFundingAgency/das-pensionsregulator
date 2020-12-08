@@ -98,6 +98,7 @@
     <Build Include="Schema\Swap.sql" />
     <Build Include="Views\LoadStatus.sql" />
     <Build Include="Schema\Tpr.sql" />
+    <Build Include="Tables\SrcFileRejectedRecords.sql" />
   </ItemGroup>
   <ItemGroup>
     <PreDeploy Include="PreDeployment\PreDeployment.sql" />
