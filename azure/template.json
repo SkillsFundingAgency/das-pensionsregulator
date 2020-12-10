@@ -24,9 +24,6 @@
         "sharedSqlServerName": {
             "type": "string"
         },
-        "sharedSqlResourceGroup": {
-            "type": "string"
-        },
         "elasticPoolName": {
             "type": "string",
             "defaultValue": ""
