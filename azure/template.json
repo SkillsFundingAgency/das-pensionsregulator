@@ -110,6 +110,9 @@
         },
         "subnetDelegations": {
             "type": "array"
+        },
+        "sharedBackEndSubnetResourceId": {
+            "type": "string"
         }
     },
     "variables": {
@@ -197,6 +200,9 @@
                     },
                     "appServicePlanResourceGroup": {
                         "value": "[parameters('sharedEnvResourceGroup')]"
+                    },
+                    "subnetResourceId": {
+                        "value": "[parameters('sharedBackEndSubnetResourceId')]"
                     },
                     "appServiceAppSettings": {
                         "value": {
