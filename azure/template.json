@@ -53,14 +53,6 @@
         "configurationStorageConnectionString": {
             "type": "securestring"
         },
-        "configNames": {
-            "type": "string",
-            "defaultValue": "SFA.DAS.PensionsRegulator.Functions"
-        },
-        "configurationVersion": {
-            "type": "string",
-            "defaultValue": "1.0"
-        },
         "loggingRedisConnectionString": {
             "type": "securestring"
         },
@@ -71,45 +63,17 @@
         "internalApiCertificateName": {
             "type": "string"
         },
-        "workerAspSize": {
-            "type": "string",
-            "defaultValue": "1"
-        },
-        "workerAspInstances": {
-            "type": "int",
-            "defaultValue": 2
-        },
-        "workerAspTier": {
-            "type": "string",
-            "defaultValue": "Basic"
-        },
         "keyVaultName": {
             "type": "string"
         },
         "storageAccountContainerArray": {
             "type": "array"
         },
-        "functionsExtensionVersion": {
-            "type": "string",
-            "defaultValue": "~3"
-        },
         "resourceGroupLocation": {
             "type": "string"
         },
         "tags": {
             "type": "object"
-        },
-        "sharedEnvVirtualNetworkName": {
-            "type": "string"
-        },
-        "workerSubnetObject": {
-            "type": "object"
-        },
-        "subnetServiceEndpointList": {
-            "type": "array"
-        },
-        "subnetDelegations": {
-            "type": "array"
         },
         "sharedBackEndSubnetResourceId": {
             "type": "string"
@@ -119,8 +83,6 @@
         "deploymentUrlBase": "https://raw.githubusercontent.com/SkillsFundingAgency/das-platform-building-blocks/master/templates/",
         "resourceNamePrefix": "[toLower(concat('das-', parameters('resourceEnvironmentName'),'-', parameters('serviceName')))]",
         "internalApiAppServiceName": "[concat(variables('resourceNamePrefix'), 'intapi-as')]",
-        "workerFunctionAppName": "[concat(variables('resourceNamePrefix'), 'wkr-fa')]",
-        "workerAppServicePlanName": "[concat(variables('resourceNamePrefix'), 'wkr-asp')]",
         "databaseName": "[concat(variables('resourceNamePrefix'), '-db')]",
         "storageAccountName": "[toLower(concat('das', parameters('resourceEnvironmentName'), parameters('serviceName'), 'str'))]",
         "resourceGroupName": "[concat(variables('resourceNamePrefix'), '-rg')]"
@@ -291,160 +253,7 @@
                     }
                 }
             }
-        },
-        {
-            "apiVersion": "2020-06-01",
-            "name": "worker-app-insights",
-            "type": "Microsoft.Resources/deployments",
-            "resourceGroup": "[variables('resourceGroupName')]",
-            "properties": {
-                "mode": "Incremental",
-                "templateLink": {
-                    "uri": "[concat(variables('deploymentUrlBase'),'application-insights.json')]",
-                    "contentVersion": "1.0.0.0"
-                },
-                "parameters": {
-                    "appInsightsName": {
-                        "value": "[variables('workerFunctionAppName')]"
-                    },
-                    "attachedService": {
-                        "value": "[variables('workerFunctionAppName')]"
-                    }
-                }
-            }
-        },
-        {
-            "apiVersion": "2020-06-01",
-            "name": "worker-app-service-plan",
-            "type": "Microsoft.Resources/deployments",
-            "resourceGroup": "[variables('resourceGroupName')]",
-            "properties": {
-                "mode": "Incremental",
-                "templateLink": {
-                    "uri": "[concat(variables('deploymentUrlBase'), 'app-service-plan.json')]",
-                    "contentVersion": "1.0.0.0"
-                },
-                "parameters": {
-                    "appServicePlanName": {
-                        "value": "[variables('workerAppServicePlanName')]"
-                    },
-                    "aspSize": {
-                        "value": "[parameters('workerAspSize')]"
-                    },
-                    "aspInstances": {
-                        "value": "[parameters('workerAspInstances')]"
-                    },
-                    "nonASETier": {
-                        "value": "[parameters('workerAspTier')]"
-                    }
-                }
-            }
-        },
-        {
-            "apiVersion": "2020-06-01",
-            "name": "worker-function-app",
-            "type": "Microsoft.Resources/deployments",
-            "resourceGroup": "[variables('resourceGroupName')]",
-            "properties": {
-                "mode": "Incremental",
-                "templateLink": {
-                    "uri": "[concat(variables('deploymentUrlBase'),'function-app-v2.json')]",
-                    "contentVersion": "1.0.0.0"
-                },
-                "parameters": {
-                    "functionAppName": {
-                        "value": "[variables('workerFunctionAppName')]"
-                    },
-                    "appServicePlanName": {
-                        "value": "[variables('workerAppServicePlanName')]"
-                    },
-                    "appServicePlanResourceGroup": {
-                        "value": "[variables('resourceGroupName')]"
-                    },
-                    "subnetResourceId": {
-                        "value": "[reference('worker-subnet').outputs.SubnetResourceId.value]"
-                    },
-                    "functionAppAppSettings": {
-                        "value": {
-                            "array": [
-                                {
-                                    "name": "ConfigurationStorageConnectionString",
-                                    "value": "[parameters('configurationStorageConnectionString')]"
-                                },
-                                {
-                                    "name": "EnvironmentName",
-                                    "value": "[parameters('environmentName')]"
-                                },
-                                {
-                                    "name": "ConfigNames",
-                                    "value": "[parameters('configNames')]"
-                                },
-                                {
-                                    "name": "ConfigurationVersion",
-                                    "value": "[parameters('configurationVersion')]"
-                                },
-                                {
-                                    "name": "AzureWebJobsStorage",
-                                    "value": "[reference('storage-account').outputs.storageConnectionString.value]"
-                                },
-                                {
-                                    "name": "APPINSIGHTS_INSTRUMENTATIONKEY",
-                                    "value": "[reference('worker-app-insights').outputs.InstrumentationKey.value]"
-                                },
-                                {
-                                    "name": "FUNCTIONS_EXTENSION_VERSION",
-                                    "value": "[parameters('functionsExtensionVersion')]"
-                                },
-                                {
-                                    "name": "LoggingRedisConnectionString",
-                                    "value": "[parameters('loggingRedisConnectionString')]"
-                                },
-                                {
-                                    "name": "FUNCTIONS_WORKER_RUNTIME",
-                                    "value": "dotnet"
-                                }
-                            ]
-                        }
-                    }
-                }
-            },
-            "dependsOn": [
-                "worker-app-service-plan",
-                "worker-app-insights",
-                "storage-account",
-                "worker-subnet"
-            ]
-        },
-        {
-            "apiVersion": "2020-06-01",
-            "name": "worker-subnet",
-            "resourceGroup": "[parameters('sharedEnvResourceGroup')]",
-            "type": "Microsoft.Resources/deployments",
-            "properties": {
-                "mode": "Incremental",
-                "templateLink": {
-                    "uri": "[concat(variables('deploymentUrlBase'),'subnet.json')]",
-                    "contentVersion": "1.0.0.0"
-                },
-                "parameters": {
-                    "virtualNetworkName": {
-                        "value": "[parameters('sharedEnvVirtualNetworkName')]"
-                    },
-                    "subnetName": {
-                        "value": "[parameters('workerSubnetObject').name]"
-                    },
-                    "subnetAddressPrefix": {
-                        "value": "[parameters('workerSubnetObject').addressSpace]"
-                    },
-                    "serviceEndpointList": {
-                        "value": "[parameters('subnetServiceEndpointList')]"
-                    },
-                    "delegations": {
-                        "value": "[parameters('subnetDelegations')]"
-                    }
-                }
-            }
-        },        
+        }, 
         {
             "apiVersion": "2020-06-01",
             "name": "storage-account",
@@ -500,10 +309,6 @@
         "InternalApiAppServiceName": {
             "type": "string",
             "value": "[variables('internalApiAppServiceName')]"
-        },
-        "WorkerFunctionAppName": {
-            "type": "string",
-            "value": "[variables('workerFunctionAppName')]"
         },
         "DatabaseName": {
             "type": "string",
