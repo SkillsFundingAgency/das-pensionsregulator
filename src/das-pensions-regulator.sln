@@ -9,11 +9,7 @@ Project("{00D1A9C2-B5F0-4AF3-8072-F6C62B433612}") = "SFA.DAS.PensionsRegulator.D
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SFA.DAS.PensionsRegulatorApi.UnitTests", "SFA.DAS.PensionsRegulatorApi.UnitTests\SFA.DAS.PensionsRegulatorApi.UnitTests.csproj", "{BFA06E64-2AE6-42B3-84D7-2BFE56930470}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PensionsRegulator.Functions", "PensionsRegulator.Functions\PensionsRegulator.Functions.csproj", "{DD3BC894-1AAD-4EFD-8145-256D5EF590BA}"
-EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{F2E18C36-6BBF-47AA-BC5F-209CF871F66B}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PensionRegulator.Functions.UnitTests", "PensionRegulator.Functions.UnitTests\PensionRegulator.Functions.UnitTests.csproj", "{05523E70-DFD1-4BCB-B415-CBF4EEDD8701}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -35,21 +31,12 @@ Global
 		{BFA06E64-2AE6-42B3-84D7-2BFE56930470}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{BFA06E64-2AE6-42B3-84D7-2BFE56930470}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{BFA06E64-2AE6-42B3-84D7-2BFE56930470}.Release|Any CPU.Build.0 = Release|Any CPU
-		{DD3BC894-1AAD-4EFD-8145-256D5EF590BA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{DD3BC894-1AAD-4EFD-8145-256D5EF590BA}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{DD3BC894-1AAD-4EFD-8145-256D5EF590BA}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{DD3BC894-1AAD-4EFD-8145-256D5EF590BA}.Release|Any CPU.Build.0 = Release|Any CPU
-		{05523E70-DFD1-4BCB-B415-CBF4EEDD8701}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{05523E70-DFD1-4BCB-B415-CBF4EEDD8701}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{05523E70-DFD1-4BCB-B415-CBF4EEDD8701}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{05523E70-DFD1-4BCB-B415-CBF4EEDD8701}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{BFA06E64-2AE6-42B3-84D7-2BFE56930470} = {F2E18C36-6BBF-47AA-BC5F-209CF871F66B}
-		{05523E70-DFD1-4BCB-B415-CBF4EEDD8701} = {F2E18C36-6BBF-47AA-BC5F-209CF871F66B}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {51416620-99B4-4685-88D3-E2CB4655E104}
