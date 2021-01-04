@@ -71,11 +71,8 @@
     <Build Include="StoredProcedures\GetOrganisationsByPAYEReferenceAndAORN.sql" />
     <Build Include="Views\OrganisationsWithAddressesAndReferences.sql" />
     <Build Include="StoredProcedures\GenerateRunId.sql" />
-    <Build Include="StoredProcedures\ImportDataFromFile.sql" />
-    <Build Include="StoredProcedures\LoadSrcFileDetails.sql" />
     <Build Include="StoredProcedures\LoadTargetCloneTables.sql" />
     <Build Include="StoredProcedures\LoadTargetTables.sql" />
-    <Build Include="StoredProcedures\LoadTPRFile.sql" />
     <Build Include="StoredProcedures\RunValidationChecks.sql" />
     <Build Include="StoredProcedures\UpdateHistoryTable.sql" />
     <Build Include="Tables\Log_Error_Details.sql" />

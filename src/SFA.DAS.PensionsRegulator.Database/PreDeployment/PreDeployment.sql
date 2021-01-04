@@ -99,6 +99,17 @@ IF EXISTS (SELECT * FROM INFORMATION_SCHEMA.TABLES
 	      )
 DROP TABLE dbo.TPR_StagingHistory
 
+/* Drop dbo.LoadTPRFile Stored Proc as it's not used in the New ADF Sol */
+
+DROP PROCEDURE IF EXISTS dbo.LoadTPRFile;  
+
+/* Drop dbo.LoadSrcFileDetails Stored Proc as it's not used in the New ADF Sol */
+
+DROP PROCEDURE IF EXISTS dbo.LoadSrcFileDetails;  
+
+/* Drop dbo.ImportDataFromFile Stored Proc as it's not used in the New ADF Sol */
+
+DROP PROCEDURE IF EXISTS dbo.ImportDataFromFile;  
 
 
 
