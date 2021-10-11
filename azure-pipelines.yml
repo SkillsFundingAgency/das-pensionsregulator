@@ -27,32 +27,11 @@ jobs:
   workspace:
     clean: all  
   steps:
-  - task: UseGitVersion@5
-    displayName: GitVersion
-    inputs:
-      versionSpec: 5.x
-      useConfigFile: true
-      configFilePath: GitVersion.yml
+  - template: azure-pipelines-templates/build/step/gitversion.yml@das-platform-building-blocks
 
-  - task: DotNetCoreCLI@2
-    displayName: dot restore
-    inputs:
-      command: restore
-      projects: 'src/**/*.csproj'
-      noCache: true
-
-  - task: DotNetCoreCLI@2
-    displayName: dotnet build
-    inputs:
-      projects: 'src/**/*.csproj'
-      arguments: '--configuration $(buildConfiguration)  --no-restore'
-      
-  - task: DotNetCoreCLI@2
-    displayName: dotnet test
-    inputs:
-      command: test
-      projects: '**/*.UnitTests.csproj'
-      arguments: '--configuration $(buildConfiguration) --no-build'
+  - template: azure-pipelines-templates/build/step/app-build.yml@das-platform-building-blocks
+    parameters:
+      SonarCloud: false
 
   - template: azure-pipelines-templates/build/step/dependency-check.yml@das-platform-building-blocks
 
