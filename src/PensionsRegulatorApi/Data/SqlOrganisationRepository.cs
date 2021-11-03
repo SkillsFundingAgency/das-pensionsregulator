@@ -1,20 +1,18 @@
-﻿using System;
+﻿using PensionsRegulatorApi.Domain;
+using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
-using Microsoft.Extensions.Options;
-using PensionsRegulatorApi.Configuration;
-using PensionsRegulatorApi.Domain;
 
 namespace PensionsRegulatorApi.Data
 {
     public class SqlOrganisationRepository : IOrganisationRepository
     {
-        private readonly string _connectionString;
+        private readonly IDbConnection _connection;
 
-        public SqlOrganisationRepository(IOptions<ConnectionStrings> connectionStrings)
+        public SqlOrganisationRepository(IDbConnection connection)
         {
-            _connectionString = connectionStrings.Value.PensionsRegulatorSql;
+            _connection = connection;
         }
 
         public IEnumerable<Organisation> GetOrganisationsForPAYEReference(string payeReference)
@@ -70,16 +68,13 @@ namespace PensionsRegulatorApi.Data
         {
             var retrievedOrganisations = new List<Organisation>(0);
 
-            using (var connection = new SqlConnection(_connectionString))
+            using (var command = commandToExecute(_connection as SqlConnection))
             {
-                connection.Open();
-                using (var command = commandToExecute(connection))
+                _connection.Open();
+                using (var reader = command.ExecuteReader())
                 {
-                    using (var reader = command.ExecuteReader())
-                    {
-                        while (reader.Read())
-                            retrievedOrganisations.Add(MapDataReaderToOrganisation(reader));
-                    }
+                    while (reader.Read())
+                        retrievedOrganisations.Add(MapDataReaderToOrganisation(reader));
                 }
             }
 
