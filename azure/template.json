@@ -96,7 +96,7 @@
             "tags": "[parameters('tags')]",
             "properties": {
             }
-        },        
+        },
         {
             "apiVersion": "2020-06-01",
             "name": "internal-api-app-insights",
@@ -253,7 +253,7 @@
                     }
                 }
             }
-        }, 
+        },
         {
             "apiVersion": "2020-06-01",
             "name": "storage-account",
@@ -268,6 +268,9 @@
                 "parameters": {
                     "storageAccountName": {
                         "value": "[variables('storageAccountName')]"
+                    },
+                    "allowSharedKeyAccess": {
+                        "value": true
                     }
                 }
             }
