@@ -9,12 +9,9 @@ namespace PensionsRegulatorApi.StartupConfiguration
     public static class DatabaseExtensions
     {
         private const string AzureResource = "https://database.windows.net/";
-        private static readonly NLog.Logger Logger = NLog.LogManager.GetCurrentClassLogger();
 
         public static void AddDatabaseRegistration(this IServiceCollection services, string environment, string connectionString)
         {
-            Logger.Info($"AddDatabaseRegistration: {environment}, {connectionString}");
-
             services.AddTransient<IDbConnection>(c => {
                 var azureServiceTokenProvider = new AzureServiceTokenProvider();
                 return environment.Equals("LOCAL", StringComparison.CurrentCultureIgnoreCase)
