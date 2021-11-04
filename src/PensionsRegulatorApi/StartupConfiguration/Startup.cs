@@ -32,10 +32,6 @@ namespace PensionsRegulatorApi.StartupConfiguration
                 .AddEnvironmentVariables()
                 .AddUserSecrets<Startup>();
 
-            config
-                .AddJsonFile("appsettings.json", true)
-                .AddJsonFile($"appSettings.{_environment.EnvironmentName}.json", optional: true, reloadOnChange: false);
-
             config.AddAzureTableStorage(options =>
             {
                 options.ConfigurationKeys = new[] { "SFA.DAS.PensionsRegulatorApi" };
