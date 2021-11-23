@@ -1,41 +1,55 @@
-﻿using System;
-using System.IO;
-using System.Reflection;
+﻿using MediatR;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Authorization;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using PensionsRegulatorApi.Application.Queries;
-using PensionsRegulatorApi.Security;
-using Swashbuckle.AspNetCore.Swagger;
-using MediatR;
-using PensionsRegulatorApi.Configuration;
-using PensionsRegulatorApi.Data;
 using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
+using PensionsRegulatorApi.Application.Queries;
+using PensionsRegulatorApi.Configuration;
+using PensionsRegulatorApi.Data;
+using PensionsRegulatorApi.Security;
+using SFA.DAS.Configuration.AzureTableStorage;
+using System;
+using System.IO;
+using System.Reflection;
 
-namespace PensionsRegulatorApi
+namespace PensionsRegulatorApi.StartupConfiguration
 {
     public class Startup
     {
+        private readonly IConfiguration _configuration;
+        private readonly IWebHostEnvironment _environment;
+
         public Startup(IConfiguration configuration, IWebHostEnvironment environment)
         {
-            Configuration = configuration;
-            Environment = environment;
-        }
+            _environment = environment;
 
-        public IConfiguration Configuration { get; }
-        public IWebHostEnvironment Environment { get; }
+            var config = new ConfigurationBuilder()
+                .AddConfiguration(configuration)
+                .SetBasePath(Directory.GetCurrentDirectory())
+                .AddEnvironmentVariables()
+                .AddUserSecrets<Startup>();
+
+            config.AddAzureTableStorage(options =>
+            {
+                options.ConfigurationKeys = new[] { "SFA.DAS.PensionsRegulatorApi" };
+                options.StorageConnectionString = configuration["ConfigurationStorageConnectionString"];
+                options.EnvironmentName = configuration["EnvironmentName"];
+                options.PreFixConfigurationKeys = false;
+            });
+
+            _configuration = config.Build();
+        }
 
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddADAuthentication(Configuration);
+            services.AddADAuthentication(_configuration);
             services.AddControllers(options =>
             {
-                if (!Environment.IsDevelopment())
+                if (!_environment.IsDevelopment())
                 {
                     options.Filters.Add(new AuthorizeFilter("default"));
                 }
@@ -75,7 +89,11 @@ namespace PensionsRegulatorApi
 
             services.AddMediatR(typeof(GetOrganisationsByPayeRef).Assembly);
             services.AddTransient<IOrganisationRepository, SqlOrganisationRepository>();
-            services.Configure<ConnectionStrings>(Configuration.GetSection("ConnectionStrings"));
+
+            services.AddDatabaseRegistration(_configuration["EnvironmentName"],
+                _configuration
+                    .GetSection("ConnectionStrings")
+                    .Get<ConnectionStrings>().PensionsRegulatorSql);
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
