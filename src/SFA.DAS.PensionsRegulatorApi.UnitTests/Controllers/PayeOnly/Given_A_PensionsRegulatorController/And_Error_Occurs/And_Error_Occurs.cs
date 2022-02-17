@@ -56,7 +56,7 @@ namespace SFA.DAS.PensionsRegulatorApi.UnitTests.Controllers.PayeOnly.Given_A_Pe
                             .EqualTo(_exceptionMessage),
                         () =>
                             SUT
-                                .Get(
+                                .PayeRef(
                                     PayeRef));
             }
         }

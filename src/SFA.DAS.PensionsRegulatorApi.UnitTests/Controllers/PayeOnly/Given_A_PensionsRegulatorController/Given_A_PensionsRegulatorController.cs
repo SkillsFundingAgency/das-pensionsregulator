@@ -63,7 +63,7 @@ namespace SFA.DAS.PensionsRegulatorApi.UnitTests.Controllers.PayeOnly.Given_A_Pe
                     =
                 await 
                 SUT
-                    .Get(
+                    .PayeRef(
                         PayeRef);
             }
 
@@ -95,6 +95,14 @@ namespace SFA.DAS.PensionsRegulatorApi.UnitTests.Controllers.PayeOnly.Given_A_Pe
                     .DidNotReceive()
                     .Send(
                         Arg.Any<GetOrganisationsByPayeRefAndAorn>());
+            }
+
+            [Test]
+            public void Then_Date_Is_Not_Retrieved_Using_Id_Only()
+            {
+                MockMediatr
+                    .DidNotReceive()
+                    .Send(Arg.Any<GetOrganisationById>());
             }
         }
     }

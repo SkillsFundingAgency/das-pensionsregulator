@@ -10,14 +10,9 @@ namespace PensionsRegulatorApi.Application.Queries
     {
         public GetOrganisationsByPayeRefAndAorn(string payeReference, string accountOfficeReferenceNumber)
         {
-            if (string.IsNullOrWhiteSpace(payeReference))
-                throw new ArgumentException(
-                    "Value cannot be null or whitespace.",
-                    nameof(payeReference));
-            if (string.IsNullOrWhiteSpace(accountOfficeReferenceNumber))
-                throw new ArgumentException(
-                    "Value cannot be null or whitespace.",
-                    nameof(accountOfficeReferenceNumber));
+            if (string.IsNullOrWhiteSpace(payeReference)) throw new ArgumentException("Value cannot be null or whitespace.", nameof(payeReference));
+            if (string.IsNullOrWhiteSpace(accountOfficeReferenceNumber)) throw new ArgumentException("Value cannot be null or whitespace.", nameof(accountOfficeReferenceNumber));
+
             PAYEReference = payeReference;
             AccountOfficeReferenceNumber = accountOfficeReferenceNumber;
         }
