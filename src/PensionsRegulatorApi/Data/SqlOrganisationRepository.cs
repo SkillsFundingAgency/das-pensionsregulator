@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
+using System.Linq;
 
 namespace PensionsRegulatorApi.Data
 {
@@ -100,6 +101,26 @@ namespace PensionsRegulatorApi.Data
                             Postcode = reader["PostCode"].ToString()
                         }
                 };
+        }
+
+        public Organisation GetOrganisationById(long tprUniqueKey)
+        {
+            return
+                RetrieveRowsAndMapToOrganisations(
+                    connection => new SqlCommand()
+                    {
+                        CommandText = @"[dbo].GetOrganisationByTPRUniqueKey",
+                        CommandType = CommandType.StoredProcedure,
+                        Connection = connection,
+                        Parameters =
+                        {
+                            new SqlParameter
+                            {
+                                ParameterName = "@TPRUniqueKey",
+                                Value = tprUniqueKey
+                            }
+                        }
+                    }).SingleOrDefault();
         }
     }
 }

@@ -96,6 +96,7 @@
     <Build Include="Views\LoadStatus.sql" />
     <Build Include="Schema\Tpr.sql" />
     <Build Include="Tables\SrcFileRejectedRecords.sql" />
+    <Build Include="StoredProcedures\GetOrganisationByTPRUniqueKey.sql" />
   </ItemGroup>
   <ItemGroup>
     <PreDeploy Include="PreDeployment\PreDeployment.sql" />
