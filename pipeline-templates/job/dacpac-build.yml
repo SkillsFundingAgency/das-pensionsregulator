@@ -1,0 +1,27 @@
+jobs:
+- job: 'DACPACBuild'
+  pool:
+    name: 'DAS - Continuous Integration'
+    demands: Agent.OS -equals Windows_NT
+  workspace:
+    clean: all  
+  steps:
+  - task: VSBuild@1
+    displayName: 'Build DACPAC'
+    inputs:
+      solution: 'src/SFA.DAS.PensionsRegulator.Database/SFA.DAS.PensionsRegulator.Database.sqlproj'
+      platform: '$(buildPlatform)'
+      configuration: '$(buildConfiguration)'
+      msbuildArgs: '/p:PackageLocation="$(build.artifactstagingdirectory)/publish"'
+
+  - task: CopyFiles@2
+    displayName: 'Copy Files to: $(build.artifactstagingdirectory)'
+    inputs:
+      Contents: |
+        src/**/*.dacpac
+      TargetFolder: '$(build.artifactstagingdirectory)/publish'
+
+  - task: PublishBuildArtifacts@1
+    displayName: 'Publish Artifact'
+    inputs:
+      PathtoPublish: '$(build.artifactstagingdirectory)/publish'
