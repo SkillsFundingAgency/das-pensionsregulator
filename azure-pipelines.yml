@@ -10,7 +10,7 @@ variables:
   - name: BuildConfiguration
     value: release
   - name: BuildPlatform
-    value: any cpu
+    value: anycpu
 
 resources:
   repositories:
