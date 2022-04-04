@@ -5,6 +5,13 @@ trigger:
     include:
       - "master"
 
+variables:
+  - group: BUILD Management Resources
+  - name: BuildConfiguration
+    value: release
+  - name: BuildPlatform
+    value: anycpu
+
 resources:
   repositories:
   - repository: das-platform-building-blocks
