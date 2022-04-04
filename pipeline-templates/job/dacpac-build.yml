@@ -10,8 +10,8 @@ jobs:
     displayName: 'Build DACPAC'
     inputs:
       solution: 'src/SFA.DAS.PensionsRegulator.Database/SFA.DAS.PensionsRegulator.Database.sqlproj'
-      platform: '$(buildPlatform)'
-      configuration: '$(buildConfiguration)'
+      platform: '$(BuildPlatform)'
+      configuration: '$(BuildConfiguration)'
       msbuildArgs: '/p:PackageLocation="$(build.artifactstagingdirectory)/publish"'
 
   - task: CopyFiles@2
