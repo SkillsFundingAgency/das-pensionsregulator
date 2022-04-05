@@ -49,6 +49,8 @@ namespace PensionsRegulatorApi.Controllers
                     return BadRequest(ModelState);
                 }
 
+                _logger.Log(LogLevel.Information, $"Get the organisation for pension regulator unique id: {id}");
+
                 var organisation = await _mediator.Send(new GetOrganisationById(id));
                 return organisation != null ? new ActionResult<Organisation>(organisation) : NotFound();
             }
@@ -87,6 +89,8 @@ namespace PensionsRegulatorApi.Controllers
                     return BadRequest(ModelState);
                 }
 
+                _logger.Log(LogLevel.Information, $"Get the organisation for PAYE reference: {payeRef}");
+
                 var organisations = await _mediator.Send(new GetOrganisationsByPayeRef(payeRef));
                 return organisations.Any() ? new ActionResult<IEnumerable<Organisation>>(organisations) : NotFound();
             }
@@ -100,6 +104,7 @@ namespace PensionsRegulatorApi.Controllers
         /// <summary>
         /// Gets the organisations from the pensions regulator for a given PAYE reference
         /// </summary>
+        /// <param name="aorn">The AORN reference from which to get matching organisations from the pensions regulator.</param>
         /// <param name="payeRef">The PAYE reference from which to get matching organisations from the pensions regulator.
         /// This needs to be a query parameter due to decoding of slash character
         /// <see cref="https://docs.microsoft.com/en-us/aspnet/core/web-api/?view=aspnetcore-2.2"/></param>
@@ -133,6 +138,8 @@ namespace PensionsRegulatorApi.Controllers
                 {
                     return BadRequest(ModelState);
                 }
+
+                _logger.Log(LogLevel.Information, $"Get the organisation for aorn: {aorn} and PAYE reference: {payeRef}");
 
                 var organisations = await _mediator.Send(new GetOrganisationsByPayeRefAndAorn(payeRef, aorn));
                 return organisations.Any() ? new ActionResult<IEnumerable<Organisation>>(organisations) : NotFound();
