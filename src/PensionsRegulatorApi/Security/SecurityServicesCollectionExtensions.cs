@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -9,7 +10,6 @@ namespace PensionsRegulatorApi.Security
     {
         public static void AddADAuthentication(this IServiceCollection services, IConfiguration configuration)
         {
-
             var activeDirectoryConfig = configuration.GetSection("ActiveDirectory").Get<ActiveDirectoryConfiguration>();
 
             services.AddAuthorization(o =>
@@ -17,8 +17,10 @@ namespace PensionsRegulatorApi.Security
                 o.AddPolicy("default", policy =>
                 {
                     policy.RequireAuthenticatedUser();
+                    policy.RequireRole("Default");
                 });
             });
+
             services.AddAuthentication(auth =>
             {
                 auth.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
@@ -28,14 +30,9 @@ namespace PensionsRegulatorApi.Security
                 auth.Authority = $"https://login.microsoftonline.com/{activeDirectoryConfig.Tenant}";
                 auth.TokenValidationParameters = new Microsoft.IdentityModel.Tokens.TokenValidationParameters
                 {
-                    ValidAudiences = new List<string>
-                    {
-                        activeDirectoryConfig.IdentifierUri,
-                        activeDirectoryConfig.AppId
-                    }
+                    ValidAudiences = activeDirectoryConfig.IdentifierUri.Split(",")
                 };
             });
-
         }
     }
 }
