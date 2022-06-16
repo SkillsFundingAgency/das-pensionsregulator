@@ -13,8 +13,6 @@ jobs:
     parameters:
         SonarCloudProjectKey: SkillsFundingAgency_das-pensionsregulator
 
-  - template: azure-pipelines-templates/build/step/dependency-check.yml@das-platform-building-blocks
-
   - task: DotNetCoreCLI@2
     displayName: 'Publish Internal API'
     inputs:
