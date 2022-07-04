@@ -209,12 +209,7 @@
                         "value": "[parameters('appServiceAllowedIPs')]"
                     }
                 }
-            },
-            "dependsOn": [
-                "[concat('internal-api-app-insights-', parameters('utcValue'))]",
-                "[concat('sql-database-', parameters('utcValue'))]",
-                "[concat('app-service-certificate-', parameters('utcValue'))]"
-            ]
+            }
         },
         {
             "apiVersion": "2020-06-01",
