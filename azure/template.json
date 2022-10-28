@@ -50,9 +50,6 @@
         "logAnalyticsWorkspaceName": {
             "type": "string"
         },
-        "storageAccountAllowedIPs": {
-            "type": "array"
-        },
         "configurationStorageConnectionString": {
             "type": "securestring"
         },
@@ -273,12 +270,6 @@
                     },
                     "storageKind": {
                         "value": "StorageV2"
-                    },
-                    "allowedIpAddressesList": {
-                        "value": "[parameters('storageAccountAllowedIPs')]"
-                    },
-                    "allowAzureServices": {
-                        "value": true
                     },
                     "allowSharedKeyAccess": {
                         "value": true
