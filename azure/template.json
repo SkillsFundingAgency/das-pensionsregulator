@@ -81,6 +81,42 @@
         "utcValue": {
             "type": "string",
             "defaultValue": "[utcNow()]"
+        },
+        "functionAspInstances": {
+            "type": "int",
+            "defaultValue": 1
+        },
+        "functionAspSize": {
+            "type": "string",
+            "defaultValue": "0"
+        },
+        "functionAspSizeId": {
+            "type": "string",
+            "defaultValue": "0"
+        },
+        "functionAspSkuCode": {
+            "type": "string",
+            "defaultValue": "Y1"
+        },
+        "functionAspSku": {
+            "type": "string",
+            "defaultValue": "Dynamic"
+        },
+        "functionSchedule": {
+            "type": "string",
+            "defaultValue": "0 0 10 * * Thu"
+        },
+        "dataShareSubscriptionName": {
+            "type": "string",
+            "defaultValue": ""
+        },
+        "dataShareSubscriptionSyncMode": {
+            "type": "string",
+            "defaultValue": "Incremental",
+            "allowedValues": [
+                "Incremental",
+                "FullSync"
+            ]
         }
     },
     "variables": {
@@ -89,7 +125,11 @@
         "internalApiAppServiceName": "[concat(variables('resourceNamePrefix'), 'intapi-as')]",
         "databaseName": "[concat(variables('resourceNamePrefix'), '-db')]",
         "storageAccountName": "[toLower(concat('das', parameters('resourceEnvironmentName'), parameters('serviceName'), 'str'))]",
-        "resourceGroupName": "[concat(variables('resourceNamePrefix'), '-rg')]"
+        "resourceGroupName": "[concat(variables('resourceNamePrefix'), '-rg')]",
+        "dataShareName": "[concat(variables('resourceNamePrefix'), '-ds')]",
+        "appServicePlanName": "[concat(variables('resourceNamePrefix'), '-asp')]",
+        "functionAppName": "[concat(variables('resourceNamePrefix'), '-fa')]",
+        "contentShareName": "[replace(variables('functionAppName'), '-', '')]"
     },
     "resources": [
         {
@@ -308,6 +348,239 @@
             "dependsOn": [
                 "[concat('storage-account-', parameters('utcValue'))]"
             ]
+        },
+        {
+            "type": "Microsoft.Resources/deployments",
+            "apiVersion": "2021-04-01",
+            "name": "[concat(variables('dataShareName'), '-', parameters('utcValue'))]",
+            "resourceGroup": "[variables('resourceGroupName')]",
+            "properties": {
+                "mode": "Incremental",
+                "template": {
+                    "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                    "contentVersion": "1.0.0.0",
+                    "resources": [
+                        {
+                            "apiVersion": "2020-09-01",
+                            "name": "[variables('dataShareName')]",
+                            "location": "[parameters('resourceGroupLocation')]",
+                            "type": "Microsoft.DataShare/accounts",
+                            "identity": {
+                                "type": "SystemAssigned"
+                            }
+                        }
+                    ],
+                    "outputs": {
+                        "managedServiceIdentityId": {
+                            "type": "string",
+                            "value": "[reference(resourceId(subscription().subscriptionId, variables('resourceGroupName'), 'Microsoft.DataShare/accounts', variables('dataShareName')), '2020-09-01', 'Full').identity.principalId]"
+                        }
+                    }
+                }
+            },
+            "dependsOn": [
+                "[concat('storage-account-', parameters('utcValue'))]"
+            ]
+        },
+        {
+            "type": "Microsoft.Resources/deployments",
+            "apiVersion": "2021-04-01",
+            "name": "[concat(variables('appServicePlanName'), '-', parameters('utcValue'))]",
+            "resourceGroup": "[variables('resourceGroupName')]",
+            "properties": {
+                "mode": "Incremental",
+                "template": {
+                    "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                    "contentVersion": "1.0.0.0",
+                    "resources": [
+                        {
+                            "apiVersion": "2018-11-01",
+                            "name": "[variables('appServicePlanName')]",
+                            "type": "Microsoft.Web/serverfarms",
+                            "location": "[parameters('resourceGroupLocation')]",
+                            "kind": "",
+                            "properties": {
+                                "name": "[variables('appServicePlanName')]",
+                                "workerSize": "[parameters('functionAspSize')]",
+                                "workerSizeId": "[parameters('functionAspSizeId')]",
+                                "numberOfWorkers": "[parameters('functionAspInstances')]"
+                            },
+                            "sku": {
+                                "Tier": "[parameters('functionAspSku')]",
+                                "Name": "[parameters('functionAspSkuCode')]"
+                            }
+                        }
+                    ]
+                }
+            }
+        },
+        {
+            "apiVersion": "2021-04-01",
+            "name": "[concat(variables('functionAppName'), '-', parameters('utcValue'))]",
+            "type": "Microsoft.Resources/deployments",
+            "resourceGroup": "[variables('resourceGroupName')]",
+            "properties": {
+                "mode": "Incremental",
+                "templateLink": {
+                    "uri": "[concat(variables('deploymentUrlBase'),'function-app-v2.json')]",
+                    "contentVersion": "1.0.0.0"
+                },
+                "parameters": {
+                    "functionAppName": {
+                        "value": "[variables('functionAppName')]"
+                    },
+                    "appServicePlanName": {
+                        "value": "[variables('appServicePlanName')]"
+                    },
+                    "appServicePlanResourceGroup": {
+                        "value": "[variables('resourceGroupName')]"
+                    },
+                    "netFrameworkVersion": {
+                        "value": "v6.0"
+                    },
+                    "functionAppAppSettings": {
+                        "value": {
+                            "array": [
+                                {
+                                    "name": "EnvironmentName",
+                                    "value": "[parameters('environmentName')]"
+                                },
+                                {
+                                    "name": "APPLICATIONINSIGHTS_CONNECTION_STRING",
+                                    "value": "[reference(concat(variables('functionAppName'), '-application-insights-', parameters('utcValue'))).outputs.ConnectionString.value]"
+                                },
+                                {
+                                    "name": "AzureWebJobsStorage",
+                                    "value": "[reference(concat('storage-account-', parameters('utcValue'))).outputs.storageConnectionString.value]"
+                                },
+                                {
+                                    "name": "WEBSITE_CONTENTAZUREFILECONNECTIONSTRING",
+                                    "value": "[reference(concat('storage-account-', parameters('utcValue'))).outputs.storageConnectionString.value]"
+                                },
+                                {
+                                    "name": "WEBSITE_CONTENTSHARE",
+                                    "value": "[variables('contentShareName')]"
+                                },
+                                {
+                                    "name": "FUNCTIONS_EXTENSION_VERSION",
+                                    "value": "~4"
+                                },
+                                {
+                                    "name": "FUNCTIONS_WORKER_RUNTIME",
+                                    "value": "powershell"
+                                },
+                                {
+                                    "name": "FUNCTIONS_WORKER_RUNTIME_VERSION",
+                                    "value": "7.2"
+                                },
+                                {
+                                    "name": "WEBSITE_RUN_FROM_PACKAGE",
+                                    "value": "1"
+                                },
+                                {
+                                    "name": "DataShareName",
+                                    "value": "[variables('dataShareName')]"
+                                },
+                                {
+                                    "name": "DataShareResourceGroupName",
+                                    "value": "[variables('resourceGroupName')]"
+                                },
+                                {
+                                    "name": "DataShareSubscriptionName",
+                                    "value": "[parameters('dataShareSubscriptionName')]"
+                                },
+                                {
+                                    "name": "DataShareSubscriptionSchedule",
+                                    "value": "[parameters('functionSchedule')]"
+                                },
+                                {
+                                    "name": "DataShareSubscriptionSynchronizationMode",
+                                    "value": "[parameters('dataShareSubscriptionSyncMode')]"
+                                }
+                            ]
+                        }
+                    },
+                    "ipSecurityRestrictions": {
+                        "value": "[parameters('appServiceAllowedIPs')]"
+                    }
+                }
+            },
+            "dependsOn": [
+                "[concat(variables('appServicePlanName'), '-', parameters('utcValue'))]"
+            ]
+        },
+        {
+            "apiVersion": "2020-06-01",
+            "name": "[concat(variables('functionAppName'), '-application-insights-', parameters('utcValue'))]",
+            "type": "Microsoft.Resources/deployments",
+            "resourceGroup": "[variables('resourceGroupName')]",
+            "properties": {
+                "mode": "Incremental",
+                "templateLink": {
+                    "uri": "[concat(variables('deploymentUrlBase'),'application-insights.json')]",
+                    "contentVersion": "1.0.0.0"
+                },
+                "parameters": {
+                    "appInsightsName": {
+                        "value": "[variables('functionAppName')]"
+                    },
+                    "attachedService": {
+                        "value": "[variables('functionAppName')]"
+                    }
+                }
+            }
+        },
+        {
+            "apiVersion": "2021-04-01",
+            "name": "[concat('role-assignment-', variables('storageAccountName'), '-', parameters('utcValue'))]",
+            "type": "Microsoft.Resources/deployments",
+            "resourceGroup": "[variables('resourceGroupName')]",
+            "properties": {
+                "mode": "Incremental",
+                "templateLink": {
+                    "uri": "[concat(variables('deploymentUrlBase'),'role-assignments/role-assignment-storage-account.json')]",
+                    "contentVersion": "1.0.0.0"
+                },
+                "parameters": {
+                    "principalId": {
+                        "value": "[reference(concat(variables('dataShareName'), '-', parameters('utcValue'))).outputs.managedServiceIdentityId.value]"
+                    },
+                    "assignmentType": {
+                        "value": "StorageBlobDataContributor"
+                    },
+                    "resourceName": {
+                        "value": "[variables('storageAccountName')]"
+                    }
+                }
+            },
+            "dependsOn": [
+                "[concat('storage-account-', parameters('utcValue'))]"
+            ]
+        },
+        {
+            "type": "Microsoft.Resources/deployments",
+            "apiVersion": "2021-04-01",
+            "name": "[concat('role-assignment-', variables('dataShareName'), '-', parameters('utcValue'))]",
+            "resourceGroup": "[variables('resourceGroupName')]",
+            "properties": {
+                "mode": "Incremental",
+                "template": {
+                    "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                    "contentVersion": "1.0.0.0",
+                    "resources": [
+                        {
+                            "type": "Microsoft.DataShare/accounts/providers/roleAssignments",
+                            "apiVersion": "2021-04-01-preview",
+                            "name": "[concat(variables('dataShareName'), '/Microsoft.Authorization/', guid(uniqueString(variables('dataShareName'),'Contributor',reference(concat(variables('functionAppName'), '-', parameters('utcValue'))).outputs.managedServiceIdentityId.value)))]",
+                            "properties": {
+                                "roleDefinitionId": "[concat('/subscriptions/', subscription().subscriptionId, '/providers/Microsoft.Authorization/roleDefinitions/', 'b24988ac-6180-42a0-ab88-20f7382dd24c')]",
+                                "principalId": "[reference(concat(variables('functionAppName'), '-', parameters('utcValue'))).outputs.managedServiceIdentityId.value]",
+                                "scope": "[resourceId(subscription().subscriptionId, variables('resourceGroupName'), 'Microsoft.DataShare/accounts', variables('dataShareName'))]"
+                            }
+                        }
+                    ]
+                }
+            }
         }
     ],
     "outputs": {
@@ -326,6 +599,10 @@
         "ResourceGroupName": {
             "type": "string",
             "value": "[variables('resourceGroupName')]"
+        },
+        "FunctionAppAppServiceName": {
+            "type": "string",
+            "value": "[variables('functionAppName')]"
         }
     }
 }

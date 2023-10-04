@@ -298,3 +298,18 @@ internal-nlog.txt
 
 # NuGet config
 /src/nuget.config
+
+# Azure Functions artifacts
+bin
+obj
+appsettings.json
+local.settings.json
+
+# Azurite artifacts
+__blobstorage__
+__queuestorage__
+__azurite_db*__.json
+.DS_Store
+
+# Visual Studio Code
+.vscode

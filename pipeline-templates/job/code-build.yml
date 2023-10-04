@@ -21,6 +21,21 @@ jobs:
       projects: 'src/PensionsRegulatorApi/PensionsRegulatorApi.csproj'
       arguments: '--configuration $(buildConfiguration) --output $(build.artifactstagingdirectory)/publish --no-restore  --no-build'
 
+  - task: DotNetCoreCLI@2
+    displayName: 'Publish Internal API'
+    inputs:
+      command: publish
+      publishWebProjects: false
+      projects: 'src/PensionsRegulatorApi/PensionsRegulatorApi.csproj'
+      arguments: '--configuration $(buildConfiguration) --output $(build.artifactstagingdirectory)/publish --no-restore  --no-build'
+
+  - task: ArchiveFiles@2
+    displayName: 'Package DataSync Function'
+    inputs:
+      rootFolderOrFile: 'src/SFA.DAS.PensionsRegulator.DataSync'
+      includeRootFolder: false
+      archiveFile: "$(build.artifactstagingdirectory)/publish/SFA.DAS.PensionsRegulator.DataSync.zip"
+
   - task: CopyFiles@2
     displayName: 'Copy Files to: $(build.artifactstagingdirectory)'
     inputs:

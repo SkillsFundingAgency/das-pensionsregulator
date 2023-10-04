@@ -48,3 +48,11 @@ Licensed under the [MIT license](https://github.com/SkillsFundingAgency/das-asse
 ### Data
 
 The source of the data which is searched is the [das-data-factory](https://github.com/SkillsFundingAgency/das-data-factory) repository.
+
+### Deployment requirements
+
+#### Permissions
+
+- The Entra ID Service Principal used by ADO to deploy this service must have at least Contributor access at the subscription scope and either:
+    - the User Access Administrator at the subscription scope for the entire ARM template to deploy successfully first time
+    - or the User Access Administrator at the Data Share and Storage Acccount resource scopes to ensure the role assignment deployments are successful
