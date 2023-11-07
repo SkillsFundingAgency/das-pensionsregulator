@@ -1,0 +1,15 @@
+{
+  "bindings": [
+    {
+      "name": "Timer",
+      "type": "timerTrigger",
+      "direction": "in",
+      "schedule": "%DataShareSubscriptionSchedule%"
+    }
+  ],
+  "retry": {
+    "strategy": "fixedDelay",
+    "maxRetryCount": 3,
+    "delayInterval": "00:05:00"
+  }
+}
