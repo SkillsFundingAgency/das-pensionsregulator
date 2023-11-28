@@ -104,7 +104,10 @@
         },
         "functionSchedule": {
             "type": "string",
-            "defaultValue": "0 0 10 * * Thu"
+            "defaultValue": "0 0 0 31 2 0",
+            "metadata": {
+                "description": "defaultValue never runs, override in ADO and set to '0 */30 10-18 * * 4' to check every 30 minutes between 10am and 6pm every Thursday"
+            }
         },
         "dataShareSubscriptionName": {
             "type": "string",
