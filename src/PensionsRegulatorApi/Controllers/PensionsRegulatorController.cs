@@ -2,14 +2,12 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using PensionsRegulatorApi.Application.Queries;
-using PensionsRegulatorApi.Domain;
 
 namespace PensionsRegulatorApi.Controllers;
 
 [Route("api/[controller]")]
 [ApiController]
-public class PensionsRegulatorController(IMediator mediator, ILogger<PensionsRegulatorController> logger)
-    : ControllerBase
+public class PensionsRegulatorController(IMediator mediator, ILogger<PensionsRegulatorController> logger) : ControllerBase
 {
     /// <summary>
     /// Gets the organisation from the pensions regulator by pension regulator unique id
@@ -26,7 +24,7 @@ public class PensionsRegulatorController(IMediator mediator, ILogger<PensionsReg
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
     [HttpGet("{id:long}")]
-    public async Task<ActionResult<Organisation>> Query(long? id)
+    public async Task<IActionResult> Query(long? id)
     {
         try
         {
@@ -39,7 +37,13 @@ public class PensionsRegulatorController(IMediator mediator, ILogger<PensionsReg
             logger.LogInformation("Get the organisation for pension regulator unique id: {Id}", id);
 
             var organisation = await mediator.Send(new GetOrganisationById(id));
-            return organisation != null ? new ActionResult<Organisation>(organisation) : NotFound();
+            
+            if (organisation == null)
+            {
+                return NotFound();
+            }
+
+            return Ok(organisation);
         }
         catch (Exception exception)
         {
@@ -66,7 +70,7 @@ public class PensionsRegulatorController(IMediator mediator, ILogger<PensionsReg
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
     [HttpGet("organisations")]
-    public async Task<ActionResult<IEnumerable<Organisation>>> PayeRef([FromQuery] string payeRef)
+    public async Task<IActionResult> PayeRef([FromQuery] string payeRef)
     {
         try
         {
@@ -79,7 +83,13 @@ public class PensionsRegulatorController(IMediator mediator, ILogger<PensionsReg
             logger.LogInformation("Get the organisation for PAYE reference: {PayeRef}", payeRef);
 
             var organisations = await mediator.Send(new GetOrganisationsByPayeRef(payeRef));
-            return organisations.Any() ? new ActionResult<IEnumerable<Organisation>>(organisations) : NotFound();
+           
+            if (!organisations.Any())
+            {
+                return NotFound();
+            }
+
+            return Ok(organisations);
         }
         catch (Exception exception)
         {
@@ -107,7 +117,7 @@ public class PensionsRegulatorController(IMediator mediator, ILogger<PensionsReg
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
     [HttpGet("organisations/{aorn}")]
-    public async Task<ActionResult<IEnumerable<Organisation>>> Aorn([FromRoute] string aorn, [FromQuery] string payeRef)
+    public async Task<IActionResult> Aorn([FromRoute] string aorn, [FromQuery] string payeRef)
     {
         try
         {
@@ -129,7 +139,14 @@ public class PensionsRegulatorController(IMediator mediator, ILogger<PensionsReg
             logger.LogInformation("Get the organisation for aorn: {Aorn} and PAYE reference: {PayeRef}", aorn, payeRef);
 
             var organisations = await mediator.Send(new GetOrganisationsByPayeRefAndAorn(payeRef, aorn));
-            return organisations.Any() ? new ActionResult<IEnumerable<Organisation>>(organisations) : NotFound();
+            
+            if (!organisations.Any())
+            {
+                return NotFound();
+            }
+            
+            return Ok(organisations);
+
         }
         catch (Exception exception)
         {

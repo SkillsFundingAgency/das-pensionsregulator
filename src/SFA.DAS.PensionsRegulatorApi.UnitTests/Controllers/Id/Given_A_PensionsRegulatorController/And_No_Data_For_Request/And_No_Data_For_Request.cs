@@ -21,7 +21,7 @@ public class And_No_Data_For_Request
     [ExcludeFromCodeCoverage]
     public class When_Organisations_Are_Request_By_Id_Only : And_No_Data_For_Request
     {
-        private ActionResult<Organisation> _organisation;
+        private IActionResult _organisation;
 
         [SetUp]
         public async Task When()
@@ -36,7 +36,7 @@ public class And_No_Data_For_Request
                 .Should()
                 .NotBeNull();
 
-            _organisation.Result
+            _organisation
                 .Should()
                 .BeAssignableTo<NotFoundResult>();
         }

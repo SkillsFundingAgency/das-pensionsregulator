@@ -25,12 +25,12 @@ public class Given_A_PensionsRegulatorController
     [ExcludeFromCodeCoverage]
     public class When_Organisation_Are_Request_By_Id_Only : Given_A_PensionsRegulatorController
     {
-        private ActionResult<Organisation> _organisation;
+        private OkObjectResult _organisation;
 
         [SetUp]
         public async Task When()
         {
-            _organisation = await _sut.Query(TPRUniqueKey);
+            _organisation = await _sut.Query(TPRUniqueKey) as OkObjectResult;
         }
 
         [Test]

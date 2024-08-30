@@ -30,7 +30,7 @@ public class And_No_Data_For_Request
     [ExcludeFromCodeCoverage]
     public class When_Organisations_Are_Request_By_Paye_Only : And_No_Data_For_Request
     {
-        private ActionResult<IEnumerable<Organisation>> _organisations;
+        private IActionResult _organisations;
 
         [SetUp]
         public async Task When()
@@ -45,7 +45,7 @@ public class And_No_Data_For_Request
                 .Should()
                 .NotBeNull();
 
-            _organisations.Result
+            _organisations
                 .Should()
                 .BeAssignableTo<NotFoundResult>();
         }

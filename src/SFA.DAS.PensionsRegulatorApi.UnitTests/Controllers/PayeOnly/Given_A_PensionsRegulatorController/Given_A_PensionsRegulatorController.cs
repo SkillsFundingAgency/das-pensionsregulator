@@ -38,12 +38,12 @@ public class GivenAPensionsRegulatorController
     [ExcludeFromCodeCoverage]
     public class WhenOrganisationsAreRequestByPayeOnly : GivenAPensionsRegulatorController
     {
-        private ActionResult<IEnumerable<Organisation>> _organisations;
+        private OkObjectResult _organisations;
 
         [SetUp]
         public async Task When()
         {
-            _organisations = await _sut.PayeRef(PayeRef);
+            _organisations = await _sut.PayeRef(PayeRef) as OkObjectResult;
         }
 
         [Test]
