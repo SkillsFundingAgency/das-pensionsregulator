@@ -8,15 +8,14 @@ namespace SFA.DAS.PensionsRegulatorApi.UnitTests.Controllers.Id.Given_A_Pensions
 [ExcludeFromCodeCoverage]
 public class And_No_Data_For_Request
 {
-    protected PensionsRegulatorController SUT;
-    protected IMediator MockMediatr;
-    protected long TPRUniqueKey = 123456;
+    private readonly PensionsRegulatorController _sut;
+    private const long TPRUniqueKey = 123456;
 
-    public And_No_Data_For_Request()
+    protected And_No_Data_For_Request()
     {
-        MockMediatr = Substitute.For<IMediator>();
-        SUT = new PensionsRegulatorController(MockMediatr, Substitute.For<ILogger<PensionsRegulatorController>>());
-        MockMediatr.Send(Arg.Is<GetOrganisationById>(request => request.TPRUniqueKey.Equals(TPRUniqueKey))).Returns((Organisation)null);
+        var mockMediatr = Substitute.For<IMediator>();
+        _sut = new PensionsRegulatorController(mockMediatr, Substitute.For<ILogger<PensionsRegulatorController>>());
+        mockMediatr.Send(Arg.Is<GetOrganisationById>(request => request.TPRUniqueKey.Equals(TPRUniqueKey))).Returns((Organisation)null);
     }
 
     [ExcludeFromCodeCoverage]
@@ -27,7 +26,7 @@ public class And_No_Data_For_Request
         [SetUp]
         public async Task When()
         {
-            _organisation = await SUT.Query(TPRUniqueKey);
+            _organisation = await _sut.Query(TPRUniqueKey);
         }
 
         [Test]

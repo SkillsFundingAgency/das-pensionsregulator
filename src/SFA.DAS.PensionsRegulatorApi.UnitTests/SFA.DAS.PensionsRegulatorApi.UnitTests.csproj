@@ -10,12 +10,11 @@
 
   <ItemGroup>
     <PackageReference Include="AutoFixture" Version="4.18.1" />
-    <PackageReference Include="fluentAssertions" Version="5.10.3" />
+    <PackageReference Include="fluentAssertions" Version="6.12.0" />
     <PackageReference Include="NSubstitute" Version="5.1.0" />
     <PackageReference Include="nunit" Version="4.2.1" />
     <PackageReference Include="NUnit3TestAdapter" Version="4.6.0" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.11.0" />
-    <PackageReference Include="sfa.das.Testing" Version="3.0.169" />
   </ItemGroup>
 
   <ItemGroup>

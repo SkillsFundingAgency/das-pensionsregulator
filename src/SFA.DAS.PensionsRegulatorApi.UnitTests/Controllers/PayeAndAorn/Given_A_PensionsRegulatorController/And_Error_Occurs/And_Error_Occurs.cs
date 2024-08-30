@@ -4,31 +4,26 @@ using PensionsRegulatorApi.Application.Queries;
 using PensionsRegulatorApi.Controllers;
 using PensionsRegulatorApi.Domain;
 
-namespace SFA.DAS.PensionsRegulatorApi.UnitTests.Controllers.PayeAndAorn.Given_A_PensionsRegulatorController.And_Error_Occurs;
+namespace SFA.DAS.PensionsRegulatorApi.UnitTests.Controllers.PayeAndAorn.Given_A_PensionsRegulatorController.
+    And_Error_Occurs;
 
 [ExcludeFromCodeCoverage]
 public class And_Error_Occurs
 {
-    protected PensionsRegulatorController SUT;
-    protected IMediator MockMediatr;
-    protected string PayeRef = "payes";
-    protected string Aorn = "aorn";
-    private string _exceptionMessage = "Exceptional.";
+    private readonly PensionsRegulatorController _sut;
+    private const string PayeRef = "payes";
+    private const string Aorn = "aorn";
+    private const string ExceptionMessage = "Exceptional.";
 
-    public And_Error_Occurs()
+    protected And_Error_Occurs()
     {
-        MockMediatr
-            =
-            Substitute.For<IMediator>();
+        var mockMediatr = Substitute.For<IMediator>();
 
-        SUT
-            =
-            new PensionsRegulatorController(
-                MockMediatr,
-                Substitute.For<ILogger<PensionsRegulatorController>>());
+        _sut = new PensionsRegulatorController(
+            mockMediatr,
+            Substitute.For<ILogger<PensionsRegulatorController>>());
 
-
-        MockMediatr
+        mockMediatr
             .Send(
                 Arg.Is<GetOrganisationsByPayeRefAndAorn>(
                     request =>
@@ -39,29 +34,25 @@ public class And_Error_Occurs
                             PayeRef,
                             StringComparison.Ordinal)))
             .Throws(
-                new TestException(_exceptionMessage));
+                new TestException(ExceptionMessage));
     }
 
     [ExcludeFromCodeCoverage]
-    public class When_Organisations_Are_Request_By_Paye_And_AORN
-        : And_Error_Occurs
+    public class When_Organisations_Are_Request_By_Paye_And_AORN : And_Error_Occurs
     {
         private ActionResult<IEnumerable<Organisation>> _organisations;
 
         [Test]
-        public async Task Then_Error_Is_Propagated()
+        public Task Then_Error_Is_Propagated()
         {
-            Assert
-                .ThrowsAsync(
-                    Is.TypeOf<TestException>()
-                        .And
-                        .Message
-                        .EqualTo(_exceptionMessage),
-                    () =>
-                        SUT
-                            .Aorn(
-                                Aorn,
-                                PayeRef));
+            Assert.ThrowsAsync(
+                Is.TypeOf<TestException>()
+                    .And
+                    .Message
+                    .EqualTo(ExceptionMessage),
+                () => _sut.Aorn(Aorn, PayeRef));
+
+            return Task.CompletedTask;
         }
     }
 }

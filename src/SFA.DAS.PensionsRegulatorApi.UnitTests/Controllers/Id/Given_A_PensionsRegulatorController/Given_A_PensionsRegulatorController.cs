@@ -8,18 +8,18 @@ namespace SFA.DAS.PensionsRegulatorApi.UnitTests.Controllers.Id.Given_A_Pensions
 [ExcludeFromCodeCoverage]
 public class Given_A_PensionsRegulatorController
 {
-    protected PensionsRegulatorController SUT;
-    protected IMediator MockMediatr;
-    protected Organisation ExpectedOrganisation;
-    protected long TPRUniqueKey = 123456;
+    private readonly PensionsRegulatorController _sut;
+    private readonly IMediator _mockMediatr;
+    private readonly Organisation _expectedOrganisation;
+    private const long TPRUniqueKey = 123456;
 
-    public Given_A_PensionsRegulatorController()
+    protected Given_A_PensionsRegulatorController()
     {
-        MockMediatr = Substitute.For<IMediator>();
+        _mockMediatr = Substitute.For<IMediator>();
 
-        SUT = new PensionsRegulatorController(MockMediatr, Substitute.For<ILogger<PensionsRegulatorController>>());
-        ExpectedOrganisation = new Fixture().Create<Organisation>();
-        MockMediatr.Send(Arg.Is<GetOrganisationById>(request => request.TPRUniqueKey.Equals(TPRUniqueKey))).Returns(ExpectedOrganisation);
+        _sut = new PensionsRegulatorController(_mockMediatr, Substitute.For<ILogger<PensionsRegulatorController>>());
+        _expectedOrganisation = new Fixture().Create<Organisation>();
+        _mockMediatr.Send(Arg.Is<GetOrganisationById>(request => request.TPRUniqueKey.Equals(TPRUniqueKey))).Returns(_expectedOrganisation);
     }
 
     [ExcludeFromCodeCoverage]
@@ -30,13 +30,13 @@ public class Given_A_PensionsRegulatorController
         [SetUp]
         public async Task When()
         {
-            _organisation = await SUT.Query(TPRUniqueKey);
+            _organisation = await _sut.Query(TPRUniqueKey);
         }
 
         [Test]
         public void Then_Data_Is_Retrieved_Using_Paye_Only()
         {
-            MockMediatr.Received().Send(Arg.Is<GetOrganisationById>(arg => arg.TPRUniqueKey.Equals(TPRUniqueKey)));
+            _mockMediatr.Received().Send(Arg.Is<GetOrganisationById>(arg => arg.TPRUniqueKey.Equals(TPRUniqueKey)));
 
             _organisation
                 .Should()
@@ -45,19 +45,19 @@ public class Given_A_PensionsRegulatorController
             _organisation
                 .Value
                 .Should()
-                .BeEquivalentTo(ExpectedOrganisation);
+                .BeEquivalentTo(_expectedOrganisation);
         }
 
         [Test]
         public void Then_Data_Is_Not_Retrieved_Using_Paye_And_AORN()
         {
-            MockMediatr.DidNotReceive().Send(Arg.Any<GetOrganisationsByPayeRefAndAorn>());
+            _mockMediatr.DidNotReceive().Send(Arg.Any<GetOrganisationsByPayeRefAndAorn>());
         }
 
         [Test]
         public void Then_Data_Is_Not_Retrieved_Using_Paye_Only()
         {
-            MockMediatr.DidNotReceive().Send(Arg.Any<GetOrganisationsByPayeRef>());
+            _mockMediatr.DidNotReceive().Send(Arg.Any<GetOrganisationsByPayeRef>());
         }
     }
 }

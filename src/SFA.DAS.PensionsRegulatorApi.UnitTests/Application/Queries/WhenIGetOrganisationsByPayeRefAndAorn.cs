@@ -31,7 +31,7 @@ public class WhenIGetOrganisationsByPayeRefAndAorn
 
     private string _payeReference;
     private string _aorn;
-    private IEnumerable<Organisation> _repositoryResults;
+    private List<Organisation> _repositoryResults;
     private IRequestHandler<GetOrganisationsByPayeRefAndAorn, IEnumerable<Organisation>> _sut;
 
     private void DataRetrievalThrowsException()
@@ -83,7 +83,7 @@ public class WhenIGetOrganisationsByPayeRefAndAorn
         _repositoryResults = new Fixture()
             .CreateMany<Organisation>(
                 new Random()
-                    .Next(1, 15));
+                    .Next(1, 15)).ToList();
 
         var mockRepository = Substitute.For<IOrganisationRepository>();
 

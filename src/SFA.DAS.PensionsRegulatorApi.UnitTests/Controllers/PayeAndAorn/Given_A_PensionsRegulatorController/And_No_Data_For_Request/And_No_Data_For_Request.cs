@@ -8,25 +8,17 @@ namespace SFA.DAS.PensionsRegulatorApi.UnitTests.Controllers.PayeAndAorn.Given_A
 [ExcludeFromCodeCoverage]
 public class And_No_Data_For_Request
 {
-    protected PensionsRegulatorController SUT;
-    protected IMediator MockMediatr;
-    protected string PayeRef = "payes";
-    protected string Aorn = "aorn";
+    private readonly PensionsRegulatorController _sut;
+    private const string PayeRef = "payes";
+    private const string Aorn = "aorn";
 
-    public And_No_Data_For_Request()
+    protected And_No_Data_For_Request()
     {
-        MockMediatr
-            =
-            Substitute.For<IMediator>();
+        var mockMediatr = Substitute.For<IMediator>();
 
-        SUT
-            =
-            new PensionsRegulatorController(
-                MockMediatr,
-                Substitute.For<ILogger<PensionsRegulatorController>>());
-
+        _sut = new PensionsRegulatorController(mockMediatr, Substitute.For<ILogger<PensionsRegulatorController>>());
   
-        MockMediatr
+        mockMediatr
             .Send(
                 Arg.Is<GetOrganisationsByPayeRefAndAorn>(
                     request =>
@@ -36,26 +28,18 @@ public class And_No_Data_For_Request
                         && request.PAYEReference.Equals(
                             PayeRef,
                             StringComparison.Ordinal)))
-            .Returns(
-                Enumerable.Empty<Organisation>());
+            .Returns([]);
     }
 
     [ExcludeFromCodeCoverage]
-    public class When_Organisations_Are_Request_By_Paye_And_AORN
-        : And_No_Data_For_Request
+    public class When_Organisations_Are_Request_By_Paye_And_AORN : And_No_Data_For_Request
     {
         private ActionResult<IEnumerable<Organisation>> _organisations;
 
         [SetUp]
         public async Task When()
         {
-            _organisations
-                =
-                await
-                    SUT
-                        .Aorn(
-                            Aorn,
-                            PayeRef);
+            _organisations = await _sut.Aorn(Aorn, PayeRef);
         }
 
         [Test]

@@ -16,7 +16,7 @@ public class WhenIGetOrganisationsByPayeRef
 
         testFixture.DataSourceReturnsData();
         var organisations = await testFixture.Handle();
-        testFixture.ReturnDataIsCorrect(organisations);
+        testFixture.ReturnDataIsCorrect(organisations.ToList());
     }
 
     [Test]
@@ -30,7 +30,7 @@ public class WhenIGetOrganisationsByPayeRef
     }
 
     private string _payeReference;
-    private IEnumerable<Organisation> _repositoryResults;
+    private List<Organisation> _repositoryResults;
     private IRequestHandler<GetOrganisationsByPayeRef, IEnumerable<Organisation>> _sut;
 
     private void DataRetrievalThrowsException()
@@ -45,7 +45,7 @@ public class WhenIGetOrganisationsByPayeRef
         _sut = new GetOrganisationsByPayeRefHandler(mockRepository);
     }
 
-    private void ReturnDataIsCorrect(IEnumerable<Organisation> organisations)
+    private void ReturnDataIsCorrect(List<Organisation> organisations)
     {
         organisations
             .Should()
@@ -79,7 +79,7 @@ public class WhenIGetOrganisationsByPayeRef
         _repositoryResults = new Fixture()
             .CreateMany<Organisation>(
                 new Random()
-                    .Next(1, 15));
+                    .Next(1, 15)).ToList();
 
         var mockRepository = Substitute.For<IOrganisationRepository>();
 
