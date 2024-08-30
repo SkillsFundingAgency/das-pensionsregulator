@@ -1,11 +1,9 @@
 ﻿using System;
-using System.IO;
 using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.Extensions.Configuration;
+using NLog;
 using NLog.Web;
 using PensionsRegulatorApi.StartupConfiguration;
-using SFA.DAS.Configuration.AzureTableStorage;
 
 namespace PensionsRegulatorApi
 {
@@ -26,7 +24,7 @@ namespace PensionsRegulatorApi
             }
             finally
             {
-                NLog.LogManager.Shutdown();
+                LogManager.Shutdown();
             }
         }
 
