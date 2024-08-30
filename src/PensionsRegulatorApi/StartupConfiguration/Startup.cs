@@ -1,6 +1,7 @@
-﻿using MediatR;
+﻿using System;
+using System.IO;
+using System.Reflection;
 using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Authorization;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -11,18 +12,15 @@ using PensionsRegulatorApi.Configuration;
 using PensionsRegulatorApi.Data;
 using PensionsRegulatorApi.Security;
 using SFA.DAS.Configuration.AzureTableStorage;
-using System;
-using System.IO;
-using System.Reflection;
 
 namespace PensionsRegulatorApi.StartupConfiguration;
 
 public class Startup
 {
     private readonly IConfiguration _configuration;
-    private readonly IWebHostEnvironment _environment;
+    private readonly IHostEnvironment _environment;
 
-    public Startup(IConfiguration configuration, IWebHostEnvironment environment)
+    public Startup(IConfiguration configuration, IHostEnvironment environment)
     {
         _environment = environment;
 
@@ -97,7 +95,7 @@ public class Startup
     }
 
     // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-    public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+    public void Configure(IApplicationBuilder app, IHostEnvironment env)
     {
         if (env.IsDevelopment())
         {
