@@ -26,18 +26,18 @@ public class PensionsRegulatorController(IMediator mediator, ILogger<PensionsReg
     [HttpGet("{id:long}")]
     public async Task<IActionResult> Query(long? id)
     {
+        if (!id.HasValue)
+        {
+            ModelState.AddModelError(nameof(id), "Value cannot be null.");
+            return BadRequest(ModelState);
+        }
+
+        logger.LogInformation("Get the organisation for pension regulator unique id: {Id}", id);
+        
         try
         {
-            if (!id.HasValue)
-            {
-                ModelState.AddModelError(nameof(id), "Value cannot be null.");
-                return BadRequest(ModelState);
-            }
-
-            logger.LogInformation("Get the organisation for pension regulator unique id: {Id}", id);
-
             var organisation = await mediator.Send(new GetOrganisationById(id));
-            
+
             if (organisation == null)
             {
                 return NotFound();
@@ -56,8 +56,7 @@ public class PensionsRegulatorController(IMediator mediator, ILogger<PensionsReg
     /// Gets the organisations from the pensions regulator for a given PAYE reference
     /// </summary>
     /// <param name="payeRef">The PAYE reference from which to get matching organisations from the pensions regulator
-    /// This needs to be a query parameter due to decoding of slash character
-    /// <see cref="https://docs.microsoft.com/en-us/aspnet/core/web-api/?view=aspnetcore-2.2"/> </param>
+    /// This needs to be a query parameter due to decoding of slash character</param>
     /// <returns>The organisations for the given PAYE reference from the pensions regulator</returns>
     /// <response code="200">Success</response>
     /// <response code="400">Bad request</response>
@@ -72,18 +71,18 @@ public class PensionsRegulatorController(IMediator mediator, ILogger<PensionsReg
     [HttpGet("organisations")]
     public async Task<IActionResult> PayeRef([FromQuery] string payeRef)
     {
+        if (string.IsNullOrWhiteSpace(payeRef))
+        {
+            ModelState.AddModelError(nameof(payeRef), "Value cannot be null or whitespace.");
+            return BadRequest(ModelState);
+        }
+
+        logger.LogInformation("Get the organisation for PAYE reference: {PayeRef}", payeRef);
+
         try
         {
-            if (string.IsNullOrWhiteSpace(payeRef))
-            {
-                ModelState.AddModelError(nameof(payeRef), "Value cannot be null or whitespace.");
-                return BadRequest(ModelState);
-            }
-
-            logger.LogInformation("Get the organisation for PAYE reference: {PayeRef}", payeRef);
-
             var organisations = await mediator.Send(new GetOrganisationsByPayeRef(payeRef));
-           
+
             if (!organisations.Any())
             {
                 return NotFound();
@@ -119,34 +118,33 @@ public class PensionsRegulatorController(IMediator mediator, ILogger<PensionsReg
     [HttpGet("organisations/{aorn}")]
     public async Task<IActionResult> Aorn([FromRoute] string aorn, [FromQuery] string payeRef)
     {
+        if (string.IsNullOrWhiteSpace(payeRef))
+        {
+            ModelState.AddModelError(nameof(payeRef), "Value cannot be null or whitespace.");
+        }
+
+        if (string.IsNullOrWhiteSpace(aorn))
+        {
+            ModelState.AddModelError(nameof(aorn), "Value cannot be null or whitespace.");
+        }
+
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(ModelState);
+        }
+
+        logger.LogInformation("Get the organisation for aorn: {Aorn} and PAYE reference: {PayeRef}", aorn, payeRef);
+        
         try
         {
-            if (string.IsNullOrWhiteSpace(payeRef))
-            {
-                ModelState.AddModelError(nameof(payeRef), "Value cannot be null or whitespace.");
-            }
-
-            if (string.IsNullOrWhiteSpace(aorn))
-            {
-                ModelState.AddModelError(nameof(aorn), "Value cannot be null or whitespace.");
-            }
-
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
-
-            logger.LogInformation("Get the organisation for aorn: {Aorn} and PAYE reference: {PayeRef}", aorn, payeRef);
-
             var organisations = await mediator.Send(new GetOrganisationsByPayeRefAndAorn(payeRef, aorn));
-            
+
             if (!organisations.Any())
             {
                 return NotFound();
             }
-            
-            return Ok(organisations);
 
+            return Ok(organisations);
         }
         catch (Exception exception)
         {
