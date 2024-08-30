@@ -11,7 +11,7 @@ public class Program
     public static void Main(string[] args)
     {
         var logger = LogManager.LogFactory.Setup().LoadConfigurationFromFile("nlog.config").GetCurrentClassLogger();
-        
+
         try
         {
             logger.Info("Starting up host");

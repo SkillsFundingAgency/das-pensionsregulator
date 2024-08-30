@@ -29,7 +29,7 @@ public class WhenIGetOrganisationById
 
     private long _tpruniquekey;
     private Organisation _repositoryResult;
-    private IRequestHandler<GetOrganisationById, Organisation> _sut;
+    private GetOrganisationByIdHandler _sut;
 
     private void DataRetrievalThrowsException()
     {

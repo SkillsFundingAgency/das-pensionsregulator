@@ -12,8 +12,9 @@ using PensionsRegulatorApi.Application.Queries;
 using PensionsRegulatorApi.Configuration;
 using PensionsRegulatorApi.Data;
 using PensionsRegulatorApi.Security;
+using PensionsRegulatorApi.StartupConfiguration;
 
-namespace PensionsRegulatorApi.StartupConfiguration;
+namespace PensionsRegulatorApi;
 
 public class Startup
 {

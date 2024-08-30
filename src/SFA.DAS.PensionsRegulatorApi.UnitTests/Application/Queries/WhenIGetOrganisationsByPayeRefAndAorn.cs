@@ -32,7 +32,7 @@ public class WhenIGetOrganisationsByPayeRefAndAorn
     private string _payeReference;
     private string _aorn;
     private List<Organisation> _repositoryResults;
-    private IRequestHandler<GetOrganisationsByPayeRefAndAorn, IEnumerable<Organisation>> _sut;
+    private GetOrganisationsByPayeRefAndAornHandler _sut;
 
     private void DataRetrievalThrowsException()
     {

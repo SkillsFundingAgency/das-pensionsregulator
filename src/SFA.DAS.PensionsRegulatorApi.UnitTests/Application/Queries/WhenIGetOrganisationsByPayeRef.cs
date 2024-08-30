@@ -31,7 +31,7 @@ public class WhenIGetOrganisationsByPayeRef
 
     private string _payeReference;
     private List<Organisation> _repositoryResults;
-    private IRequestHandler<GetOrganisationsByPayeRef, IEnumerable<Organisation>> _sut;
+    private GetOrganisationsByPayeRefHandler _sut;
 
     private void DataRetrievalThrowsException()
     {
