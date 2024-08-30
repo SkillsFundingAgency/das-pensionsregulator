@@ -1,23 +1,28 @@
-﻿
-using System;
+﻿using System;
 using System.Collections.Generic;
 using MediatR;
 using PensionsRegulatorApi.Domain;
 
-namespace PensionsRegulatorApi.Application.Queries
-{
-    public class GetOrganisationsByPayeRefAndAorn : IRequest<IEnumerable<Organisation>>
-    {
-        public GetOrganisationsByPayeRefAndAorn(string payeReference, string accountOfficeReferenceNumber)
-        {
-            if (string.IsNullOrWhiteSpace(payeReference)) throw new ArgumentException("Value cannot be null or whitespace.", nameof(payeReference));
-            if (string.IsNullOrWhiteSpace(accountOfficeReferenceNumber)) throw new ArgumentException("Value cannot be null or whitespace.", nameof(accountOfficeReferenceNumber));
+namespace PensionsRegulatorApi.Application.Queries;
 
-            PAYEReference = payeReference;
-            AccountOfficeReferenceNumber = accountOfficeReferenceNumber;
+public class GetOrganisationsByPayeRefAndAorn : IRequest<IEnumerable<Organisation>>
+{
+    public string PAYEReference { get;  }
+    public string AccountOfficeReferenceNumber { get; }
+    
+    public GetOrganisationsByPayeRefAndAorn(string payeReference, string accountOfficeReferenceNumber)
+    {
+        if (string.IsNullOrWhiteSpace(payeReference))
+        {
+            throw new ArgumentException("Value cannot be null or whitespace.", nameof(payeReference));
         }
 
-        public string PAYEReference { get;  }
-        public string AccountOfficeReferenceNumber { get; }
+        if (string.IsNullOrWhiteSpace(accountOfficeReferenceNumber))
+        {
+            throw new ArgumentException("Value cannot be null or whitespace.", nameof(accountOfficeReferenceNumber));
+        }
+
+        PAYEReference = payeReference;
+        AccountOfficeReferenceNumber = accountOfficeReferenceNumber;
     }
 }

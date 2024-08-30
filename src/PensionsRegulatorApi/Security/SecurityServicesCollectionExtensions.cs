@@ -1,38 +1,35 @@
-﻿using System.Collections.Generic;
-using Microsoft.AspNetCore.Authentication;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
+﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace PensionsRegulatorApi.Security
+namespace PensionsRegulatorApi.Security;
+
+public static class SecurityServicesCollectionExtensions
 {
-    public static class SecurityServicesCollectionExtensions
+    public static void AddADAuthentication(this IServiceCollection services, IConfiguration configuration)
     {
-        public static void AddADAuthentication(this IServiceCollection services, IConfiguration configuration)
+        var activeDirectoryConfig = configuration.GetSection("ActiveDirectory").Get<ActiveDirectoryConfiguration>();
+
+        services.AddAuthorization(o =>
         {
-            var activeDirectoryConfig = configuration.GetSection("ActiveDirectory").Get<ActiveDirectoryConfiguration>();
-
-            services.AddAuthorization(o =>
+            o.AddPolicy("default", policy =>
             {
-                o.AddPolicy("default", policy =>
-                {
-                    policy.RequireAuthenticatedUser();
-                    policy.RequireRole("Default");
-                });
+                policy.RequireAuthenticatedUser();
+                policy.RequireRole("Default");
             });
+        });
 
-            services.AddAuthentication(auth =>
-            {
-                auth.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
+        services.AddAuthentication(auth =>
+        {
+            auth.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
 
-            }).AddJwtBearer(auth =>
+        }).AddJwtBearer(auth =>
+        {
+            auth.Authority = $"https://login.microsoftonline.com/{activeDirectoryConfig.Tenant}";
+            auth.TokenValidationParameters = new Microsoft.IdentityModel.Tokens.TokenValidationParameters
             {
-                auth.Authority = $"https://login.microsoftonline.com/{activeDirectoryConfig.Tenant}";
-                auth.TokenValidationParameters = new Microsoft.IdentityModel.Tokens.TokenValidationParameters
-                {
-                    ValidAudiences = activeDirectoryConfig.IdentifierUri.Split(",")
-                };
-            });
-        }
+                ValidAudiences = activeDirectoryConfig.IdentifierUri.Split(",")
+            };
+        });
     }
 }

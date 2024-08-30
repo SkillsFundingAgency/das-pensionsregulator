@@ -1,26 +1,15 @@
-﻿using MediatR;
+﻿using System.Threading;
+using System.Threading.Tasks;
+using MediatR;
 using PensionsRegulatorApi.Data;
 using PensionsRegulatorApi.Domain;
 
-namespace PensionsRegulatorApi.Application.Queries
+namespace PensionsRegulatorApi.Application.Queries;
+
+public class GetOrganisationByIdHandler(IOrganisationRepository repository) : IRequestHandler<GetOrganisationById, Organisation>
 {
-    
-
-    public class GetOrganisationByIdHandler : RequestHandler<GetOrganisationById, Organisation>
+    public async Task<Organisation> Handle(GetOrganisationById request, CancellationToken cancellationToken)
     {
-        private readonly IOrganisationRepository _repository;
-
-        public GetOrganisationByIdHandler(IOrganisationRepository repository)
-        {
-            _repository = repository;
-        }
-
-        protected override Organisation Handle(GetOrganisationById request)
-        {
-            return
-                _repository
-                    .GetOrganisationById(
-                        request.TPRUniqueKey);
-        }
+        return await repository.GetOrganisationById(request.TPRUniqueKey);
     }
 }

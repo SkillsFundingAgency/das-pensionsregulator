@@ -3,17 +3,19 @@ using System.Collections.Generic;
 using MediatR;
 using PensionsRegulatorApi.Domain;
 
-namespace PensionsRegulatorApi.Application.Queries
-{
-    public class GetOrganisationsByPayeRef : IRequest<IEnumerable<Organisation>>
-    {
-        public GetOrganisationsByPayeRef(string payeReference)
-        {
-            if (string.IsNullOrWhiteSpace(payeReference)) throw new ArgumentException("Value cannot be null or whitespace.", nameof(payeReference));
+namespace PensionsRegulatorApi.Application.Queries;
 
-            PAYEReference = payeReference;
+public class GetOrganisationsByPayeRef : IRequest<IEnumerable<Organisation>>
+{
+    public string PAYEReference { get;  }
+        
+    public GetOrganisationsByPayeRef(string payeReference)
+    {
+        if (string.IsNullOrWhiteSpace(payeReference))
+        {
+            throw new ArgumentException("Value cannot be null or whitespace.", nameof(payeReference));
         }
 
-        public string PAYEReference { get;  }
+        PAYEReference = payeReference;
     }
 }

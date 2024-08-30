@@ -1,6 +1,6 @@
 ﻿using System;
-using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.Extensions.Hosting;
 using NLog;
 using NLog.Web;
 using PensionsRegulatorApi.StartupConfiguration;
@@ -28,9 +28,9 @@ namespace PensionsRegulatorApi
             }
         }
 
-        public static IWebHostBuilder CreateWebHostBuilder(string[] args) =>
-            WebHost.CreateDefaultBuilder(args)
-                .UseStartup<Startup>()
-                .UseNLog();
+        private static IHostBuilder CreateWebHostBuilder(string[] args) =>
+            Host.CreateDefaultBuilder(args)
+                .UseNLog()
+                .ConfigureWebHostDefaults(builder => builder.UseStartup<Startup>());
     }
 }
