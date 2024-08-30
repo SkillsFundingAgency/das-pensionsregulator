@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Threading.Tasks;
-using PensionsRegulatorApi.Domain;
+﻿using PensionsRegulatorApi.Domain;
 
 namespace PensionsRegulatorApi.Data;
 

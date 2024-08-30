@@ -1,6 +1,4 @@
-﻿using System;
-using MediatR;
-using PensionsRegulatorApi.Domain;
+﻿using PensionsRegulatorApi.Domain;
 
 namespace PensionsRegulatorApi.Application.Queries;
 
