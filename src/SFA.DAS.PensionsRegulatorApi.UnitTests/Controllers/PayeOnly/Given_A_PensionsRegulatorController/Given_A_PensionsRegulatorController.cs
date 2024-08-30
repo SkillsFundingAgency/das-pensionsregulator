@@ -6,61 +6,50 @@ using PensionsRegulatorApi.Domain;
 namespace SFA.DAS.PensionsRegulatorApi.UnitTests.Controllers.PayeOnly.Given_A_PensionsRegulatorController;
 
 [ExcludeFromCodeCoverage]
-public class Given_A_PensionsRegulatorController
+public class GivenAPensionsRegulatorController
 {
-    protected PensionsRegulatorController SUT;
-    protected IMediator MockMediatr;
-    protected IEnumerable<Organisation> ExpectedOrganisations;
-    protected string PayeRef = "payes";
+    private readonly PensionsRegulatorController _sut;
+    private readonly IMediator _mockMediatr;
+    private readonly IEnumerable<Organisation> _expectedOrganisations;
+    private const string PayeRef = "payes";
 
-    public Given_A_PensionsRegulatorController()
+    protected GivenAPensionsRegulatorController()
     {
-        MockMediatr
-            =
-            Substitute.For<IMediator>();
+        _mockMediatr = Substitute.For<IMediator>();
 
-        SUT
-            =
-            new PensionsRegulatorController(
-                MockMediatr,
-                Substitute.For<ILogger<PensionsRegulatorController>>());
+        _sut = new PensionsRegulatorController(_mockMediatr, Substitute.For<ILogger<PensionsRegulatorController>>());
 
-        ExpectedOrganisations =
+        _expectedOrganisations =
             new Fixture()
                 .CreateMany<Organisation>(
                     new Random()
                         .Next(1, 15));
 
-        MockMediatr
+        _mockMediatr
             .Send(
                 Arg.Is<GetOrganisationsByPayeRef>(
                     request => request.PAYEReference.Equals(
                         PayeRef,
                         StringComparison.Ordinal)))
             .Returns(
-                ExpectedOrganisations);
+                _expectedOrganisations);
     }
 
     [ExcludeFromCodeCoverage]
-    public class When_Organisations_Are_Request_By_Paye_Only
-        : Given_A_PensionsRegulatorController
+    public class WhenOrganisationsAreRequestByPayeOnly : GivenAPensionsRegulatorController
     {
         private ActionResult<IEnumerable<Organisation>> _organisations;
+
         [SetUp]
         public async Task When()
         {
-            _organisations
-                =
-                await 
-                    SUT
-                        .PayeRef(
-                            PayeRef);
+            _organisations = await _sut.PayeRef(PayeRef);
         }
 
         [Test]
         public void Then_Data_Is_Retrieved_Using_Paye_Only()
         {
-            MockMediatr
+            _mockMediatr
                 .Received()
                 .Send(
                     Arg.Is<GetOrganisationsByPayeRef>(
@@ -75,13 +64,13 @@ public class Given_A_PensionsRegulatorController
             _organisations
                 .Value
                 .Should()
-                .BeEquivalentTo(ExpectedOrganisations);
+                .BeEquivalentTo(_expectedOrganisations);
         }
 
         [Test]
         public void Then_Data_Is_Not_Retrieved_Using_Paye_And_AORN()
         {
-            MockMediatr
+            _mockMediatr
                 .DidNotReceive()
                 .Send(
                     Arg.Any<GetOrganisationsByPayeRefAndAorn>());
@@ -90,7 +79,7 @@ public class Given_A_PensionsRegulatorController
         [Test]
         public void Then_Date_Is_Not_Retrieved_Using_Id_Only()
         {
-            MockMediatr
+            _mockMediatr
                 .DidNotReceive()
                 .Send(Arg.Any<GetOrganisationById>());
         }

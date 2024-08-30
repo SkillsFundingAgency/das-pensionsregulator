@@ -2,41 +2,34 @@
 using PensionsRegulatorApi.Application.Queries;
 using PensionsRegulatorApi.Controllers;
 
-namespace SFA.DAS.PensionsRegulatorApi.UnitTests.Controllers.PayeOnly.Given_A_PensionsRegulatorController.And_Error_Occurs;
+namespace SFA.DAS.PensionsRegulatorApi.UnitTests.Controllers.PayeOnly.Given_A_PensionsRegulatorController.
+    And_Error_Occurs;
 
 [ExcludeFromCodeCoverage]
-public class And_Error_Occurs
+public class AndErrorOccurs
 {
-    protected PensionsRegulatorController SUT;
-    protected IMediator MockMediatr;
-    protected string PayeRef = "payes";
-    private string	 _exceptionMessage = "Exceptional.";
+    private readonly PensionsRegulatorController _sut;
+    private const string PayeRef = "payes";
+    private const string ExceptionMessage = "Exceptional.";
 
-    public And_Error_Occurs()
+    protected AndErrorOccurs()
     {
-        MockMediatr
-            =
-            Substitute.For<IMediator>();
+        var mockMediatr = Substitute.For<IMediator>();
 
-        SUT
-            =
-            new PensionsRegulatorController(
-                MockMediatr,
-                Substitute.For<ILogger<PensionsRegulatorController>>());
+        _sut = new PensionsRegulatorController(mockMediatr, Substitute.For<ILogger<PensionsRegulatorController>>());
 
-        MockMediatr
+        mockMediatr
             .Send(
                 Arg.Is<GetOrganisationsByPayeRef>(
                     request => request.PAYEReference.Equals(
                         PayeRef,
                         StringComparison.Ordinal)))
-            .                Throws(
-                new TestException(_exceptionMessage));
+            .Throws(
+                new TestException(ExceptionMessage));
     }
 
     [ExcludeFromCodeCoverage]
-    public class When_Organisations_Are_Request_By_Paye_Only
-        : And_Error_Occurs
+    public class WhenOrganisationsAreRequestByPayeOnly : AndErrorOccurs
     {
         [Test]
         public async Task Then_Error_Is_Propagated()
@@ -46,11 +39,8 @@ public class And_Error_Occurs
                     Is.TypeOf<TestException>()
                         .And
                         .Message
-                        .EqualTo(_exceptionMessage),
-                    () =>
-                        SUT
-                            .PayeRef(
-                                PayeRef));
+                        .EqualTo(ExceptionMessage),
+                    () => _sut.PayeRef(PayeRef));
         }
     }
 }

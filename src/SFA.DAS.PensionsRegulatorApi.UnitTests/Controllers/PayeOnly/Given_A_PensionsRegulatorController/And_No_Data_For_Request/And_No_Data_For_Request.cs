@@ -8,23 +8,16 @@ namespace SFA.DAS.PensionsRegulatorApi.UnitTests.Controllers.PayeOnly.Given_A_Pe
 [ExcludeFromCodeCoverage]
 public class And_No_Data_For_Request
 {
-    protected PensionsRegulatorController SUT;
-    protected IMediator MockMediatr;
-    protected string PayeRef = "payes";
+    private readonly PensionsRegulatorController _sut;
+    private const string PayeRef = "payes";
 
-    public And_No_Data_For_Request()
+    protected And_No_Data_For_Request()
     {
-        MockMediatr
-            =
-            Substitute.For<IMediator>();
+        var mockMediatr = Substitute.For<IMediator>();
 
-        SUT
-            =
-            new PensionsRegulatorController(
-                MockMediatr,
-                Substitute.For<ILogger<PensionsRegulatorController>>());
+        _sut = new PensionsRegulatorController(mockMediatr, Substitute.For<ILogger<PensionsRegulatorController>>());
 
-        MockMediatr
+        mockMediatr
             .Send(
                 Arg.Is<GetOrganisationsByPayeRef>(
                     request => request.PAYEReference.Equals(
@@ -35,20 +28,14 @@ public class And_No_Data_For_Request
     }
 
     [ExcludeFromCodeCoverage]
-    public class When_Organisations_Are_Request_By_Paye_Only
-        : And_No_Data_For_Request
+    public class When_Organisations_Are_Request_By_Paye_Only : And_No_Data_For_Request
     {
         private ActionResult<IEnumerable<Organisation>> _organisations;
 
         [SetUp]
         public async Task When()
         {
-            _organisations
-                =
-                await
-                    SUT
-                        .PayeRef(
-                            PayeRef);
+            _organisations = await _sut.PayeRef(PayeRef);
         }
 
         [Test]
