@@ -10,7 +10,6 @@ using PensionsRegulatorApi.Application.Queries;
 using PensionsRegulatorApi.Configuration;
 using PensionsRegulatorApi.Data;
 using PensionsRegulatorApi.Security;
-using SFA.DAS.Configuration.AzureTableStorage;
 
 namespace PensionsRegulatorApi.StartupConfiguration;
 
@@ -22,25 +21,9 @@ public class Startup
     public Startup(IConfiguration configuration, IHostEnvironment environment)
     {
         _environment = environment;
-
-        var config = new ConfigurationBuilder()
-            .AddConfiguration(configuration)
-            .SetBasePath(Directory.GetCurrentDirectory())
-            .AddEnvironmentVariables()
-            .AddUserSecrets<Startup>();
-
-        config.AddAzureTableStorage(options =>
-        {
-            options.ConfigurationKeys = new[] { "SFA.DAS.PensionsRegulatorApi" };
-            options.StorageConnectionString = configuration["ConfigurationStorageConnectionString"];
-            options.EnvironmentName = configuration["EnvironmentName"];
-            options.PreFixConfigurationKeys = false;
-        });
-
-        _configuration = config.Build();
+        _configuration = configuration.BuildDasConfiguration();
     }
 
-    // This method gets called by the runtime. Use this method to add services to the container.
     public void ConfigureServices(IServiceCollection services)
     {
         services.AddADAuthentication(_configuration);
@@ -51,11 +34,17 @@ public class Startup
                 options.Filters.Add(new AuthorizeFilter("default"));
             }
         });
+        
+        // services.AddLogging(builder =>
+        // {
+        //     builder.AddFilter<ApplicationInsightsLoggerProvider>(string.Empty, LogLevel.Information);
+        //     builder.AddFilter<ApplicationInsightsLoggerProvider>("Microsoft", LogLevel.Information);
+        // });
 
-        services.AddSwaggerGen(c =>
+        services.AddSwaggerGen(options =>
         {
-            c.SwaggerDoc("v1", new OpenApiInfo { Title = "Pensions-Regulator-Api", Version = "v1" });
-            c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+            options.SwaggerDoc("v1", new OpenApiInfo { Title = "Pensions-Regulator-Api", Version = "v1" });
+            options.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
             {
                 Description = "JWT Authorization header using the Bearer scheme. Example: \"Authorization: Bearer {token}\"",
                 Name = "Authorization",
@@ -64,7 +53,7 @@ public class Startup
                 Scheme = "Bearer"
             });
 
-            c.AddSecurityRequirement(new OpenApiSecurityRequirement
+            options.AddSecurityRequirement(new OpenApiSecurityRequirement
             {
                 {
                     new OpenApiSecurityScheme
@@ -81,7 +70,7 @@ public class Startup
             // Set the comments path for the Swagger JSON and UI.
             var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
             var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
-            c.IncludeXmlComments(xmlPath);
+            options.IncludeXmlComments(xmlPath);
         });
 
         services.AddMediatR(x => x.RegisterServicesFromAssemblyContaining<GetOrganisationsByPayeRef>());

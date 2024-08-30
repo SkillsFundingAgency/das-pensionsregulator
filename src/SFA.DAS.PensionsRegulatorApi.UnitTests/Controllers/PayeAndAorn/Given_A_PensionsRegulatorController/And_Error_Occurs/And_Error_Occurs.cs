@@ -40,8 +40,6 @@ public class And_Error_Occurs
     [ExcludeFromCodeCoverage]
     public class When_Organisations_Are_Request_By_Paye_And_AORN : And_Error_Occurs
     {
-        private ActionResult<IEnumerable<Organisation>> _organisations;
-
         [Test]
         public Task Then_Error_Is_Propagated()
         {

@@ -32,7 +32,7 @@ public class AndErrorOccurs
     public class WhenOrganisationsAreRequestByPayeOnly : AndErrorOccurs
     {
         [Test]
-        public async Task Then_Error_Is_Propagated()
+        public Task Then_Error_Is_Propagated()
         {
             Assert
                 .ThrowsAsync(
@@ -41,6 +41,7 @@ public class AndErrorOccurs
                         .Message
                         .EqualTo(ExceptionMessage),
                     () => _sut.PayeRef(PayeRef));
+            return Task.CompletedTask;
         }
     }
 }
