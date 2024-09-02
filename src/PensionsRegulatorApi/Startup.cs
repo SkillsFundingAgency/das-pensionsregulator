@@ -1,13 +1,10 @@
-﻿using System.IO;
-using System.Reflection;
-using Microsoft.AspNetCore.Builder;
+﻿using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Mvc.Authorization;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.ApplicationInsights;
-using Microsoft.OpenApi.Models;
 using PensionsRegulatorApi.Application.Queries;
 using PensionsRegulatorApi.Configuration;
 using PensionsRegulatorApi.Data;
@@ -29,7 +26,7 @@ public class Startup
 
     public void ConfigureServices(IServiceCollection services)
     {
-        services.AddADAuthentication(_configuration);
+        services.AddActiveDirectoryAuthentication(_configuration);
         services.AddControllers(options =>
         {
             if (!_environment.IsDevelopment())
@@ -44,37 +41,7 @@ public class Startup
             builder.AddFilter<ApplicationInsightsLoggerProvider>("Microsoft", LogLevel.Information);
         });
 
-        services.AddSwaggerGen(options =>
-        {
-            options.SwaggerDoc("v1", new OpenApiInfo { Title = "Pensions-Regulator-Api", Version = "v1" });
-            options.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
-            {
-                Description = "JWT Authorization header using the Bearer scheme. Example: \"Authorization: Bearer {token}\"",
-                Name = "Authorization",
-                In = ParameterLocation.Header,
-                Type = SecuritySchemeType.ApiKey,
-                Scheme = "Bearer"
-            });
-
-            options.AddSecurityRequirement(new OpenApiSecurityRequirement
-            {
-                {
-                    new OpenApiSecurityScheme
-                    {
-                        Reference = new OpenApiReference
-                        {
-                            Type = ReferenceType.SecurityScheme,
-                            Id = "Bearer"
-                        }
-                    },
-                    Array.Empty<string>()
-                }
-            });
-            // Set the comments path for the Swagger JSON and UI.
-            var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
-            var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
-            options.IncludeXmlComments(xmlPath);
-        });
+        services.AddDasSwagger();
 
         services.AddMediatR(x => x.RegisterServicesFromAssemblyContaining<GetOrganisationsByPayeRef>());
         services.AddTransient<IOrganisationRepository, SqlOrganisationRepository>();
@@ -87,7 +54,6 @@ public class Startup
         services.AddApplicationInsightsTelemetry();
     }
 
-    // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
     public void Configure(IApplicationBuilder app, IHostEnvironment env)
     {
         if (env.IsDevelopment())

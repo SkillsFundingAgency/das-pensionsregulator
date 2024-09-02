@@ -2,7 +2,6 @@
 using Microsoft.Extensions.Hosting;
 using NLog;
 using NLog.Web;
-using PensionsRegulatorApi.StartupConfiguration;
 
 namespace PensionsRegulatorApi;
 

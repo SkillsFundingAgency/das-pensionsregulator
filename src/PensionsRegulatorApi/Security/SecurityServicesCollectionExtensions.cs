@@ -6,19 +6,17 @@ namespace PensionsRegulatorApi.Security;
 
 public static class SecurityServicesCollectionExtensions
 {
-    public static void AddADAuthentication(this IServiceCollection services, IConfiguration configuration)
+    public static void AddActiveDirectoryAuthentication(this IServiceCollection services, IConfiguration configuration)
     {
         var activeDirectoryConfig = configuration.GetSection("ActiveDirectory").Get<ActiveDirectoryConfiguration>();
 
-        services.AddAuthorization(o =>
-        {
-            o.AddPolicy("default", policy =>
+        services.AddAuthorizationBuilder()
+            .AddPolicy("default", policy =>
             {
                 policy.RequireAuthenticatedUser();
                 policy.RequireRole("Default");
             });
-        });
-
+        
         services.AddAuthentication(auth =>
         {
             auth.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
