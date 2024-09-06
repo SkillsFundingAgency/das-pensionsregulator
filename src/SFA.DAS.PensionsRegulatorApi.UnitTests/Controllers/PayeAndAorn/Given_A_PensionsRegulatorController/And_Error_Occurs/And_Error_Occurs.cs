@@ -1,76 +1,56 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics.CodeAnalysis;
-using System.Threading.Tasks;
-using MediatR;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
-using NSubstitute;
+﻿using Microsoft.AspNetCore.Mvc;
 using NSubstitute.ExceptionExtensions;
-using NUnit.Framework;
 using PensionsRegulatorApi.Application.Queries;
 using PensionsRegulatorApi.Controllers;
 using PensionsRegulatorApi.Domain;
 
-namespace SFA.DAS.PensionsRegulatorApi.UnitTests.Controllers.PayeAndAorn.Given_A_PensionsRegulatorController.And_Error_Occurs
+namespace SFA.DAS.PensionsRegulatorApi.UnitTests.Controllers.PayeAndAorn.Given_A_PensionsRegulatorController.
+    And_Error_Occurs;
+
+[ExcludeFromCodeCoverage]
+public class And_Error_Occurs
 {
-    [ExcludeFromCodeCoverage]
-    public class And_Error_Occurs
+    private readonly PensionsRegulatorController _sut;
+    private const string PayeRef = "payes";
+    private const string Aorn = "aorn";
+    private const string ExceptionMessage = "Exceptional.";
+
+    protected And_Error_Occurs()
     {
-        protected PensionsRegulatorController SUT;
-        protected IMediator MockMediatr;
-        protected string PayeRef = "payes";
-        protected string Aorn = "aorn";
-        private string _exceptionMessage = "Exceptional.";
+        var mockMediatr = Substitute.For<IMediator>();
 
-        public And_Error_Occurs()
+        _sut = new PensionsRegulatorController(
+            mockMediatr,
+            Substitute.For<ILogger<PensionsRegulatorController>>());
+
+        mockMediatr
+            .Send(
+                Arg.Is<GetOrganisationsByPayeRefAndAorn>(
+                    request =>
+                        request.AccountOfficeReferenceNumber.Equals(
+                            Aorn,
+                            StringComparison.Ordinal)
+                        && request.PAYEReference.Equals(
+                            PayeRef,
+                            StringComparison.Ordinal)))
+            .Throws(
+                new TestException(ExceptionMessage));
+    }
+
+    [ExcludeFromCodeCoverage]
+    public class When_Organisations_Are_Request_By_Paye_And_AORN : And_Error_Occurs
+    {
+        [Test]
+        public Task Then_Error_Is_Propagated()
         {
-            MockMediatr
-                =
-                Substitute.For<IMediator>();
+            Assert.ThrowsAsync(
+                Is.TypeOf<TestException>()
+                    .And
+                    .Message
+                    .EqualTo(ExceptionMessage),
+                () => _sut.Aorn(Aorn, PayeRef));
 
-            SUT
-                =
-                new PensionsRegulatorController(
-                    MockMediatr,
-                    Substitute.For<ILogger<PensionsRegulatorController>>());
-
-
-            MockMediatr
-                .Send(
-                    Arg.Is<GetOrganisationsByPayeRefAndAorn>(
-                        request =>
-                            request.AccountOfficeReferenceNumber.Equals(
-                                Aorn,
-                                StringComparison.Ordinal)
-                            && request.PAYEReference.Equals(
-                                PayeRef,
-                                StringComparison.Ordinal)))
-                .Throws(
-                    new TestException(_exceptionMessage));
-        }
-
-        [ExcludeFromCodeCoverage]
-        public class When_Organisations_Are_Request_By_Paye_And_AORN
-            : And_Error_Occurs
-        {
-            private ActionResult<IEnumerable<Organisation>> _organisations;
-
-            [Test]
-            public async Task Then_Error_Is_Propagated()
-            {
-                Assert
-                    .ThrowsAsync(
-                        Is.TypeOf<TestException>()
-                            .And
-                            .Message
-                            .EqualTo(_exceptionMessage),
-                        () =>
-                        SUT
-                                .Aorn(
-                                    Aorn,
-                                    PayeRef));
-            }
+            return Task.CompletedTask;
         }
     }
 }

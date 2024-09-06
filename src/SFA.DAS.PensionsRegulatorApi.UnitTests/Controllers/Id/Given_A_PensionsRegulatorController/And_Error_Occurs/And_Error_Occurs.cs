@@ -1,45 +1,40 @@
-﻿using System.Diagnostics.CodeAnalysis;
-using System.Threading.Tasks;
-using MediatR;
-using Microsoft.Extensions.Logging;
-using NSubstitute;
-using NSubstitute.ExceptionExtensions;
-using NUnit.Framework;
+﻿using NSubstitute.ExceptionExtensions;
 using PensionsRegulatorApi.Application.Queries;
 using PensionsRegulatorApi.Controllers;
 
-namespace SFA.DAS.PensionsRegulatorApi.UnitTests.Controllers.Id.Given_A_PensionsRegulatorController.And_Error_Occurs
+namespace SFA.DAS.PensionsRegulatorApi.UnitTests.Controllers.Id.Given_A_PensionsRegulatorController.And_Error_Occurs;
+
+[ExcludeFromCodeCoverage]
+public class And_Error_Occurs
 {
-    [ExcludeFromCodeCoverage]
-    public class And_Error_Occurs
+    private readonly PensionsRegulatorController _sut;
+    private readonly IMediator _mockMediatr;
+    private const long TPRUniqueKey = 123456;
+    private readonly string	 _exceptionMessage = "Exceptional.";
+
+    protected And_Error_Occurs()
     {
-        protected PensionsRegulatorController SUT;
-        protected IMediator MockMediatr;
-        protected long TPRUniqueKey = 123456;
-        private string	 _exceptionMessage = "Exceptional.";
+        _mockMediatr = Substitute.For<IMediator>();
+        _sut = new PensionsRegulatorController(_mockMediatr, Substitute.For<ILogger<PensionsRegulatorController>>());
+        _mockMediatr.Send(Arg.Is<GetOrganisationById>(request => request.TPRUniqueKey.Equals(TPRUniqueKey))).Throws(new TestException(_exceptionMessage));
+    }
 
-        public And_Error_Occurs()
+    [ExcludeFromCodeCoverage]
+    public class When_Organisations_Are_Request_By_Id_Only : And_Error_Occurs
+    {
+        [Test]
+        public Task Then_Error_Is_Propagated()
         {
-            MockMediatr = Substitute.For<IMediator>();
-            SUT = new PensionsRegulatorController(MockMediatr, Substitute.For<ILogger<PensionsRegulatorController>>());
-            MockMediatr.Send(Arg.Is<GetOrganisationById>(request => request.TPRUniqueKey.Equals(TPRUniqueKey))).Throws(new TestException(_exceptionMessage));
-        }
-
-        [ExcludeFromCodeCoverage]
-        public class When_Organisations_Are_Request_By_Id_Only : And_Error_Occurs
-        {
-            [Test]
-            public async Task Then_Error_Is_Propagated()
-            {
-                Assert
-                    .ThrowsAsync(
-                        Is.TypeOf<TestException>()
-                            .And
-                            .Message
-                            .EqualTo(_exceptionMessage),
-                        () =>
-                            SUT.Query(TPRUniqueKey));
-            }
+            Assert
+                .ThrowsAsync(
+                    Is.TypeOf<TestException>()
+                        .And
+                        .Message
+                        .EqualTo(_exceptionMessage),
+                    () =>
+                        _sut.Query(TPRUniqueKey));
+            
+            return Task.CompletedTask;
         }
     }
 }

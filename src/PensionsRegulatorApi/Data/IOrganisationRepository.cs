@@ -1,12 +1,10 @@
-﻿using System.Collections.Generic;
-using PensionsRegulatorApi.Domain;
+﻿using PensionsRegulatorApi.Domain;
 
-namespace PensionsRegulatorApi.Data
+namespace PensionsRegulatorApi.Data;
+
+public interface IOrganisationRepository
 {
-    public interface IOrganisationRepository
-    {
-        Organisation GetOrganisationById(long tprUniqueKey);
-        IEnumerable<Organisation> GetOrganisationsForPAYEReference(string payeReference);
-        IEnumerable<Organisation> GetOrganisationsForPAYEReferenceAndAORN(string payeReference, string aorn);
-    }
+    Task<Organisation> GetOrganisationById(long tprUniqueKey);
+    Task<IEnumerable<Organisation>> GetOrganisationsForPAYEReference(string payeReference);
+    Task<IEnumerable<Organisation>> GetOrganisationsForPAYEReferenceAndAORN(string payeReference, string aorn);
 }

@@ -1,28 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
-using MediatR;
-using PensionsRegulatorApi.Data;
+﻿using PensionsRegulatorApi.Data;
 using PensionsRegulatorApi.Domain;
 
-namespace PensionsRegulatorApi.Application.Queries
+namespace PensionsRegulatorApi.Application.Queries;
+
+public class GetOrganisationsByPayeRefHandler(IOrganisationRepository repository)
+    : IRequestHandler<GetOrganisationsByPayeRef, IEnumerable<Organisation>>
 {
-    
-
-    public class GetOrganisationsByPayeRefHandler : RequestHandler<GetOrganisationsByPayeRef, IEnumerable<Organisation>>
+    public async Task<IEnumerable<Organisation>> Handle(GetOrganisationsByPayeRef request, CancellationToken cancellationToken)
     {
-        private readonly IOrganisationRepository _repository;
-
-        public GetOrganisationsByPayeRefHandler(IOrganisationRepository repository)
-        {
-            _repository = repository;
-        }
-
-        protected override IEnumerable<Organisation> Handle(GetOrganisationsByPayeRef request)
-        {
-            return
-                _repository
-                    .GetOrganisationsForPAYEReference(
-                        request.PAYEReference);
-        }
+        return await repository.GetOrganisationsForPAYEReference(request.PAYEReference);
+        
     }
 }

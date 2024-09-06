@@ -1,8 +1,7 @@
-﻿namespace PensionsRegulatorApi.Security
+﻿namespace PensionsRegulatorApi.Security;
+
+public record ActiveDirectoryConfiguration
 {
-    public class ActiveDirectoryConfiguration
-    {
-        public string Tenant { get; set; }
-        public string IdentifierUri { get; set; }
-    }
+    public string Tenant { get; set; }
+    public string IdentifierUri { get; set; }
 }

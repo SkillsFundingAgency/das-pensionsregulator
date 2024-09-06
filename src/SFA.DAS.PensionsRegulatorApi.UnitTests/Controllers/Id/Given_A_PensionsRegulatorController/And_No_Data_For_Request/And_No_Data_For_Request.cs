@@ -1,53 +1,44 @@
-﻿using System.Diagnostics.CodeAnalysis;
-using System.Threading.Tasks;
-using FluentAssertions;
-using MediatR;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
-using NSubstitute;
-using NUnit.Framework;
+﻿using Microsoft.AspNetCore.Mvc;
 using PensionsRegulatorApi.Application.Queries;
 using PensionsRegulatorApi.Controllers;
 using PensionsRegulatorApi.Domain;
 
-namespace SFA.DAS.PensionsRegulatorApi.UnitTests.Controllers.Id.Given_A_PensionsRegulatorController.And_No_Data_For_Request
-{
-    [ExcludeFromCodeCoverage]
-    public class And_No_Data_For_Request
-    {
-        protected PensionsRegulatorController SUT;
-        protected IMediator MockMediatr;
-        protected long TPRUniqueKey = 123456;
+namespace SFA.DAS.PensionsRegulatorApi.UnitTests.Controllers.Id.Given_A_PensionsRegulatorController.And_No_Data_For_Request;
 
-        public And_No_Data_For_Request()
+[ExcludeFromCodeCoverage]
+public class And_No_Data_For_Request
+{
+    private readonly PensionsRegulatorController _sut;
+    private const long TPRUniqueKey = 123456;
+
+    protected And_No_Data_For_Request()
+    {
+        var mockMediatr = Substitute.For<IMediator>();
+        _sut = new PensionsRegulatorController(mockMediatr, Substitute.For<ILogger<PensionsRegulatorController>>());
+        mockMediatr.Send(Arg.Is<GetOrganisationById>(request => request.TPRUniqueKey.Equals(TPRUniqueKey))).Returns((Organisation)null);
+    }
+
+    [ExcludeFromCodeCoverage]
+    public class When_Organisations_Are_Request_By_Id_Only : And_No_Data_For_Request
+    {
+        private IActionResult _organisation;
+
+        [SetUp]
+        public async Task When()
         {
-            MockMediatr = Substitute.For<IMediator>();
-            SUT = new PensionsRegulatorController(MockMediatr, Substitute.For<ILogger<PensionsRegulatorController>>());
-            MockMediatr.Send(Arg.Is<GetOrganisationById>(request => request.TPRUniqueKey.Equals(TPRUniqueKey))).Returns((Organisation)null);
+            _organisation = await _sut.Query(TPRUniqueKey);
         }
 
-        [ExcludeFromCodeCoverage]
-        public class When_Organisations_Are_Request_By_Id_Only : And_No_Data_For_Request
+        [Test]
+        public void Then_NotFoundResult_Is_Returned()
         {
-            private ActionResult<Organisation> _organisation;
+            _organisation
+                .Should()
+                .NotBeNull();
 
-            [SetUp]
-            public async Task When()
-            {
-                _organisation = await SUT.Query(TPRUniqueKey);
-            }
-
-            [Test]
-            public void Then_NotFoundResult_Is_Returned()
-            {
-                _organisation
-                    .Should()
-                    .NotBeNull();
-
-                _organisation.Result
-                    .Should()
-                    .BeAssignableTo<NotFoundResult>();
-            }
-    }
+            _organisation
+                .Should()
+                .BeAssignableTo<NotFoundResult>();
+        }
     }
 }

@@ -1,64 +1,47 @@
-﻿using System;
-using System.Diagnostics.CodeAnalysis;
-using System.Threading.Tasks;
-using MediatR;
-using Microsoft.Extensions.Logging;
-using NSubstitute;
-using NSubstitute.ExceptionExtensions;
-using NUnit.Framework;
+﻿using NSubstitute.ExceptionExtensions;
 using PensionsRegulatorApi.Application.Queries;
 using PensionsRegulatorApi.Controllers;
 
-namespace SFA.DAS.PensionsRegulatorApi.UnitTests.Controllers.PayeOnly.Given_A_PensionsRegulatorController.And_Error_Occurs
+namespace SFA.DAS.PensionsRegulatorApi.UnitTests.Controllers.PayeOnly.Given_A_PensionsRegulatorController.
+    And_Error_Occurs;
+
+[ExcludeFromCodeCoverage]
+public class AndErrorOccurs
 {
-    [ExcludeFromCodeCoverage]
-    public class And_Error_Occurs
+    private readonly PensionsRegulatorController _sut;
+    private const string PayeRef = "payes";
+    private const string ExceptionMessage = "Exceptional.";
+
+    protected AndErrorOccurs()
     {
-        protected PensionsRegulatorController SUT;
-        protected IMediator MockMediatr;
-        protected string PayeRef = "payes";
-        private string	 _exceptionMessage = "Exceptional.";
+        var mockMediatr = Substitute.For<IMediator>();
 
-        public And_Error_Occurs()
+        _sut = new PensionsRegulatorController(mockMediatr, Substitute.For<ILogger<PensionsRegulatorController>>());
+
+        mockMediatr
+            .Send(
+                Arg.Is<GetOrganisationsByPayeRef>(
+                    request => request.PAYEReference.Equals(
+                        PayeRef,
+                        StringComparison.Ordinal)))
+            .Throws(
+                new TestException(ExceptionMessage));
+    }
+
+    [ExcludeFromCodeCoverage]
+    public class WhenOrganisationsAreRequestByPayeOnly : AndErrorOccurs
+    {
+        [Test]
+        public Task Then_Error_Is_Propagated()
         {
-            MockMediatr
-                =
-                Substitute.For<IMediator>();
-
-            SUT
-                =
-                new PensionsRegulatorController(
-                    MockMediatr,
-                    Substitute.For<ILogger<PensionsRegulatorController>>());
-
-            MockMediatr
-                .Send(
-                    Arg.Is<GetOrganisationsByPayeRef>(
-                        request => request.PAYEReference.Equals(
-                            PayeRef,
-                            StringComparison.Ordinal)))
-                .                Throws(
-                    new TestException(_exceptionMessage));
-        }
-
-        [ExcludeFromCodeCoverage]
-        public class When_Organisations_Are_Request_By_Paye_Only
-            : And_Error_Occurs
-        {
-            [Test]
-            public async Task Then_Error_Is_Propagated()
-            {
-                Assert
-                    .ThrowsAsync(
-                        Is.TypeOf<TestException>()
-                            .And
-                            .Message
-                            .EqualTo(_exceptionMessage),
-                        () =>
-                            SUT
-                                .PayeRef(
-                                    PayeRef));
-            }
+            Assert
+                .ThrowsAsync(
+                    Is.TypeOf<TestException>()
+                        .And
+                        .Message
+                        .EqualTo(ExceptionMessage),
+                    () => _sut.PayeRef(PayeRef));
+            return Task.CompletedTask;
         }
     }
 }

@@ -1,7 +1,6 @@
-﻿namespace PensionsRegulatorApi.Configuration
+﻿namespace PensionsRegulatorApi.Configuration;
+
+public class ConnectionStrings
 {
-    public class ConnectionStrings
-    {
-        public string PensionsRegulatorSql { get; set; }
-    }
+    public string PensionsRegulatorSql { get; set; }
 }

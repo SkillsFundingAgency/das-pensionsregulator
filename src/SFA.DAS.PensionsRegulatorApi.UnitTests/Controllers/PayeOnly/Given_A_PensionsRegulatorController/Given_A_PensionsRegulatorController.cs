@@ -1,109 +1,87 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics.CodeAnalysis;
-using System.Threading.Tasks;
-using AutoFixture;
-using FluentAssertions;
-using MediatR;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
-using NSubstitute;
-using NUnit.Framework;
+﻿using Microsoft.AspNetCore.Mvc;
 using PensionsRegulatorApi.Application.Queries;
 using PensionsRegulatorApi.Controllers;
 using PensionsRegulatorApi.Domain;
 
-namespace SFA.DAS.PensionsRegulatorApi.UnitTests.Controllers.PayeOnly.Given_A_PensionsRegulatorController
+namespace SFA.DAS.PensionsRegulatorApi.UnitTests.Controllers.PayeOnly.Given_A_PensionsRegulatorController;
+
+[ExcludeFromCodeCoverage]
+public class GivenAPensionsRegulatorController
 {
-    [ExcludeFromCodeCoverage]
-    public class Given_A_PensionsRegulatorController
+    private readonly PensionsRegulatorController _sut;
+    private readonly IMediator _mockMediatr;
+    private readonly IEnumerable<Organisation> _expectedOrganisations;
+    private const string PayeRef = "payes";
+
+    protected GivenAPensionsRegulatorController()
     {
-        protected PensionsRegulatorController SUT;
-        protected IMediator MockMediatr;
-        protected IEnumerable<Organisation> ExpectedOrganisations;
-        protected string PayeRef = "payes";
+        _mockMediatr = Substitute.For<IMediator>();
 
-        public Given_A_PensionsRegulatorController()
+        _sut = new PensionsRegulatorController(_mockMediatr, Substitute.For<ILogger<PensionsRegulatorController>>());
+
+        _expectedOrganisations =
+            new Fixture()
+                .CreateMany<Organisation>(
+                    new Random()
+                        .Next(1, 15));
+
+        _mockMediatr
+            .Send(
+                Arg.Is<GetOrganisationsByPayeRef>(
+                    request => request.PAYEReference.Equals(
+                        PayeRef,
+                        StringComparison.Ordinal)))
+            .Returns(
+                _expectedOrganisations);
+    }
+
+    [ExcludeFromCodeCoverage]
+    public class WhenOrganisationsAreRequestByPayeOnly : GivenAPensionsRegulatorController
+    {
+        private OkObjectResult _organisations;
+
+        [SetUp]
+        public async Task When()
         {
-            MockMediatr
-                =
-                Substitute.For<IMediator>();
-
-            SUT
-                =
-                new PensionsRegulatorController(
-                    MockMediatr,
-                    Substitute.For<ILogger<PensionsRegulatorController>>());
-
-            ExpectedOrganisations =
-                new Fixture()
-                    .CreateMany<Organisation>(
-                        new Random()
-                            .Next(1, 15));
-
-            MockMediatr
-                .Send(
-                    Arg.Is<GetOrganisationsByPayeRef>(
-                        request => request.PAYEReference.Equals(
-                            PayeRef,
-                            StringComparison.Ordinal)))
-                .Returns(
-                    ExpectedOrganisations);
+            _organisations = await _sut.PayeRef(PayeRef) as OkObjectResult;
         }
 
-        [ExcludeFromCodeCoverage]
-        public class When_Organisations_Are_Request_By_Paye_Only
-            : Given_A_PensionsRegulatorController
+        [Test]
+        public void Then_Data_Is_Retrieved_Using_Paye_Only()
         {
-            private ActionResult<IEnumerable<Organisation>> _organisations;
-            [SetUp]
-            public async Task When()
-            {
-                _organisations
-                    =
-                await 
-                SUT
-                    .PayeRef(
-                        PayeRef);
-            }
+            _mockMediatr
+                .Received()
+                .Send(
+                    Arg.Is<GetOrganisationsByPayeRef>(
+                        arg => arg.PAYEReference.Equals(
+                            PayeRef,
+                            StringComparison.Ordinal)));
 
-            [Test]
-            public void Then_Data_Is_Retrieved_Using_Paye_Only()
-            {
-                MockMediatr
-                    .Received()
-                    .Send(
-                        Arg.Is<GetOrganisationsByPayeRef>(
-                            arg => arg.PAYEReference.Equals(
-                                       PayeRef,
-                                       StringComparison.Ordinal)));
+            _organisations
+                .Should()
+                .NotBeNull();
 
-                _organisations
-                    .Should()
-                    .NotBeNull();
+            _organisations
+                .Value
+                .Should()
+                .BeEquivalentTo(_expectedOrganisations);
+        }
 
-                _organisations
-                    .Value
-                    .Should()
-                    .BeEquivalentTo(ExpectedOrganisations);
-            }
+        [Test]
+        public void Then_Data_Is_Not_Retrieved_Using_Paye_And_AORN()
+        {
+            _mockMediatr
+                .DidNotReceive()
+                .Send(
+                    Arg.Any<GetOrganisationsByPayeRefAndAorn>());
+        }
 
-            [Test]
-            public void Then_Data_Is_Not_Retrieved_Using_Paye_And_AORN()
-            {
-                MockMediatr
-                    .DidNotReceive()
-                    .Send(
-                        Arg.Any<GetOrganisationsByPayeRefAndAorn>());
-            }
-
-            [Test]
-            public void Then_Date_Is_Not_Retrieved_Using_Id_Only()
-            {
-                MockMediatr
-                    .DidNotReceive()
-                    .Send(Arg.Any<GetOrganisationById>());
-            }
+        [Test]
+        public void Then_Date_Is_Not_Retrieved_Using_Id_Only()
+        {
+            _mockMediatr
+                .DidNotReceive()
+                .Send(Arg.Any<GetOrganisationById>());
         }
     }
 }

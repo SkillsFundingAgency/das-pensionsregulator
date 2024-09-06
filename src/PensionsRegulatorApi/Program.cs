@@ -1,38 +1,34 @@
-﻿using System;
-using System.IO;
-using Microsoft.AspNetCore;
-using Microsoft.AspNetCore.Hosting;
-using Microsoft.Extensions.Configuration;
+﻿using Microsoft.AspNetCore.Hosting;
+using Microsoft.Extensions.Hosting;
+using NLog;
 using NLog.Web;
-using PensionsRegulatorApi.StartupConfiguration;
-using SFA.DAS.Configuration.AzureTableStorage;
 
-namespace PensionsRegulatorApi
+namespace PensionsRegulatorApi;
+
+public class Program
 {
-    public class Program
+    public static void Main(string[] args)
     {
-        public static void Main(string[] args)
-        {
-            var logger = NLogBuilder.ConfigureNLog("nlog.config").GetCurrentClassLogger();
-            try
-            {
-                logger.Info("Starting up host");
-                CreateWebHostBuilder(args).Build().Run();
-            }
-            catch (Exception ex)
-            {
-                logger.Fatal(ex, "Stopped program because of exception");
-                throw;
-            }
-            finally
-            {
-                NLog.LogManager.Shutdown();
-            }
-        }
+        var logger = LogManager.LogFactory.Setup().LoadConfigurationFromFile("nlog.config").GetCurrentClassLogger();
 
-        public static IWebHostBuilder CreateWebHostBuilder(string[] args) =>
-            WebHost.CreateDefaultBuilder(args)
-                .UseStartup<Startup>()
-                .UseNLog();
+        try
+        {
+            logger.Info("Starting up host");
+            CreateWebHostBuilder(args).Build().Run();
+        }
+        catch (Exception ex)
+        {
+            logger.Fatal(ex, "Stopped program because of exception");
+            throw;
+        }
+        finally
+        {
+            LogManager.Shutdown();
+        }
     }
+
+    private static IHostBuilder CreateWebHostBuilder(string[] args) =>
+        Host.CreateDefaultBuilder(args)
+            .UseNLog()
+            .ConfigureWebHostDefaults(builder => builder.UseStartup<Startup>());
 }

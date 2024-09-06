@@ -1,17 +1,18 @@
-﻿using System;
-using MediatR;
-using PensionsRegulatorApi.Domain;
+﻿using PensionsRegulatorApi.Domain;
 
-namespace PensionsRegulatorApi.Application.Queries
+namespace PensionsRegulatorApi.Application.Queries;
+
+public class GetOrganisationById : IRequest<Organisation>
 {
-    public class GetOrganisationById : IRequest<Organisation>
+    public long TPRUniqueKey { get;  }
+    
+    public GetOrganisationById(long? id)
     {
-        public GetOrganisationById(long? id)
+        if (!id.HasValue)
         {
-            if (!id.HasValue) throw new ArgumentException("Value cannot be null.", nameof(id));
-            TPRUniqueKey = id.Value;
+            throw new ArgumentException("Value cannot be null.", nameof(id));
         }
-
-        public long TPRUniqueKey { get;  }
+        
+        TPRUniqueKey = id.Value;
     }
 }
