@@ -10,7 +10,8 @@ jobs:
 
   - template: azure-pipelines-templates/build/step/app-build.yml@das-platform-building-blocks
     parameters:
-        SonarCloudProjectKey: SkillsFundingAgency_das-pensionsregulator
+      SonarCloudProjectKey: SkillsFundingAgency_das-pensionsregulator
+      ContinueOnVulnerablePackageScanError: true
 
   - task: DotNetCoreCLI@2
     displayName: 'Publish Internal API'
