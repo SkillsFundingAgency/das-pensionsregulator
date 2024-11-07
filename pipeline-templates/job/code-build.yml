@@ -1,3 +1,6 @@
+parameters:
+  SolutionBaseName:
+
 jobs:
 - job: 'CodeBuild'
   pool:
@@ -21,13 +24,6 @@ jobs:
       projects: 'src/PensionsRegulatorApi/PensionsRegulatorApi.csproj'
       arguments: '--configuration $(buildConfiguration) --output $(build.artifactstagingdirectory)/publish --no-restore  --no-build'
 
-  - task: DotNetCoreCLI@2
-    displayName: 'Publish Internal API'
-    inputs:
-      command: publish
-      publishWebProjects: false
-      projects: 'src/PensionsRegulatorApi/PensionsRegulatorApi.csproj'
-      arguments: '--configuration $(buildConfiguration) --output $(build.artifactstagingdirectory)/publish --no-restore  --no-build'
 
   - task: ArchiveFiles@2
     displayName: 'Package DataSync Function'
@@ -49,3 +45,4 @@ jobs:
     displayName: 'Publish Artifact'
     inputs:
       PathtoPublish: '$(build.artifactstagingdirectory)/publish'
+      artifactName: ${{ parameters.SolutionBaseName }}
