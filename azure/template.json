@@ -53,9 +53,6 @@
         "configurationStorageConnectionString": {
             "type": "securestring"
         },
-        "loggingRedisConnectionString": {
-            "type": "securestring"
-        },
         "internalApiCustomHostname": {
             "type": "string",
             "defaultValue": ""
@@ -230,17 +227,6 @@
                                 {
                                     "name": "APPLICATIONINSIGHTS_CONNECTION_STRING",
                                     "value": "[reference(concat('internal-api-app-insights-', parameters('utcValue'))).outputs.ConnectionString.value]"
-                                }
-                            ]
-                        }
-                    },
-                    "appServiceConnectionStrings": {
-                        "value": {
-                            "array": [
-                                {
-                                    "name": "Redis",
-                                    "connectionString": "[parameters('loggingRedisConnectionString')]",
-                                    "type": "Custom"
                                 }
                             ]
                         }
